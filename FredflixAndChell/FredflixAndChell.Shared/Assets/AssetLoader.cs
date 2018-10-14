@@ -18,14 +18,17 @@ namespace FredflixAndChell.Shared.Assets
             _content = cm;
 
             // Load fonts to be used in the game
-            LoadFont("debugfont");
+            LoadFont("font_debug");
 
             // Load textures to be used in the game
-            LoadTexturesFromSheet("pig", 20, 20, 6, 6);
-            LoadTexture("rainbow");
+            LoadTexturesFromSheet("sheet_pig", 20, 20, 6, 6);
+            LoadTexture("tex_rainbow");
+            LoadTexture("tex_lava1");
+            LoadTexture("tex_lava2");
+            LoadTexture("tex_lightmask");
 
             // Load effects to be used in the game
-            LoadEffect("shader");
+            LoadEffect("shader_flash");
         }
 
         private static void LoadTexturesFromSheet(string name, int width, int height, int xCount, int yCount)
@@ -34,8 +37,10 @@ namespace FredflixAndChell.Shared.Assets
             var textures = TextureSplitter.Split(texture, width, height, out int xCountActual, out int yCountActual);
             texture.Dispose();
 
-            if (xCount != xCountActual) Console.WriteLine($"WARNING: Expected {xCount} textures, got {xCountActual}");
-            if (yCount != yCountActual) Console.WriteLine($"WARNING: Expected {yCount} textures, got {yCountActual}");
+            if (xCount != xCountActual) Console.WriteLine($"WARNING: Expected {xCount} columns, got {xCountActual}");
+            if (yCount != yCountActual) Console.WriteLine($"WARNING: Expected {yCount} rows, got {yCountActual}");
+
+            name = name.Replace("sheet_", "");
 
             for (var y = 0; y < yCountActual; y++)
             {
@@ -63,17 +68,26 @@ namespace FredflixAndChell.Shared.Assets
 
         private static void LoadTexture(string name)
         {
-            _textures.Add(name, _content.Load<Texture2D>(name));
+            var tex = _content.Load<Texture2D>(name);
+            name = name.Replace("tex_", "");
+
+            _textures.Add(name, tex);
         }
 
         private static void LoadEffect(string name)
         {
-            _effects.Add(name, _content.Load<Effect>(name));
+            var shader = _content.Load<Effect>(name);
+            name = name.Replace("shader_", "");
+
+            _effects.Add(name, shader);
         }
 
         private static void LoadFont(string name)
         {
-            _fonts.Add(name, _content.Load<SpriteFont>(name));
+            var font = _content.Load<SpriteFont>(name);
+            name = name.Replace("font_", "");
+
+            _fonts.Add(name, font);
         }
     }
 }

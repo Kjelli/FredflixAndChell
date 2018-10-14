@@ -32,10 +32,6 @@ namespace FredflixAndChell.Shared.Utilities
                 _sampleBuffer.Dequeue();
                 AverageFramesPerSecond = _sampleBuffer.Average(i => i);
             }
-            else
-            {
-                AverageFramesPerSecond = CurrentFramesPerSecond;
-            }
 
             TotalFrames++;
             TotalSeconds += deltaTime;

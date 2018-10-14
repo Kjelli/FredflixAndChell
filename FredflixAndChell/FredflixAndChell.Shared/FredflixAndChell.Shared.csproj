@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="BroGame.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
@@ -54,7 +55,7 @@
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Utilities\FrameCounter.cs" />
-    <Compile Include="Utilities\InputUtility.cs" />
+    <Compile Include="Utilities\KeyboardInputUtility.cs" />
     <Compile Include="Utilities\TextureSplitter.cs" />
   </ItemGroup>
   <ItemGroup>

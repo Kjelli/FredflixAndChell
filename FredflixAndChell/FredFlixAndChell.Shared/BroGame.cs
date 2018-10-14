@@ -40,9 +40,9 @@ namespace FredflixAndChell.Shared
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 480;
-           // IsFixedTimeStep = true;
-           // _graphics.SynchronizeWithVerticalRetrace = true;
-           // TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 16);
+            IsFixedTimeStep = true;
+            _graphics.SynchronizeWithVerticalRetrace = true;
+            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 8);
             _scene = new Scene();
         }
 
@@ -50,9 +50,10 @@ namespace FredflixAndChell.Shared
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-            _scene.Spawn(new Player(50,50));
+            var random = new Random((int)DateTime.Now.Ticks);
+            _scene.Spawn(new Player(random.Next(128, 256), random.Next(128, 256)));
             _frameCounter = new FrameCounter();
-            debugFont = AssetLoader.GetFont("debugfont");
+            debugFont = AssetLoader.GetFont("debug");
         }
 
         protected override void LoadContent()
@@ -63,7 +64,7 @@ namespace FredflixAndChell.Shared
             //TODO: use this.Content to load your game content here 
             AssetLoader.Load(Content);
         }
-
+        private DateTime oldTimestamp = DateTime.Now;
         protected override void Update(GameTime gameTime)
         {
             // For Mobile devices, this logic will close the Game when the Back button is pressed
@@ -78,10 +79,10 @@ namespace FredflixAndChell.Shared
             KeyboardInputUtility.Poll();
             _scene.GameObjects.ForEach(g => g.Update(gameTime));
 
-           // FPS Logic
-           var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _frameCounter.Update(deltaTime);
-
+            // FPS Logic
+            var now = DateTime.Now;
+            _frameCounter.Update((float)(now - oldTimestamp).TotalSeconds + 0.00001f);
+            oldTimestamp = now;
             // TODO: Add your update logic here			
             base.Update(gameTime);
         }
@@ -90,15 +91,17 @@ namespace FredflixAndChell.Shared
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            _spriteBatch.DrawString(debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond} ({_frameCounter.CurrentFramesPerSecond})", new Vector2(0,0), Color.White);
-            _spriteBatch.DrawString(debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0,20), Color.White);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _scene.GameObjects.ForEach(g => g.Draw(_spriteBatch, gameTime));
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _spriteBatch.DrawString(debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond}", new Vector2(0, 0), Color.White);
+            _spriteBatch.DrawString(debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0, 20), Color.White);
             _spriteBatch.DrawString(debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
             _spriteBatch.End();
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            _scene.GameObjects.ForEach(g => g.Draw(_spriteBatch, gameTime));
-            _spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
