@@ -36,13 +36,13 @@ namespace FredflixAndChell.Shared.Scenes
             gameObject?.OnDespawn();
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             GameObjects.ForEach(g => g.Update(gameTime));
             _camera.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             GameObjects.ForEach(g => g.Draw(spriteBatch, gameTime));
         }

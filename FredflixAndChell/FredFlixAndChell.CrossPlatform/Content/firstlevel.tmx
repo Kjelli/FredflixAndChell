@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="60" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" source="tileset_temple.tsx"/>
+ <layer id="1" name="Floor" width="60" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztV0EOwyAMo9rHylPZS3uqhFDYQnGcUHHwLcV2nLT0PFI6NzY2pvFJ/hpGkQNoWNl7UWSuqbH2xNSwEQeo/S6k+RnlYelCcmkyyYP1DE2rwcNTEWak1SHVRPBrpSs6txXqPCz9SblLfKj7znfCC3Mn82H/Hp3pxa8es7hY6HlaUQcrc4nHagaenNtqRu4XIicvDcg+PMmlfiZCH9+IXl/v3nvfp7350drqmfby1sv8rfwsPo88WZysfz8J986McNa17bdH0zMNF6rmn++ZWVj5ro3EBTK+2qY=
+  </data>
+ </layer>
+ <layer id="2" name="Floor Overlay" width="60" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztmFsKwjAURG9sP6wuQ12Hfz4WIVjdmOCHj2Wo66j44WMZTmikSkMQmlS93oEhhV7CnNIGpkQiES9NEiKFtWEcMfMUfGnyyruo/ti+Vksq8/bVx+IEl4u3CetbLbhdf7TKsuV38a7gIa43WLcB8nTwQXWNe5H//XX+NeUMj/wu3oHKZ0fwOMA7vgPj3vgQgNeW38V7xnqBr/AtAG8aE82M57H//W355bwSXk4SXuHlJOEVXk4SXuHlJOm/5f773B99qo7+q7PrDvxu/9Wzv9x/9b8K6b/FzD+fVxwlvEQZeI9MfVIF7x3bOoYd
+  </data>
+ </layer>
+ <layer id="3" name="Obstacles" width="60" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztlzEKwzAQBA8ssB+RIqSxcf6V5A9S/DXjxiZ5VdZgSKPCzUlwtwNTSIXEFAdS34gMMLYiCb7h1Oqto+LZubvS4YjGO1zhBq+dXW/wg8bv0fsIIk84d2UsedfuAl/h3+sF9tqmdO+lyVuKGr1n9rRgry4eez3Nb23Yaxv22oa9tmGvbdhrG76fdfH4PzqzpwV7dfE2v7Vhr2323h9eg4XH
+  </data>
+ </layer>
+ <layer id="4" name="Obstacles Overlay" width="60" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzsENgCAQRNFJoB1tTEvFnuCuR0nQvHfdzc8kd1tJ9vJweMlq/TZ+r4l7VusfNTnrvD1f7wMAAAAAAPxZB/rgCJ4=
+  </data>
+ </layer>
+</map>

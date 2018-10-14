@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Levels\Level.cs" />
     <Compile Include="Utilities\Graphics\Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="BroGame.cs" />
@@ -89,12 +90,12 @@
     <Compile Include="Utilities\Input\GamePadUtility.cs" />
     <Compile Include="Utilities\Input\InputActions.cs" />
     <Compile Include="Utilities\Input\KeyboardUtility.cs" />
+    <Compile Include="Scenes\LevelScene.cs" />
     <Compile Include="Utilities\PlayerController.cs" />
     <Compile Include="Utilities\Graphics\TextureSplitter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
-    <Folder Include="Levels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
