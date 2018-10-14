@@ -33,6 +33,8 @@ namespace FredflixAndChell.Shared
         private GameState _gameState;
         private IScene _scene;
 
+        private List<PlayerController> players = new List<PlayerController>();
+
         public BroGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -50,9 +52,21 @@ namespace FredflixAndChell.Shared
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-            _scene.Spawn(new Player(50,50));
             _frameCounter = new FrameCounter();
             debugFont = AssetLoader.GetFont("debugfont");
+
+            //Players initilize
+            //Keyboard = player 1, 
+            players.Add(new PlayerController(_scene,0));
+            for(var i = 0; i < 4; i++)
+            { 
+                if (GamePad.GetCapabilities(GamePadUtility.ConvertToIndex(i+1)).IsConnected)
+                {
+                    Console.WriteLine($"Gamepad {i + 1} Detected - Generating player");
+                    players.Add(new PlayerController(_scene,i+1));
+                } 
+            }
+
         }
 
         protected override void LoadContent()
@@ -75,7 +89,13 @@ namespace FredflixAndChell.Shared
                 Exit();
             }
 #endif
-            InputUtility.Poll();
+
+            foreach(var player in players)
+            {
+                player.Update();
+            }  
+            
+
             _scene.GameObjects.ForEach(g => g.Update(gameTime));
 
            // FPS Logic

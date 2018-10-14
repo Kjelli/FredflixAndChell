@@ -54,7 +54,10 @@
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Utilities\FrameCounter.cs" />
-    <Compile Include="Utilities\InputUtility.cs" />
+    <Compile Include="Utilities\GamePadUtility.cs" />
+    <Compile Include="Utilities\InputActions.cs" />
+    <Compile Include="Utilities\KeyboardUtility.cs" />
+    <Compile Include="Utilities\PlayerController.cs" />
     <Compile Include="Utilities\TextureSplitter.cs" />
   </ItemGroup>
   <ItemGroup>

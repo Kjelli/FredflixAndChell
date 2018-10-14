@@ -18,24 +18,25 @@ namespace FredflixAndChell.Shared.GameObjects
 
         private Vector2 Acceleration;
         private Vector2 Velocity;
-        private int _direction;
-        private float _speed = 0.2f;
+        public int direction;
+        public float _speed = 0.2f;
 
         private Texture2D _texture;
         private Texture2D _rainbow;
         private Effect _rainbowEffect;
 
+        public InputActions actions;
+
+
         public Player(int x, int y) : base(x, y, 128, 128)
         {
+            direction = 0;
+            actions = new InputActions();
+
             _texture = AssetLoader.GetTexture("pig[0][0]");
             _rainbow = AssetLoader.GetTexture("rainbow");
             _rainbowEffect = AssetLoader.GetEffect("shader");
             _rainbowEffect.Parameters["rainbow"].SetValue(_rainbow);
-
-            InputUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
-            InputUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
-            InputUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
-            InputUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -55,7 +56,9 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-            Acceleration = new Vector2((_direction & LEFT) > 0 ? - _speed : (_direction & RIGHT) > 0 ? _speed : 0, (_direction & DOWN) > 0 ? _speed : (_direction & UP) > 0 ? -_speed : 0);
+
+            // Acceleration = new Vector2((direction & LEFT) > 0 ? -_speed : (direction & RIGHT) > 0 ? _speed : 0, (direction & DOWN) > 0 ? _speed : (direction & UP) > 0 ? -_speed : 0);
+            Acceleration = new Vector2(this.actions.MoveX,-this.actions.MoveY);
             Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
         }

@@ -5,15 +5,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using FredflixAndChell.Shared.GameObjects;
 
 namespace FredflixAndChell.Shared.Utilities
 {
-    public static class InputUtility
+    public class KeyboardUtility
     {
-        private static List<KeyAction> _keyActions = new List<KeyAction>();
+        private static List<KeyAction> _keyActions;
         private static KeyboardState _oldState;
 
-        public static void Poll()
+        ///KeyBoard help variables
+        private int _direction;
+
+        private const short LEFT = 1;
+        private const short UP = 2;
+        private const short DOWN = 4;
+        private const short RIGHT = 8;
+
+        public KeyboardUtility()
+        {
+            _keyActions = new List<KeyAction>();
+
+            While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
+            While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
+            While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
+            While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
+        }
+
+        public void Poll(Player p)
         {
             var state = Keyboard.GetState();
             foreach (var keyAction in _keyActions)
@@ -31,8 +50,15 @@ namespace FredflixAndChell.Shared.Utilities
                 }
             }
             _oldState = state;
+
+            p.actions.MoveX = (_direction & LEFT) > 0 ? -p._speed : (_direction & RIGHT) > 0 ? p._speed : 0;
+            p.actions.MoveY = (_direction & DOWN) > 0 ? -p._speed : (_direction & UP) > 0 ? p._speed : 0;
+
+
+
+
         }
-        public static void While(Keys key, Action action, Action released = null)
+        public void While(Keys key, Action action, Action released = null)
         {
             _keyActions.Add(new KeyAction { Key = key, Pressed = action, Released = released });
         }
