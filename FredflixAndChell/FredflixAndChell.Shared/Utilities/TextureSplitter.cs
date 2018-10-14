@@ -12,8 +12,8 @@ namespace FredflixAndChell.Shared.Utilities
     {
         public static Texture2D[] Split(Texture2D original, int partWidth, int partHeight, out int xCount, out int yCount)
         {
-            yCount = original.Height / partHeight + (partHeight % original.Height == 0 ? 0 : 1);//The number of textures in each horizontal row
-            xCount = original.Height / partHeight + (partHeight % original.Height == 0 ? 0 : 1);//The number of textures in each vertical column
+            yCount = original.Height / partHeight + (original.Height % partHeight== 0 ? 0 : 1);//The number of textures in each horizontal row
+            xCount = original.Width / partWidth + (original.Width % partWidth == 0 ? 0 : 1);//The number of textures in each vertical column
             var r = new Texture2D[xCount * yCount];//Number of parts = (area of original) / (area of each part).
             var dataPerPart = partWidth * partHeight;//Number of pixels in each of the split parts
 
