@@ -19,8 +19,8 @@ namespace FredflixAndChell.Shared.GameObjects
 
         private Vector2 Acceleration;
         private Vector2 Velocity;
-        private int _direction;
-        public float _speed = 0.1f;
+
+        private float _speed = 0.3f;
 
         private Animation _currentAnimation;
         private Animation _animationWalking;
@@ -94,7 +94,7 @@ namespace FredflixAndChell.Shared.GameObjects
         {
 
             // Acceleration = new Vector2((direction & LEFT) > 0 ? -_speed : (direction & RIGHT) > 0 ? _speed : 0, (direction & DOWN) > 0 ? _speed : (direction & UP) > 0 ? -_speed : 0);
-            Acceleration = new Vector2(this.actions.MoveX,-this.actions.MoveY);
+            Acceleration = new Vector2(this.actions.MoveX*_speed,-this.actions.MoveY * _speed);
             Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 

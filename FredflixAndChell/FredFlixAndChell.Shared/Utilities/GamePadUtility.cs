@@ -33,7 +33,6 @@ namespace FredflixAndChell.Shared.Utilities
                 action.MoveX = state.ThumbSticks.Left.X;
                 action.MoveY = state.ThumbSticks.Left.Y;
 
-                Console.WriteLine("INDEX "+ PlayerIndex + " : "+ state.ThumbSticks.Left.Y);
             }
         }
 

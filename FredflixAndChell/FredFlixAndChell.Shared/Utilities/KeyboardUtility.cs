@@ -51,11 +51,31 @@ namespace FredflixAndChell.Shared.Utilities
             }
             _oldState = state;
 
-            p.actions.MoveX = (_direction & LEFT) > 0 ? -p._speed : (_direction & RIGHT) > 0 ? p._speed : 0;
-            p.actions.MoveY = (_direction & DOWN) > 0 ? -p._speed : (_direction & UP) > 0 ? p._speed : 0;
 
+            if ((_direction & LEFT) > 0)
+                p.actions.MoveX = -1.0f;
+ 
+            if ((_direction & RIGHT) > 0)
+                p.actions.MoveX = 1.0f;
+            
+            if((_direction & LEFT) == 0 && (_direction & RIGHT) == 0)
+                p.actions.MoveX = 0;
 
+            if ((_direction & DOWN) > 0)
+                p.actions.MoveY = -1.0f;
+           
+            if ((_direction & UP) > 0)
+                p.actions.MoveY = 1.0f;
 
+            if ((_direction & DOWN) == 0 && (_direction & UP) == 0)
+                p.actions.MoveY = 0;
+
+            if(p.actions.MoveY != 0 && p.actions.MoveX != 0)
+            {
+             
+                p.actions.MoveX = p.actions.MoveX * (float)Math.Sin(45);
+                p.actions.MoveY = p.actions.MoveY * (float)Math.Sin(45);
+            }
 
         }
         public void While(Keys key, Action action, Action released = null)
