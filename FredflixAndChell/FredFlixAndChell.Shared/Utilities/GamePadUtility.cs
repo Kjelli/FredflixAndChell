@@ -32,7 +32,13 @@ namespace FredflixAndChell.Shared.Utilities
             {
                 action.MoveX = state.ThumbSticks.Left.X;
                 action.MoveY = state.ThumbSticks.Left.Y;
+            }
 
+            if(capabilities.HasRightXThumbStick && capabilities.HasRightYThumbStick)
+            {
+                action.AimX = state.ThumbSticks.Right.X;
+                action.AimY = state.ThumbSticks.Right.Y;
+                Console.WriteLine(action.AimX + " - " + action.AimY);
             }
         }
 

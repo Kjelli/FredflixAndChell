@@ -11,6 +11,7 @@ namespace FredflixAndChell.Shared.Utilities
         public float MoveX { get; set; }
         public float MoveY { get; set; }
 
-       
+        public float AimX { get; set; }
+        public float AimY { get; set; }
     }
 }

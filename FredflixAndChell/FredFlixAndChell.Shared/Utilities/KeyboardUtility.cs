@@ -73,9 +73,14 @@ namespace FredflixAndChell.Shared.Utilities
             if(p.actions.MoveY != 0 && p.actions.MoveX != 0)
             {
              
-                p.actions.MoveX = p.actions.MoveX * (float)Math.Sin(45);
-                p.actions.MoveY = p.actions.MoveY * (float)Math.Sin(45);
+                p.actions.MoveX = p.actions.MoveX / (float)Math.Sqrt(2);
+                p.actions.MoveY = p.actions.MoveY / (float)Math.Sqrt(2);
             }
+
+            //Mouse 
+            var mouseState = Mouse.GetState();
+            
+
 
         }
         public void While(Keys key, Action action, Action released = null)
