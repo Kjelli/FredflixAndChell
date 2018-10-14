@@ -5,62 +5,63 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Scenes;
+using System.Diagnostics;
 
 #endregion
 
-namespace FredFlixAndChell.Shared
+namespace FredflixAndChell.Shared
 {
+    public enum GameState
+    {
+        MainMenu,
+        Gameplay,
+        EndOfGame,
+    }
+
     public class BroGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Texture2D rainbow;
-        Texture2D pixels;
-        Vector2 Position;
-        Effect effect;
-        Effect lightingEffect;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private FrameCounter _frameCounter;
 
-        Texture2D lightMask;
-        Texture2D surge;
+        private SpriteFont debugFont;
 
-        RenderTarget2D lightsTarget;
-        RenderTarget2D mainTarget;
+        private GameState _gameState;
+        private IScene _scene;
 
         public BroGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.IsFullScreen = true;
-            IsFixedTimeStep = true;
-            graphics.SynchronizeWithVerticalRetrace = true;
-            TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 16);
-            Position = new Vector2(0, 0);
+            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
+           // IsFixedTimeStep = true;
+           // _graphics.SynchronizeWithVerticalRetrace = true;
+           // TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 16);
+            _scene = new Scene();
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
             base.Initialize();
+            _scene.Spawn(new Player(50,50));
+            _frameCounter = new FrameCounter();
+            debugFont = AssetLoader.GetFont("debugfont");
         }
 
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             //TODO: use this.Content to load your game content here 
-            pixels = Content.Load<Texture2D>("dick");
-            rainbow = Content.Load<Texture2D>("rainbow");
-            effect = Content.Load<Effect>("shader");
-            lightingEffect = Content.Load<Effect>("light");
-
-            lightMask = Content.Load<Texture2D>("lightmask");
-
-            var pp = GraphicsDevice.PresentationParameters;
-            lightsTarget = new RenderTarget2D(
-                GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
-            mainTarget = new RenderTarget2D(
-                GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight);
+            AssetLoader.Load(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -74,66 +75,30 @@ namespace FredFlixAndChell.Shared
                 Exit();
             }
 #endif
-            var state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.D))
-            {
-                Position.X += 3;
-            }
-            if (state.IsKeyDown(Keys.A))
-            {
-                Position.X -= 3;
-            }
-            if (state.IsKeyDown(Keys.W))
-            {
-                Position.Y -= 3;
-            }
-            if (state.IsKeyDown(Keys.S))
-            {
-                Position.Y += 3;
-            }
+            InputUtility.Poll();
+            _scene.GameObjects.ForEach(g => g.Update(gameTime));
+
+           // FPS Logic
+           var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _frameCounter.Update(deltaTime);
+
             // TODO: Add your update logic here			
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            //TODO: Add your drawing code here
-
-            GraphicsDevice.SetRenderTarget(lightsTarget);
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            float n = 10;
-            for (float i = 0; i < n; i++)
-            {
-                var x = Position.X + pixels.Bounds.Width / 2 - lightMask.Bounds.Width / 2 + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds / (100 * i) + i / (10 * (n - i))) * 170;
-                var y = Position.Y + pixels.Bounds.Height / 2 - lightMask.Bounds.Height / 2 + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds / (100 * i) + i / (10 * (n - i))) * 40;
-                spriteBatch.Draw(lightMask,
-                                new Vector2(x,y),
-                                new Color(
-                                    0.45f * i / n + (n - i / n) * 0.6f * (float)Math.Sin(x / 100),
-                                    0.75f * i / n + (n - i / n) * 0.25f * (float)Math.Cos((x + 250) / 100),
-                                    0.15f * i / n + (n - i / n) * 0.85f * (float)Math.Sin((y + 500) / 100)));
-            }
 
-            spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            _spriteBatch.DrawString(debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond} ({_frameCounter.CurrentFramesPerSecond})", new Vector2(0,0), Color.White);
+            _spriteBatch.DrawString(debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0,20), Color.White);
+            _spriteBatch.DrawString(debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
+            _spriteBatch.End();
 
-            // Draw the main scene to the Render Target
-            GraphicsDevice.SetRenderTarget(mainTarget);
-            GraphicsDevice.Clear(Color.White);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            effect.CurrentTechnique.Passes[0].Apply();
-            effect.Parameters["rainbow"].SetValue(rainbow);
-            effect.Parameters["gameTime"].SetValue((float)gameTime.TotalGameTime.TotalMilliseconds);
-            spriteBatch.Draw(pixels, Position, Color.White);
-            spriteBatch.End();
-
-            // Draw the main scene with a pixel
-            GraphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            lightingEffect.Parameters["lightMask"].SetValue(lightsTarget);
-            lightingEffect.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.Draw(mainTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            _scene.GameObjects.ForEach(g => g.Draw(_spriteBatch, gameTime));
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

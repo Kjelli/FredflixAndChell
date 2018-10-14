@@ -104,7 +104,12 @@
     </None>
     <None Include="app.manifest" />
   </ItemGroup>
-  <Import Project="..\FredFlixAndChell.Shared\FredFlixAndChell.Shared.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\FredflixAndChell.Shared\FredflixAndChell.Shared.csproj">
+      <Project>{2f914e2c-00aa-49cf-be39-1e71eec0fa74}</Project>
+      <Name>FredflixAndChell.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

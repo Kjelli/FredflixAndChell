@@ -1,7 +1,7 @@
-﻿using FredFlixAndChell.Shared;
+﻿using FredflixAndChell.Shared;
 using System;
 
-namespace FredFlixAndChell.CrossPlatform
+namespace FredflixAndChell.CrossPlatform
 {
     /// <summary>
     /// The main class.
@@ -15,7 +15,9 @@ namespace FredFlixAndChell.CrossPlatform
         static void Main()
         {
             using (var game = new BroGame())
+            {
                 game.Run();
+            }
         }
     }
 }
