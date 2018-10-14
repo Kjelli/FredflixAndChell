@@ -32,10 +32,10 @@ namespace FredflixAndChell.Shared.GameObjects
             _rainbowEffect = AssetLoader.GetEffect("shader");
             _rainbowEffect.Parameters["rainbow"].SetValue(_rainbow);
 
-            InputUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
-            InputUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
-            InputUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
-            InputUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
+            KeyboardInputUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
+            KeyboardInputUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
+            KeyboardInputUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
+            KeyboardInputUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

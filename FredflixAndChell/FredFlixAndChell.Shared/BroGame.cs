@@ -75,7 +75,7 @@ namespace FredflixAndChell.Shared
                 Exit();
             }
 #endif
-            InputUtility.Poll();
+            KeyboardInputUtility.Poll();
             _scene.GameObjects.ForEach(g => g.Update(gameTime));
 
            // FPS Logic
