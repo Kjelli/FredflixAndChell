@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics;
+using FredflixAndChell.Shared.Scenes;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
@@ -18,18 +19,14 @@ namespace FredflixAndChell.Shared.GameObjects
         public Vector2 Size { get; set; }
         public Rectangle Bounds { get => new Rectangle(Position.ToPoint(), Size.ToPoint()); }
 
-        public GameObject() : this(0,0)
-        {
-        }
+        public IScene Scene { get; set; }
 
-        public GameObject(int x, int y) : this(x,y,32,32)
-        {
-        }
 
-        public GameObject(int x, int y, int width, int height)
+
+        public GameObject(IScene scene, int x, int y, int width, int height)
         {
+            Scene = scene;
             Position = new Vector2(x, y);
-            Position = new Vector2();
             Size = new Vector2(width, height);
         }
 

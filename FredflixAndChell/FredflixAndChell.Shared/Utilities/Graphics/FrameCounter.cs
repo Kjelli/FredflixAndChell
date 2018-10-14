@@ -25,7 +25,7 @@ namespace FredflixAndChell.Shared.Utilities.Graphics
 
         public bool Update(float deltaTime)
         {
-            if (deltaTime <= 0) deltaTime = _sampleBuffer.Dequeue();
+            if (deltaTime <= 0 && _sampleBuffer.Count > 0) deltaTime = _sampleBuffer.Dequeue();
             CurrentFramesPerSecond = 1.0f / deltaTime;
 
             _sampleBuffer.Enqueue(CurrentFramesPerSecond);

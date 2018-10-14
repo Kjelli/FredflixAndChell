@@ -78,6 +78,8 @@
     <Compile Include="Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="BroGame.cs" />
+    <Compile Include="GameObjects\Bullets\Bullet.cs" />
+    <Compile Include="GameObjects\Bullets\IBullet.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\IGameObject.cs" />
     <Compile Include="GameObjects\Player.cs" />

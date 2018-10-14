@@ -38,7 +38,6 @@ namespace FredflixAndChell.Shared.Utilities
             {
                 action.AimX = state.ThumbSticks.Right.X;
                 action.AimY = state.ThumbSticks.Right.Y;
-                Console.WriteLine(action.AimX + " - " + action.AimY);
             }
         }
 

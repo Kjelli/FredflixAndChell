@@ -7,6 +7,8 @@ using FredflixAndChell.Shared.Assets;
 using Microsoft.Xna.Framework.Input;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Animations;
+using FredflixAndChell.Shared.Scenes;
+using FredflixAndChell.Shared.GameObjects.Bullets;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
@@ -20,6 +22,7 @@ namespace FredflixAndChell.Shared.GameObjects
         private Vector2 Acceleration;
 
         private float _speed = 0.13f;
+        public float FacingAngle { get; set; }
 
         private Animation _currentAnimation;
         private Animation _animationWalking;
@@ -31,7 +34,9 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public InputActions Actions { get; set; }
 
-        public Player(int x, int y) : base(x, y, 128, 128)
+       
+
+        public Player(IScene scene, int x, int y) : base(scene,x, y, 128, 128)
         {
             SetupAnimations();
 
@@ -110,5 +115,11 @@ namespace FredflixAndChell.Shared.GameObjects
                 _currentAnimation = _animationStopped;
             }
         }
+
+        public void Fire()
+        {
+            Bullet bullet = new Bullet(this, Position.X, Position.Y, 64, 64, FacingAngle, 10.0f, 30.0f);
+            Scene.Spawn(bullet);
+        } 
     }
 }

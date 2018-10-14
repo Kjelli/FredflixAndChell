@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -36,7 +37,7 @@ namespace FredflixAndChell.Shared.Utilities
 
             //TODO: Spawn n stuff
             Random rnd = new Random();
-            Player = new Player(rnd.Next(50, 590), rnd.Next(50, 420));
+            Player = new Player(_scene, rnd.Next(50, 590), rnd.Next(50, 420));
             _scene.Spawn(Player);
 
             //Playing with controller
@@ -49,13 +50,17 @@ namespace FredflixAndChell.Shared.Utilities
             else // Playing with keyboard
             {
                 _playingWithController = false;
+
+                KeyboardUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
+                KeyboardUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
+                KeyboardUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
+                KeyboardUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
+
+               
+
             }
 
 
-            KeyboardUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
-            KeyboardUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
-            KeyboardUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
-            KeyboardUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
         }
 
         public void Update()
@@ -89,9 +94,23 @@ namespace FredflixAndChell.Shared.Utilities
                 /* REPLACE ? */
                 if (Player.Actions.MoveY != 0 && Player.Actions.MoveX != 0)
                 {
-                    Player.Actions.MoveX = Player.Actions.MoveX * (float)Math.Sin(45);
-                    Player.Actions.MoveY = Player.Actions.MoveY * (float)Math.Sin(45);
+                    Player.Actions.MoveX = Player.Actions.MoveX / (float)Math.Sqrt(2);
+                    Player.Actions.MoveY = Player.Actions.MoveY / (float)Math.Sqrt(2);
                 }
+
+                // Mouse aim
+                var mouseState = Mouse.GetState();
+                Player.FacingAngle  = (float)Math.Atan2(mouseState.Y - Player.Position.Y, mouseState.X - Player.Position.X);
+                Player.Actions.AimX = (float)Math.Cos(Player.FacingAngle);
+                Player.Actions.AimY = (float)Math.Sin(Player.FacingAngle);
+
+
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    Player.Fire();
+                }
+               
+
             }
         }
 

@@ -46,7 +46,7 @@ namespace FredflixAndChell.Shared
         public BroGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 480;
             _graphics.SynchronizeWithVerticalRetrace = true;
@@ -64,6 +64,7 @@ namespace FredflixAndChell.Shared
             _frameCounter = new FrameCounter();
 
             //Players initialize
+            
             //Keyboard = player 1, 
             _players.Add(new PlayerController(_scene, 0));
             for (var i = 0; i < 4; i++)
@@ -78,6 +79,7 @@ namespace FredflixAndChell.Shared
             _debugFont = AssetLoader.GetFont("debug");
 
             KeyboardUtility.While(Keys.F2, () => _isDrawingDebug = !_isDrawingDebug);
+
 
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
             _camera = new Camera2D(viewportAdapter);

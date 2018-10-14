@@ -29,6 +29,10 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("tex_lightmask");
             LoadTexture("tex_debug");
 
+            // Load Gameobjects 
+            //Bullets
+            LoadTexture("tex_standard_bullet");
+
             // Load effects to be used in the game
             LoadEffect("shader_flash");
         }
