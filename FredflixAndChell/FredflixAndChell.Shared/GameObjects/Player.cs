@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Assets;
-using Microsoft.Xna.Framework.Input;
 using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Animations;
+using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 
 namespace FredflixAndChell.Shared.GameObjects
 {

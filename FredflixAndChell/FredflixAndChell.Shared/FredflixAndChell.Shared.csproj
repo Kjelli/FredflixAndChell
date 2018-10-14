@@ -75,7 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animations\Animation.cs" />
+    <Compile Include="Utilities\Graphics\Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="BroGame.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Utilities\Graphics\Cameras\SmoothCamera2D.cs" />
     <Compile Include="Utilities\Graphics\DebugDrawer.cs" />
     <Compile Include="Utilities\Input\GamePadUtility.cs" />
     <Compile Include="Utilities\Input\InputActions.cs" />
@@ -93,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
+    <Folder Include="Levels\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

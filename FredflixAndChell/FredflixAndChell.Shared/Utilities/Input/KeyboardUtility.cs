@@ -15,7 +15,7 @@ namespace FredflixAndChell.Shared.Utilities
             foreach (var keyAction in _keyActions)
             {
                 var key = keyAction.Key;
-                if (state.IsKeyDown(key) && _oldState.IsKeyUp(key))
+                if (state.IsKeyDown(key) && (_oldState.IsKeyUp(key) || keyAction.Repeat))
                 {
                     keyAction.Pressed?.Invoke();
                 }
@@ -27,13 +27,14 @@ namespace FredflixAndChell.Shared.Utilities
             _oldState = state;
         }
 
-        public static void While(Keys key, Action action, Action released = null)
+        public static void While(Keys key, Action action, Action released = null, bool repeat = false)
         {
-            _keyActions.Add(new KeyAction { Key = key, Pressed = action, Released = released });
+            _keyActions.Add(new KeyAction { Key = key, Pressed = action, Released = released, Repeat = repeat });
         }
 
         private class KeyAction
         {
+            public bool Repeat;
             public Keys Key;
             public Action Pressed;
             public Action Released;

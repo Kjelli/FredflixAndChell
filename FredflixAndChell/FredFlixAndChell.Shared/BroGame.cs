@@ -13,6 +13,7 @@ using System.Diagnostics;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using FredflixAndChell.Shared.Utilities.Graphics;
+using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
 
 #endregion
 
@@ -29,7 +30,7 @@ namespace FredflixAndChell.Shared
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Camera2D _camera;
+        private SmoothCamera2D _camera;
 
         private SpriteFont _debugFont;
 
@@ -52,16 +53,27 @@ namespace FredflixAndChell.Shared
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 8);
             IsFixedTimeStep = true;
 
-            _scene = new Scene();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+            
+            _debugFont = AssetLoader.GetFont("debug");
 
-            //Players initialize
-            //Keyboard = player 1, 
+            KeyboardUtility.While(Keys.F2, () => _isDrawingDebug = !_isDrawingDebug);
+            KeyboardUtility.While(Keys.Up, () => _camera.ZoomIn(0.01f), repeat: true);
+            KeyboardUtility.While(Keys.Down, () => _camera.ZoomOut(0.01f), repeat: true);
+
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 640, 480);
+            _camera = new SmoothCamera2D(viewportAdapter);
+            _camera.SpeedRatio = 0.04f;
+            _scene = new Scene(_camera);
+
+            //Players initialize - Keyboard = player 1
+
             _players.Add(new PlayerController(_scene, 0));
+
             for (var i = 0; i < 4; i++)
             {
                 if (GamePad.GetCapabilities(GamePadUtility.ConvertToIndex(i + 1)).IsConnected)
@@ -70,13 +82,6 @@ namespace FredflixAndChell.Shared
                     _players.Add(new PlayerController(_scene, i + 1));
                 }
             }
-
-            _debugFont = AssetLoader.GetFont("debug");
-
-            KeyboardUtility.While(Keys.F2, () => _isDrawingDebug = !_isDrawingDebug);
-
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
-            _camera = new Camera2D(viewportAdapter);
         }
 
         protected override void LoadContent()
@@ -106,6 +111,7 @@ namespace FredflixAndChell.Shared
                 player.Update();
             }
 
+            _camera.LookAtSmooth(_players[0].Player.Position + _players[0].Player.Size / 2);
             _scene.Update(gameTime);
 
             base.Update(gameTime);
@@ -113,19 +119,21 @@ namespace FredflixAndChell.Shared
 
         protected override void Draw(GameTime gameTime)
         {
+            var transformMatrix = _camera.GetViewMatrix();
+
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
             _scene.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
             if (_isDrawingDebug)
             {
-                _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+                _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
                 _scene.DrawDebug(_spriteBatch, gameTime);
-                _spriteBatch.DrawString(_debugFont, $"FPS:      no.", new Vector2(0, 0), Color.White);
-                _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0, 20), Color.White);
-                _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"FPS:      no.", _camera.Position + new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", _camera.Position + new Vector2(0, 20), Color.White);
+                _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, _camera.Position + new Vector2(0, 40), Color.White);
                 _spriteBatch.End();
             }
 
