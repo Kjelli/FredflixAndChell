@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FredflixAndChell.Shared.Utilities
+namespace FredflixAndChell.Shared.Utilities.Graphics
+
+
 {
     public class FrameCounter
     {
@@ -23,14 +25,15 @@ namespace FredflixAndChell.Shared.Utilities
 
         public bool Update(float deltaTime)
         {
+            if (deltaTime <= 0) deltaTime = _sampleBuffer.Dequeue();
             CurrentFramesPerSecond = 1.0f / deltaTime;
 
             _sampleBuffer.Enqueue(CurrentFramesPerSecond);
 
             if (_sampleBuffer.Count > MAXIMUM_SAMPLES)
             {
-                _sampleBuffer.Dequeue();
                 AverageFramesPerSecond = _sampleBuffer.Average(i => i);
+                _sampleBuffer.Clear();
             }
 
             TotalFrames++;

@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FredflixAndChell.Shared.Utilities
+namespace FredflixAndChell.Shared.Utilities.Graphics
+
 {
     public static class TextureSplitter
     {

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -14,5 +16,8 @@ namespace FredflixAndChell.Shared.Scenes
 
         void Spawn(GameObject gameObject);
         void Despawn(GameObject gameObject);
+        void Update(GameTime gameTime);
+        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+        void DrawDebug(SpriteBatch spriteBatch, GameTime gameTime);
     }
 }

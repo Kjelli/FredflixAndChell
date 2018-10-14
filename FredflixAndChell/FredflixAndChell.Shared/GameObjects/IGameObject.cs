@@ -16,6 +16,8 @@ namespace FredflixAndChell.Shared.GameObjects
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
+        void DebugDraw(SpriteBatch spriteBatch, GameTime gameTime);
+
         void OnSpawn();
         void OnDespawn();
     }

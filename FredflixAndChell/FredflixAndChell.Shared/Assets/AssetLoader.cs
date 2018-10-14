@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Graphics;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -26,6 +27,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("tex_lava1");
             LoadTexture("tex_lava2");
             LoadTexture("tex_lightmask");
+            LoadTexture("tex_debug");
 
             // Load effects to be used in the game
             LoadEffect("shader_flash");

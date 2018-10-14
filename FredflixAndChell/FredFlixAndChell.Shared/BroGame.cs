@@ -10,6 +10,9 @@ using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Scenes;
 using System.Diagnostics;
+using MonoGame.Extended;
+using MonoGame.Extended.ViewportAdapters;
+using FredflixAndChell.Shared.Utilities.Graphics;
 
 #endregion
 
@@ -26,47 +29,58 @@ namespace FredflixAndChell.Shared
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Camera2D _camera;
+
         private FrameCounter _frameCounter;
+        private SpriteFont _debugFont;
 
-        private SpriteFont debugFont;
+        private DateTime oldTimestamp = DateTime.Now;
 
+        private bool _isDrawingDebug;
         private GameState _gameState;
         private IScene _scene;
 
-        private List<PlayerController> players = new List<PlayerController>();
+
+        private List<PlayerController> _players = new List<PlayerController>();
 
         public BroGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 480;
-            IsFixedTimeStep = true;
             _graphics.SynchronizeWithVerticalRetrace = true;
+
+            Content.RootDirectory = "Content";
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 8);
+            IsFixedTimeStep = true;
+
             _scene = new Scene();
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             base.Initialize();
             _frameCounter = new FrameCounter();
 
-            //Players initilize
+            //Players initialize
             //Keyboard = player 1, 
-            players.Add(new PlayerController(_scene,0));
-            for(var i = 0; i < 4; i++)
-            { 
-                if (GamePad.GetCapabilities(GamePadUtility.ConvertToIndex(i+1)).IsConnected)
+            _players.Add(new PlayerController(_scene, 0));
+            for (var i = 0; i < 4; i++)
+            {
+                if (GamePad.GetCapabilities(GamePadUtility.ConvertToIndex(i + 1)).IsConnected)
                 {
                     Console.WriteLine($"Gamepad {i + 1} Detected - Generating player");
-                    players.Add(new PlayerController(_scene,i+1));
-                } 
+                    _players.Add(new PlayerController(_scene, i + 1));
+                }
             }
 
-            debugFont = AssetLoader.GetFont("debug");
+            _debugFont = AssetLoader.GetFont("debug");
+
+            KeyboardUtility.While(Keys.F2, () => _isDrawingDebug = !_isDrawingDebug);
+
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
+            _camera = new Camera2D(viewportAdapter);
         }
 
         protected override void LoadContent()
@@ -77,7 +91,7 @@ namespace FredflixAndChell.Shared
             //TODO: use this.Content to load your game content here 
             AssetLoader.Load(Content);
         }
-        private DateTime oldTimestamp = DateTime.Now;
+
         protected override void Update(GameTime gameTime)
         {
             // For Mobile devices, this logic will close the Game when the Back button is pressed
@@ -89,20 +103,20 @@ namespace FredflixAndChell.Shared
                 Exit();
             }
 #endif
+            KeyboardUtility.Poll();
 
-            foreach(var player in players)
+            foreach (var player in _players)
             {
                 player.Update();
-            }  
-            
+            }
 
-            _scene.GameObjects.ForEach(g => g.Update(gameTime));
+            _scene.Update(gameTime);
 
             // FPS Logic
             var now = DateTime.Now;
-            _frameCounter.Update((float)(now - oldTimestamp).TotalSeconds + 0.00001f);
+            _frameCounter.Update((float)(now - oldTimestamp).TotalSeconds);
             oldTimestamp = now;
-            // TODO: Add your update logic here			
+
             base.Update(gameTime);
         }
 
@@ -111,16 +125,18 @@ namespace FredflixAndChell.Shared
             GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
-            _scene.GameObjects.ForEach(g => g.Draw(_spriteBatch, gameTime));
+            _scene.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
-            _spriteBatch.DrawString(debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond}", new Vector2(0, 0), Color.White);
-            _spriteBatch.DrawString(debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0, 20), Color.White);
-            _spriteBatch.DrawString(debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
-            _spriteBatch.End();
-
-
+            if (_isDrawingDebug)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
+                _scene.DrawDebug(_spriteBatch, gameTime);
+                _spriteBatch.DrawString(_debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond}", new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0, 20), Color.White);
+                _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
+                _spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }

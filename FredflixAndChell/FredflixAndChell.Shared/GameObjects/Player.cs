@@ -18,25 +18,24 @@ namespace FredflixAndChell.Shared.GameObjects
         private const short RIGHT = 8;
 
         private Vector2 Acceleration;
-        private Vector2 Velocity;
 
-        private float _speed = 0.3f;
+        private float _speed = 0.13f;
 
         private Animation _currentAnimation;
         private Animation _animationWalking;
         private Animation _animationStopped;
         private Texture2D _rainbow;
         private Effect _rainbowEffect;
-        private bool hasFlashEffect = false;
 
-        public InputActions actions;
+        private bool _hasFlashEffect = false;
 
+        public InputActions Actions { get; set; }
 
         public Player(int x, int y) : base(x, y, 128, 128)
         {
             SetupAnimations();
 
-            actions = new InputActions();
+            Actions = new InputActions();
         }
 
         private void SetupAnimations()
@@ -71,14 +70,13 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (hasFlashEffect)
+            if (_hasFlashEffect)
             {
                 _rainbowEffect.Parameters["gameTime"]?.SetValue((float)gameTime.TotalGameTime.TotalMilliseconds);
                 _rainbowEffect.Techniques[0].Passes[0].Apply();
             }
-#pragma warning disable CS0618 // Type or member is obsolete
+
             spriteBatch.Draw(_currentAnimation.CurrentFrame, destinationRectangle: Bounds, effects: (Velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public override void OnDespawn()
@@ -92,9 +90,7 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-
-            // Acceleration = new Vector2((direction & LEFT) > 0 ? -_speed : (direction & RIGHT) > 0 ? _speed : 0, (direction & DOWN) > 0 ? _speed : (direction & UP) > 0 ? -_speed : 0);
-            Acceleration = new Vector2(this.actions.MoveX*_speed,-this.actions.MoveY * _speed);
+            Acceleration = new Vector2(this.Actions.MoveX * _speed, -this.Actions.MoveY * _speed);
             Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 

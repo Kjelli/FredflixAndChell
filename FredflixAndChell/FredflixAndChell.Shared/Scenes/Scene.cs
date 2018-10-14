@@ -1,9 +1,13 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
+using MonoGame.Extended;
+using MonoGame.Extended.Input.InputListeners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -22,6 +26,21 @@ namespace FredflixAndChell.Shared.Scenes
         {
             GameObjects.Remove(gameObject);
             gameObject?.OnDespawn();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            GameObjects.ForEach(g => g.Update(gameTime));
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            GameObjects.ForEach(g => g.Draw(spriteBatch, gameTime));
+        }
+
+        public void DrawDebug(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            GameObjects.ForEach(g => g.DebugDraw(spriteBatch, gameTime));
         }
     }
 }
