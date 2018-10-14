@@ -85,7 +85,6 @@
     <Compile Include="Scenes\IScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Utilities\Graphics\DebugDrawer.cs" />
-    <Compile Include="Utilities\Graphics\FrameCounter.cs" />
     <Compile Include="Utilities\Input\GamePadUtility.cs" />
     <Compile Include="Utilities\Input\InputActions.cs" />
     <Compile Include="Utilities\Input\KeyboardUtility.cs" />

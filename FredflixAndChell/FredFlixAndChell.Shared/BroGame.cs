@@ -31,10 +31,7 @@ namespace FredflixAndChell.Shared
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
 
-        private FrameCounter _frameCounter;
         private SpriteFont _debugFont;
-
-        private DateTime oldTimestamp = DateTime.Now;
 
         private bool _isDrawingDebug;
         private GameState _gameState;
@@ -61,7 +58,6 @@ namespace FredflixAndChell.Shared
         protected override void Initialize()
         {
             base.Initialize();
-            _frameCounter = new FrameCounter();
 
             //Players initialize
             //Keyboard = player 1, 
@@ -112,11 +108,6 @@ namespace FredflixAndChell.Shared
 
             _scene.Update(gameTime);
 
-            // FPS Logic
-            var now = DateTime.Now;
-            _frameCounter.Update((float)(now - oldTimestamp).TotalSeconds);
-            oldTimestamp = now;
-
             base.Update(gameTime);
         }
 
@@ -132,7 +123,7 @@ namespace FredflixAndChell.Shared
             {
                 _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp);
                 _scene.DrawDebug(_spriteBatch, gameTime);
-                _spriteBatch.DrawString(_debugFont, $"FPS: {_frameCounter.AverageFramesPerSecond}", new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"FPS:      no.", new Vector2(0, 0), Color.White);
                 _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", new Vector2(0, 20), Color.White);
                 _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, new Vector2(0, 40), Color.White);
                 _spriteBatch.End();

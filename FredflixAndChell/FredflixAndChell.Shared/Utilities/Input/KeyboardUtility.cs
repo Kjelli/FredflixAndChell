@@ -18,12 +18,10 @@ namespace FredflixAndChell.Shared.Utilities
                 if (state.IsKeyDown(key) && _oldState.IsKeyUp(key))
                 {
                     keyAction.Pressed?.Invoke();
-                    Console.WriteLine(key + " pressed");
                 }
                 else if (state.IsKeyUp(key) && _oldState.IsKeyDown(key))
                 {
                     keyAction.Released?.Invoke();
-                    Console.WriteLine(key + " released");
                 }
             }
             _oldState = state;
