@@ -20,7 +20,7 @@ namespace FredflixAndChell.Shared.GameObjects
         private Vector2 Acceleration;
         private Vector2 Velocity;
         private int _direction;
-        private float _speed = 0.1f;
+        public float _speed = 0.1f;
 
         private Animation _currentAnimation;
         private Animation _animationWalking;
@@ -35,12 +35,6 @@ namespace FredflixAndChell.Shared.GameObjects
         public Player(int x, int y) : base(x, y, 128, 128)
         {
             SetupAnimations();
-
-            KeyboardInputUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
-            KeyboardInputUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
-            KeyboardInputUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
-            KeyboardInputUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
-            KeyboardInputUtility.While(Keys.Space, () => hasFlashEffect = !hasFlashEffect);
 
             actions = new InputActions();
         }
