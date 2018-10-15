@@ -34,7 +34,6 @@ namespace FredflixAndChell.Shared.Utilities
         {
             _scene = scene;
 
-
             //TODO: Spawn n stuff
             Random rnd = new Random();
             Player = new Player(_scene, rnd.Next(50, 590), rnd.Next(50, 420));

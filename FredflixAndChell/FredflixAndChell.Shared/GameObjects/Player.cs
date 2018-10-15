@@ -6,10 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Assets;
 using Microsoft.Xna.Framework.Input;
 using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Animations;
+
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 
 namespace FredflixAndChell.Shared.GameObjects
 {

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FredflixAndChell.Shared.Animations
+namespace FredflixAndChell.Shared.Utilities.Graphics.Animations
 {
     public class Animation
     {
