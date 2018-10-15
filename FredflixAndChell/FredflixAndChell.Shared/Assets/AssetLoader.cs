@@ -30,13 +30,17 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("tex_debug");
 
             // Load Gameobjects 
+
+            //Weapons
+            LoadTexture("tex_gun_m4");
+
             //Bullets
             LoadTexture("tex_standard_bullet");
 
             // Load effects to be used in the game
             LoadEffect("shader_flash");
         }
-
+       
         private static void LoadTexturesFromSheet(string name, int width, int height, int xCount, int yCount)
         {
             var texture = _content.Load<Texture2D>(name);

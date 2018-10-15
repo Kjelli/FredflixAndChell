@@ -9,6 +9,7 @@ using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Animations;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
@@ -34,13 +35,17 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public InputActions Actions { get; set; }
 
+        public Gun gun;
+
        
 
         public Player(IScene scene, int x, int y) : base(scene,x, y, 128, 128)
         {
             SetupAnimations();
-
             Actions = new InputActions();
+
+            //TODO: Gunz
+            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y,16,16);
         }
 
         private void SetupAnimations()
@@ -116,10 +121,9 @@ namespace FredflixAndChell.Shared.GameObjects
             }
         }
 
-        public void Fire()
+        public void Attack()
         {
-            Bullet bullet = new Bullet(this, Position.X, Position.Y, 64, 64, FacingAngle, 10.0f, 30.0f);
-            Scene.Spawn(bullet);
+            gun.Fire();
         } 
     }
 }

@@ -107,7 +107,7 @@ namespace FredflixAndChell.Shared.Utilities
 
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    Player.Fire();
+                    Player.Attack();
                 }
                
 

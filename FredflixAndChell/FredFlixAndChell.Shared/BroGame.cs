@@ -46,7 +46,7 @@ namespace FredflixAndChell.Shared
         public BroGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 640;
             _graphics.PreferredBackBufferHeight = 480;
             _graphics.SynchronizeWithVerticalRetrace = true;
