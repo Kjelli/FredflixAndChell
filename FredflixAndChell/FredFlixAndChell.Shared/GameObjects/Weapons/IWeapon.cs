@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         Vector2 Offset { get; set; }
         Vector2 BarrelOffset { get; set; }
+
+        Cooldown Cooldown { get; set; }
 
     }
 }

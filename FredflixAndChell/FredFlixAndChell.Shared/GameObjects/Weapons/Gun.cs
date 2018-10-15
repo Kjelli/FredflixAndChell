@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.Scenes;
+using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -20,10 +21,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private Texture2D _sprite;
       
-
         private Player _player;
 
-        public Gun(Player owner, IScene Scene, int x, int y, int width, int height) : base(Scene,x,y,width,height)
+        public Cooldown Cooldown { get; set; }
+
+        public Gun(Player owner, IScene Scene, int x, int y, int width, int height, float cooldown) : base(Scene,x,y,width,height)
         {
             _sprite = AssetLoader.GetTexture("gun_m4");
            
@@ -32,6 +34,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             _player = owner;
 
             Scene.Spawn(this);
+
+            Cooldown = new Cooldown(cooldown);
         }
 
 
@@ -39,7 +43,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
 
             Rectangle sourceRectanble = new Rectangle(0,0,(int)Size.X, (int)Size.Y);
-            Vector2 origin = new Vector2(Size.X/2, 0);
+            Vector2 origin = new Vector2(Size.X/2, Size.Y/2);
 
             spriteBatch.Draw(_sprite,position: Position, origin:origin, rotation:_player.FacingAngle);
 
@@ -47,20 +51,28 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void Fire()
         {
-            Bullet bullet = new Bullet(_player, Position.X,Position.Y, 32, 32, _player.FacingAngle, 10.0f, 30.0f);
-            Scene.Spawn(bullet);
+            if (Cooldown.IsReady())
+            {
+                Bullet bullet = new Bullet(_player, Position.X, Position.Y, 32, 32, _player.FacingAngle, 1.0f, 30.0f);
+                Scene.Spawn(bullet);
+                Cooldown.Start();
+            }
+            
         }
 
        
 
         public override void Update(GameTime gameTime)
         {
-            Position = new Vector2(_player.Position.X, _player.Position.Y);
+            
+            Position = new Vector2(_player.Position.X + _player.Size.X /2, _player.Position.Y + _player.Size.Y / 2);
+            Cooldown.Update(gameTime);
         }
 
         public override void OnDespawn()
         {
         }
+
 
         public override void OnSpawn()
         {

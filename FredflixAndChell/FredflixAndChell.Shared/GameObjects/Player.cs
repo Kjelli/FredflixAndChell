@@ -46,7 +46,7 @@ namespace FredflixAndChell.Shared.GameObjects
             Actions = new InputActions();
 
             //TODO: Gunz
-            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y,16,16);
+            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y,32,32, cooldown: 0.15f);
         }
 
         private void SetupAnimations()

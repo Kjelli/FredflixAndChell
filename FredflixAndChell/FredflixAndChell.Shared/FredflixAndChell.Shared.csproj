@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Levels\Level.cs" />
+    <Compile Include="Utilities\Cooldown.cs" />
     <Compile Include="Utilities\Graphics\Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="BroGame.cs" />

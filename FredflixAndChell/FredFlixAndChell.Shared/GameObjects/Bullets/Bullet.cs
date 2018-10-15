@@ -46,7 +46,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         public override void Update(GameTime gameTime)
         {
-            Velocity = new Vector2((float)(Math.Cos(Direction * Speed)), (float)(Math.Sin(Direction * Speed)));
+            Velocity = new Vector2( Speed * (float)Math.Cos(Direction) , Speed * (float)Math.Sin(Direction));
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 
         }
