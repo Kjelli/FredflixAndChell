@@ -15,13 +15,13 @@ namespace FredflixAndChell.Shared.Scenes
     public class Scene : IScene
     {
         private List<GameObject> _gameObjects = new List<GameObject>();
-        private SmoothCamera2D _camera;
+        public SmoothCamera2D Camera { get; }
 
         public List<GameObject> GameObjects { get => _gameObjects; }
 
         public Scene(SmoothCamera2D camera)
         {
-            _camera = camera;
+            Camera = camera;
         }
 
         public void Spawn(GameObject gameObject)
@@ -39,7 +39,7 @@ namespace FredflixAndChell.Shared.Scenes
         public virtual void Update(GameTime gameTime)
         {
             GameObjects.ForEach(g => g.Update(gameTime));
-            _camera.Update(gameTime);
+            Camera.Update(gameTime);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)

@@ -36,16 +36,18 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             Scene.Spawn(this);
 
             Cooldown = new Cooldown(cooldown);
+
+            Console.WriteLine("Width : " + width + " - Height: " + height );
         }
 
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-
+             
             Rectangle sourceRectanble = new Rectangle(0,0,(int)Size.X, (int)Size.Y);
             Vector2 origin = new Vector2(Size.X/2, Size.Y/2);
-
-            spriteBatch.Draw(_sprite,position: Position, origin:origin, rotation:_player.FacingAngle);
+            
+            spriteBatch.Draw(_sprite, destinationRectangle: Bounds, rotation:_player.FacingAngle ,effects: (_player.HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipVertically : SpriteEffects.None));
 
         }
 

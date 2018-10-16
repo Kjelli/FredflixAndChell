@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -13,6 +14,7 @@ namespace FredflixAndChell.Shared.Scenes
     {
 
         List<GameObject> GameObjects { get; }
+        SmoothCamera2D Camera { get; }
 
         void Spawn(GameObject gameObject);
         void Despawn(GameObject gameObject);

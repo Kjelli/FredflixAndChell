@@ -24,7 +24,12 @@ namespace FredflixAndChell.Shared.GameObjects
         private Vector2 Acceleration;
 
         private float _speed = 0.13f;
+
         public float FacingAngle { get; set; }
+
+        public int VerticalFacing { get; set; }
+        public int HorizontalFacing { get; set; }
+
 
         private Animation _currentAnimation;
         private Animation _animationWalking;
@@ -46,7 +51,7 @@ namespace FredflixAndChell.Shared.GameObjects
             Actions = new InputActions();
 
             //TODO: Gunz
-            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y,32,32, cooldown: 0.15f);
+            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y, 64,64, cooldown: 0.15f);
         }
 
         private void SetupAnimations()
@@ -81,13 +86,14 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (_hasFlashEffect)
+            if (!_hasFlashEffect)
             {
                 _rainbowEffect.Parameters["gameTime"]?.SetValue((float)gameTime.TotalGameTime.TotalMilliseconds);
                 _rainbowEffect.Techniques[0].Passes[0].Apply();
             }
 
-            spriteBatch.Draw(_currentAnimation.CurrentFrame, destinationRectangle: Bounds, effects: (Velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
+          
+            spriteBatch.Draw(_currentAnimation.CurrentFrame, destinationRectangle: Bounds, effects: (HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
         }
 
         public override void OnDespawn()
@@ -106,6 +112,7 @@ namespace FredflixAndChell.Shared.GameObjects
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 
             UpdateAnimation(gameTime);
+            SetFacing();
         }
 
         private void UpdateAnimation(GameTime gameTime)
@@ -126,5 +133,27 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             gun.Fire();
         } 
+
+        private void SetFacing()
+        {
+            if (FacingAngle < -2.0 && FacingAngle > 1.0)
+                VerticalFacing = (int)FacingCode.UP;
+            else if (FacingAngle > 1.0 && FacingAngle < 2.0)
+                VerticalFacing = (int)FacingCode.DOWN;
+            //Prioritizing "horizontal" sprites
+            else if (FacingAngle > -1 && FacingAngle < 1)
+                HorizontalFacing = (int)FacingCode.UP;
+            else
+                HorizontalFacing = (int)FacingCode.LEFT;
+        }
+    }
+
+    public enum FacingCode
+    {
+        UP = 1,
+        RIGHT = 2,
+        DOWN = 3,
+        LEFT = 4
+
     }
 }

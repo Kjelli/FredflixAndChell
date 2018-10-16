@@ -99,7 +99,11 @@ namespace FredflixAndChell.Shared.Utilities
 
                 // Mouse aim
                 var mouseState = Mouse.GetState();
-                Player.FacingAngle  = (float)Math.Atan2(mouseState.Y - Player.Position.Y, mouseState.X - Player.Position.X);
+
+                Vector2 mousePositionInMap = Vector2.Transform(mouseState.Position.ToVector2(), Matrix.Invert(_scene.Camera.GetViewMatrix()));
+
+                Player.FacingAngle  = (float)Math.Atan2(mousePositionInMap.Y - Player.Position.Y, mousePositionInMap.X - Player.Position.X);
+
                 Player.Actions.AimX = (float)Math.Cos(Player.FacingAngle);
                 Player.Actions.AimY = (float)Math.Sin(Player.FacingAngle);
 
