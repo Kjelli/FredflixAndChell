@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Nez;
 
 namespace FredflixAndChell.Shared.Utilities.Graphics.Animations
 {
@@ -8,7 +9,7 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Animations
     {
         public Texture2D[] Textures { get; set; }
         public AnimationSettings Settings { get; set; }
-        public int ElapsedMillis { get; set; }
+        public float ElapsedSeconds { get; set; }
         public int CurrentFrameIndex { get; set; }
         public bool IsPlaying { get; set; }
         public Texture2D CurrentFrame => Textures[CurrentFrameIndex % Textures.Length];
@@ -22,14 +23,14 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Animations
             IsPlaying = Settings.Autoplay;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             if (!IsPlaying) return;
 
-            ElapsedMillis += gameTime.ElapsedGameTime.Milliseconds;
-            if(ElapsedMillis > Settings.FrameDurationMillis)
+            ElapsedSeconds += Time.deltaTime;
+            if(ElapsedSeconds > Settings.FrameDurationMillis)
             {
-                ElapsedMillis = 0;
+                ElapsedSeconds = 0;
                 CurrentFrameIndex = (CurrentFrameIndex + 1) % Textures.Length;
                 if (!Settings.Loop) IsPlaying = false;
             }

@@ -1,98 +1,50 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
-using FredflixAndChell.Shared.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Nez;
 
 namespace FredflixAndChell.Shared.Utilities
 {
-    public class PlayerController
+    public class PlayerController : Component, IUpdatable
     {
-        private const short LEFT = 1;
-        private const short UP = 2;
-        private const short DOWN = 4;
-        private const short RIGHT = 8;
+        public float XAxis => _xAxisInput?.value ?? 0;
+        public float YAxis => _yAxisInput?.value ?? 0;
+        private VirtualAxis _xAxisInput;
+        private VirtualAxis _yAxisInput;
 
         public Player Player;
-
         public PlayerIndex PlayerIndex;
+        private int _controllerIndex;
 
-        public GamePadUtility GamePad;
-
-        private IScene _scene;
-        private bool _playingWithController;
-        private int _direction;
-
-
-        public PlayerController(IScene scene, int controllerIndex)
+        public PlayerController(int controllerIndex)
         {
-            _scene = scene;
+            _controllerIndex = controllerIndex;
+        }
 
-            //TODO: Spawn n stuff
-            Random rnd = new Random();
-            Player = new Player(rnd.Next(50, 590), rnd.Next(50, 420));
-            _scene.Spawn(Player);
+        public override void onAddedToEntity()
+        {
+            base.onAddedToEntity();
+            Player = entity.getComponent<Player>();
+
+            _xAxisInput = new VirtualAxis();
+            _yAxisInput = new VirtualAxis();
+
+            _xAxisInput.nodes.Add(new VirtualAxis.KeyboardKeys(VirtualInput.OverlapBehavior.TakeNewer, Keys.Left, Keys.Right));
+            _yAxisInput.nodes.Add(new VirtualAxis.KeyboardKeys(VirtualInput.OverlapBehavior.TakeNewer, Keys.Up, Keys.Down));
 
             //Playing with controller
-            if (controllerIndex > 0 && controllerIndex < 5)
+            if (_controllerIndex > 0 && _controllerIndex < 5)
             {
-                _playingWithController = true;
-                PlayerIndex = GamePadUtility.ConvertToIndex(controllerIndex);
-                GamePad = new GamePadUtility(PlayerIndex);
-            }
-            else // Playing with keyboard
-            {
-                _playingWithController = false;
-            }
+                _xAxisInput.nodes.Add(new VirtualAxis.GamePadDpadLeftRight(0));
+                _xAxisInput.nodes.Add(new VirtualAxis.GamePadLeftStickX(0));
 
-
-            KeyboardUtility.While(Keys.A, () => _direction |= LEFT, () => _direction &= (_direction - LEFT));
-            KeyboardUtility.While(Keys.W, () => _direction |= UP, () => _direction &= (_direction - UP));
-            KeyboardUtility.While(Keys.S, () => _direction |= DOWN, () => _direction &= (_direction - DOWN));
-            KeyboardUtility.While(Keys.D, () => _direction |= RIGHT, () => _direction &= (_direction - RIGHT));
+                _yAxisInput.nodes.Add(new VirtualAxis.GamePadDpadUpDown(0));
+                _yAxisInput.nodes.Add(new VirtualAxis.GamePadLeftStickY(0));
+            }
         }
 
-        public void Update()
+        public void update()
         {
-            //If index is null, then its a keyboard bro
-            if (_playingWithController)
-            {
-                //if (gamePad == null) gamePad = new GamePadUtility(playerIndex);
-                GamePad.Poll(Player.Actions);
-            }
-            else
-            {
-                if ((_direction & LEFT) > 0)
-                    Player.Actions.MoveX = -1.0f;
-
-                if ((_direction & RIGHT) > 0)
-                    Player.Actions.MoveX = 1.0f;
-
-                if ((_direction & LEFT) == 0 && (_direction & RIGHT) == 0)
-                    Player.Actions.MoveX = 0;
-
-                if ((_direction & DOWN) > 0)
-                    Player.Actions.MoveY = -1.0f;
-
-                if ((_direction & UP) > 0)
-                    Player.Actions.MoveY = 1.0f;
-
-                if ((_direction & DOWN) == 0 && (_direction & UP) == 0)
-                    Player.Actions.MoveY = 0;
-
-                /* REPLACE ? */
-                if (Player.Actions.MoveY != 0 && Player.Actions.MoveX != 0)
-                {
-                    Player.Actions.MoveX = Player.Actions.MoveX * (float)Math.Sin(45);
-                    Player.Actions.MoveY = Player.Actions.MoveY * (float)Math.Sin(45);
-                }
-            }
         }
-
     }
 }

@@ -3,35 +3,28 @@ using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
+using Nez;
+using Nez.Sprites;
+using Nez.Tiled;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
     public class Player : GameObject
     {
-        private const short LEFT = 1;
-        private const short UP = 2;
-        private const short DOWN = 4;
-        private const short RIGHT = 8;
-
         private Vector2 Acceleration;
 
         private float _speed = 0.13f;
 
-        private Animation _currentAnimation;
+        private Animation _animation;
         private Animation _animationWalking;
         private Animation _animationStopped;
-        private Texture2D _rainbow;
-        private Effect _rainbowEffect;
+        private Sprite _renderTexture;
+        private Mover _mover;
+        private PlayerController _controller;
 
-        private bool _hasFlashEffect = false;
-
-        public InputActions Actions { get; set; }
-
-        public Player(int x, int y) : base(x, y, 128, 128)
+        public Player() : base(128, 128)
         {
             SetupAnimations();
-
-            Actions = new InputActions();
         }
 
         private void SetupAnimations()
@@ -55,24 +48,8 @@ namespace FredflixAndChell.Shared.GameObjects
                 Loop = false,
                 Autoplay = true
             });
+            _animation = _animationStopped;
 
-            _rainbow = AssetLoader.GetTexture("rainbow");
-            _rainbowEffect = AssetLoader.GetEffect("flash");
-            _rainbowEffect.Parameters["flash_texture"].SetValue(_rainbow);
-            _rainbowEffect.Parameters["scrollSpeed"].SetValue(new Vector2(0.2f, 0.2f));
-            _rainbowEffect.Parameters["flashRate"].SetValue(0f);
-            _rainbowEffect.Parameters["flashOffset"].SetValue(.5f);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            if (_hasFlashEffect)
-            {
-                _rainbowEffect.Parameters["gameTime"]?.SetValue((float)gameTime.TotalGameTime.TotalMilliseconds);
-                _rainbowEffect.Techniques[0].Passes[0].Apply();
-            }
-
-            spriteBatch.Draw(_currentAnimation.CurrentFrame, destinationRectangle: Bounds, effects: (Velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
         }
 
         public override void OnDespawn()
@@ -81,29 +58,35 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void OnSpawn()
         {
-            _currentAnimation = _animationWalking;
+
+            _controller = entity.addComponent(new PlayerController(0));
+            _mover = entity.addComponent(new Mover());
+
+            var sprite = entity.addComponent(new Sprite(_animation.CurrentFrame));
         }
 
-        public override void Update(GameTime gameTime)
+        public override void update()
         {
-            Acceleration = new Vector2(this.Actions.MoveX * _speed, -this.Actions.MoveY * _speed);
+            System.Console.WriteLine(_controller.XAxis);
+            Acceleration = new Vector2(_controller.XAxis * _speed, _controller.YAxis * _speed);
             Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
-            Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 
-            UpdateAnimation(gameTime);
+            _mover.move(Velocity, out CollisionResult result);
+
+            UpdateAnimation();
         }
 
-        private void UpdateAnimation(GameTime gameTime)
+        private void UpdateAnimation()
         {
-            _currentAnimation.Update(gameTime);
+            _animation.Update();
 
             if (Acceleration.Length() > 0)
             {
-                _currentAnimation = _animationWalking;
+                _animation = _animationWalking;
             }
             else
             {
-                _currentAnimation = _animationStopped;
+                _animation = _animationStopped;
             }
         }
     }

@@ -14,7 +14,7 @@ namespace FredflixAndChell.CrossPlatform
         [STAThread]
         static void Main()
         {
-            using (var game = new BroGame())
+            using (var game = new NezGame())
             {
                 game.Run();
             }

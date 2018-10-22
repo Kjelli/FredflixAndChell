@@ -10,8 +10,15 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Nez.dll
+/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Nez.PipelineImporter.dll
+/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Newtonsoft.Json.dll
+/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Ionic.ZLib.dll
 
 #---------------------------------- Content ---------------------------------#
+
+#begin firstlevel.tmx
+/copy:firstlevel.tmx
 
 #begin font_debug.spritefont
 /importer:FontDescriptionImporter

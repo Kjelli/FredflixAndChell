@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics;
+using Nez.Tiled;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -13,6 +14,7 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private static Dictionary<string, Effect> _effects = new Dictionary<string, Effect>();
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
+        private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
         public static void Load(ContentManager cm)
         {
@@ -74,6 +76,14 @@ namespace FredflixAndChell.Shared.Assets
             name = name.Replace("tex_", "");
 
             _textures.Add(name, tex);
+        }
+
+        private static void LoadMap(string name)
+        {
+            var map = _content.Load<TiledMap>(name);
+            //name = name.Replace("tex_", "");
+
+            _maps.Add(name, map);
         }
 
         private static void LoadEffect(string name)

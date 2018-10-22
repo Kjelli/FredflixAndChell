@@ -10,10 +10,9 @@ using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Scenes;
 using System.Diagnostics;
-using MonoGame.Extended;
-using MonoGame.Extended.ViewportAdapters;
 using FredflixAndChell.Shared.Utilities.Graphics;
 using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
+using Nez;
 
 #endregion
 
@@ -26,17 +25,17 @@ namespace FredflixAndChell.Shared
         EndOfGame,
     }
 
-    public class BroGame : Game
+    public class BroGame : Core
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private SmoothCamera2D _camera;
+        private Camera _camera;
 
         private SpriteFont _debugFont;
 
         private bool _isDrawingDebug;
         private GameState _gameState;
-        private IScene _scene;
+        // private IScene _scene;
 
 
         private List<PlayerController> _players = new List<PlayerController>();
@@ -52,7 +51,6 @@ namespace FredflixAndChell.Shared
             Content.RootDirectory = "Content";
             TargetElapsedTime = new TimeSpan(0, 0, 0, 0, 8);
             IsFixedTimeStep = true;
-
         }
 
         protected override void Initialize()
@@ -62,13 +60,11 @@ namespace FredflixAndChell.Shared
             _debugFont = AssetLoader.GetFont("debug");
 
             KeyboardUtility.While(Keys.F2, () => _isDrawingDebug = !_isDrawingDebug);
-            KeyboardUtility.While(Keys.Up, () => _camera.ZoomIn(0.01f), repeat: true);
-            KeyboardUtility.While(Keys.Down, () => _camera.ZoomOut(0.01f), repeat: true);
+            //KeyboardUtility.While(Keys.Up, () => _camera.ZoomIn(0.01f), repeat: true);
+            //KeyboardUtility.While(Keys.Down, () => _camera.ZoomOut(0.01f), repeat: true);
 
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 640, 480);
-            _camera = new SmoothCamera2D(viewportAdapter);
-            _camera.SpeedRatio = 0.04f;
-            _scene = new Scene(_camera);
+            _camera = new Camera();
+            _scene = new LevelScene(_camera);
 
             //Players initialize - Keyboard = player 1
 
@@ -111,7 +107,7 @@ namespace FredflixAndChell.Shared
                 player.Update();
             }
 
-            _camera.LookAtSmooth(_players[0].Player.Position + _players[0].Player.Size / 2);
+            //_camera.LookAtSmooth(_players[0].Player.Position + _players[0].Player.Size / 2);
             _scene.Update(gameTime);
 
             base.Update(gameTime);
@@ -119,7 +115,7 @@ namespace FredflixAndChell.Shared
 
         protected override void Draw(GameTime gameTime)
         {
-            var transformMatrix = _camera.GetViewMatrix();
+            var transformMatrix = _camera.viewMatrix3D;
 
             GraphicsDevice.Clear(Color.Black);
 
@@ -131,9 +127,9 @@ namespace FredflixAndChell.Shared
             {
                 _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
                 _scene.DrawDebug(_spriteBatch, gameTime);
-                _spriteBatch.DrawString(_debugFont, $"FPS:      no.", _camera.Position + new Vector2(0, 0), Color.White);
-                _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", _camera.Position + new Vector2(0, 20), Color.White);
-                _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, _camera.Position + new Vector2(0, 40), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"FPS:      no.", _camera.position + new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", _camera.position + new Vector2(0, 20), Color.White);
+                _spriteBatch.DrawString(_debugFont, "Memory: " + GC.GetTotalMemory(false) / 1024, _camera.position + new Vector2(0, 40), Color.White);
                 _spriteBatch.End();
             }
 
