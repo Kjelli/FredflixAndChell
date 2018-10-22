@@ -10,17 +10,17 @@ using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 using Nez;
 using Nez.Sprites;
 using Nez.Tiled;
+using FredflixAndChell.Shared.Components;
+using Nez.Textures;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
     public class Player : GameObject
     {
         private Vector2 Acceleration;
-
         private float _speed = 0.13f;
 
         public float FacingAngle { get; set; }
@@ -28,59 +28,51 @@ namespace FredflixAndChell.Shared.GameObjects
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
 
+        enum Animations
+        {
+            Walk,
+            Idle,
+        }
 
-        private Animation _animation;
-        private Animation _animationWalking;
-        private Animation _animationStopped;
-        private Sprite _renderTexture;
+        Sprite<Animations> _animation;
+
         private Mover _mover;
         private PlayerController _controller;
 
+        private Entity _gunEntity;
+        private Gun _gun;
 
-
-        public Gun gun;
-
-
-
-        public Player() : base(128, 128)
+        public Player(int x, int y) : base(x, y, 64, 64)
         {
             SetupAnimations();
-
         }
 
-        private void SetupAnimations()
+        private Sprite<Animations> SetupAnimations()
         {
-            _animationWalking = new Animation(new Texture2D[] {
-                AssetLoader.GetTexture("kjelli[1][0]"),
-                AssetLoader.GetTexture("kjelli[1][1]"),
-                AssetLoader.GetTexture("kjelli[1][2]"),
-                AssetLoader.GetTexture("kjelli[1][3]"),
-                AssetLoader.GetTexture("kjelli[1][4]"),
-                AssetLoader.GetTexture("kjelli[1][5]"),
-                AssetLoader.GetTexture("kjelli[1][6]"),
-                AssetLoader.GetTexture("kjelli[1][7]"),
-
-
-            }, new AnimationSettings
+            var animations = new Sprite<Animations>();
+            var texture = AssetLoader.GetTexture("kjelli_spritesheet");
+            var subtextures = Subtexture.subtexturesFromAtlas(texture, 32, 32);
+            animations.addAnimation(Animations.Idle, new SpriteAnimation(new List<Subtexture>()
             {
-                FrameDurationMillis = 80,
-                Loop = true,
-                Autoplay = true
-            });
+                subtextures[0 + 0 * 8],
+                subtextures[0 + 1 * 8],
+                subtextures[0 + 2 * 8],
+                subtextures[0 + 3 * 8],
+            }));
 
-            _animationStopped = new Animation(new Texture2D[] {
-                AssetLoader.GetTexture("kjelli[0][0]"),
-                AssetLoader.GetTexture("kjelli[0][1]"),
-                AssetLoader.GetTexture("kjelli[0][2]"),
-                AssetLoader.GetTexture("kjelli[0][3]"),
-            }, new AnimationSettings
+            animations.addAnimation(Animations.Walk, new SpriteAnimation(new List<Subtexture>()
             {
-                FrameDurationMillis = 200,
-                Loop = true,
-                Autoplay = true
-            });
-            _animation = _animationStopped;
+                subtextures[1 + 7 * 8],
+                subtextures[1 + 0 * 8],
+                subtextures[1 + 1 * 8],
+                subtextures[1 + 2 * 8],
+                subtextures[1 + 3 * 8],
+                subtextures[1 + 4 * 8],
+                subtextures[1 + 5 * 8],
+                subtextures[1 + 6 * 8],
+            }));
 
+            return animations;
         }
 
         public override void OnDespawn()
@@ -89,56 +81,102 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void OnSpawn()
         {
-
+            // Assign controller component
             _controller = entity.addComponent(new PlayerController(0));
+
+            // Assign movement component
             _mover = entity.addComponent(new Mover());
 
-            var sprite = entity.addComponent(new Sprite(_animation.CurrentFrame));
+            // Assign gun component
+            _gunEntity = entity.scene.createEntity("gun");
+            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.2f));
+
+            // Assign renderable (animation) component
+            var animations = SetupAnimations();
+            _animation = entity.addComponent(animations);
+            _animation.renderLayer = -1;
+
+            // Assign renderable shadow component
+            var shadow = entity.addComponent(new SpriteMime(_animation));
+            shadow.color = new Color(0, 0, 0, 255);
+            shadow.material = Material.defaultMaterial;
+            shadow.renderLayer = 1;
+            shadow.localOffset = new Vector2(1, 2);
         }
 
         public override void update()
         {
-            _animationWalking.Settings.FrameDurationMillis = 0.2f - ((float)Acceleration.Length()); ;
-            System.Console.WriteLine(_controller.XAxis);
-            Acceleration = new Vector2(_controller.XAxis * _speed, _controller.YAxis * _speed);
-            Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
+            UpdateAnimation();
+
+            Acceleration = new Vector2(_controller.XLeftAxis * _speed, _controller.YLeftAxis * _speed);
+            Velocity = new Vector2(Velocity.X * 0.75f + Acceleration.X * 0.25f, Velocity.Y * 0.75f + Acceleration.Y * 0.25f);
 
             _mover.move(Velocity, out CollisionResult result);
 
-            UpdateAnimation(gameTime);
+            if (_controller.FirePressed)
+            {
+                Attack();
+            }
+
             SetFacing();
         }
 
         private void UpdateAnimation()
         {
-            _animation.Update();
+            var animation = Animations.Idle;
 
-            if (Acceleration.Length() > 0)
+            if (_controller.XLeftAxis < 0)
             {
-                _animation = _animationWalking;
+                animation = Animations.Walk;
             }
-            else
+            else if (_controller.XLeftAxis > 0)
             {
-                _animation = _animationStopped;
+                animation = Animations.Walk;
+            }
+            else if (_controller.YLeftAxis != 0)
+            {
+                animation = Animations.Walk;
+            }
+
+            if (!_animation.isAnimationPlaying(animation))
+            {
+                _animation.play(animation)
+                    .setFps(10f) // Vanskelig å øke relativt til velocity...
+                    .prepareForUse();
             }
         }
 
         public void Attack()
         {
-            gun.Fire();
+            _gun.Fire();
         }
 
         private void SetFacing()
         {
-            if (FacingAngle < -2.0 && FacingAngle > 1.0)
+            FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
+            _gun.entity.rotation = FacingAngle;
+
+            if (FacingAngle < - Math.PI / 2 || FacingAngle > Math.PI / 2)
+            {
                 VerticalFacing = (int)FacingCode.UP;
-            else if (FacingAngle > 1.0 && FacingAngle < 2.0)
-                VerticalFacing = (int)FacingCode.DOWN;
-            //Prioritizing "horizontal" sprites
-            else if (FacingAngle > -1 && FacingAngle < 1)
-                HorizontalFacing = (int)FacingCode.UP;
+            }
             else
+            {
+                VerticalFacing = (int)FacingCode.DOWN;
+            }
+            //Prioritizing "horizontal" sprites
+            if (FacingAngle > - Math.PI/2 && FacingAngle < Math.PI / 2)
+            {
+                _animation.flipX = false;
+                _gun.flipY = false;
+                HorizontalFacing = (int)FacingCode.RIGHT;
+            }
+            else
+            {
+                _gun.flipY = true;
+                _animation.flipX = true;
                 HorizontalFacing = (int)FacingCode.LEFT;
+            }
         }
     }
 

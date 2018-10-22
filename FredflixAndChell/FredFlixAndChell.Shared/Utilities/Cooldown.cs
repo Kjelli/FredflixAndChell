@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Nez;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,11 @@ namespace FredflixAndChell.Shared.Utilities
             _cooldown = duration;
         }
 
-
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             if(_cooldownTimer > 0)
             {
-                _cooldownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _cooldownTimer -= Time.deltaTime;
                 
             }
             else

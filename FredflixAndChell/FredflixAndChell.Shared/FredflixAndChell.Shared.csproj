@@ -51,11 +51,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\VirtualMouseYAxis.cs" />
+    <Compile Include="Components\VirtualMouseXAxis.cs" />
     <Compile Include="BroGame.cs" />
-    <Compile Include="NezGame.cs" />
-    <Compile Include="Scenes\KjellScene.cs" />
+    <Compile Include="Scenes\BroScene.cs" />
     <Compile Include="Utilities\Cooldown.cs" />
-    <Compile Include="Utilities\Graphics\Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="GameObjects\Bullets\Bullet.cs" />
     <Compile Include="GameObjects\Bullets\IBullet.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="Utilities\Input\GamePadUtility.cs" />
     <Compile Include="Utilities\Input\InputActions.cs" />
     <Compile Include="Utilities\Input\KeyboardUtility.cs" />
-    <Compile Include="Utilities\PlayerController.cs" />
+    <Compile Include="Components\PlayerController.cs" />
     <Compile Include="Utilities\Graphics\TextureSplitter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ using FredflixAndChell.Shared.Assets;
 
 namespace FredflixAndChell.Shared.Scenes
 {
-    public class KjellScene : Scene
+    public class BroScene : Scene
     {
         public override void initialize()
         {
@@ -20,14 +20,14 @@ namespace FredflixAndChell.Shared.Scenes
             Screen.setSize(1280, 720);
 
             var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
-            playerEntity.addComponent(new Player());
+            playerEntity.addComponent(new Player(Screen.width / 2, Screen.height / 2));
 
             camera.position = playerEntity.position;
-            camera.setMinimumZoom(6);
-            camera.setZoom(8);
-            camera.setMaximumZoom(8);
+            camera.setMinimumZoom(12);
+            camera.setZoom(16);
+            camera.setMaximumZoom(16);
 
-            addRenderer(new DefaultRenderer(camera: camera));
+            addRenderer(new DefaultRenderer(renderOrder: -1, camera: camera));
         }
     }
 }

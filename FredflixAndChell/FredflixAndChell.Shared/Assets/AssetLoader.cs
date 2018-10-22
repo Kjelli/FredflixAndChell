@@ -23,10 +23,7 @@ namespace FredflixAndChell.Shared.Assets
             // Load fonts to be used in the game
             LoadFont("font_debug");
 
-            // Load textures to be used in the game
-            LoadTexturesFromSheet("sheet_pig", 20, 20, 6, 6);
-            LoadTexturesFromSheet("sheet_kjelli",32,32,8,1);
-
+            LoadTexture("tex_kjelli_spritesheet");
             LoadTexture("tex_rainbow");
             LoadTexture("tex_lava1");
             LoadTexture("tex_lava2");
@@ -47,26 +44,6 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("shader_flash");
         }
        
-        private static void LoadTexturesFromSheet(string name, int width, int height, int xCount, int yCount)
-        {
-            var texture = _content.Load<Texture2D>(name);
-            var textures = TextureSplitter.Split(texture, width, height, out int xCountActual, out int yCountActual);
-            texture.Dispose();
-
-            if (xCount != xCountActual) Console.WriteLine($"WARNING: Expected {xCount} columns, got {xCountActual}");
-            if (yCount != yCountActual) Console.WriteLine($"WARNING: Expected {yCount} rows, got {yCountActual}");
-
-            name = name.Replace("sheet_", "");
-
-            for (var y = 0; y < yCountActual; y++)
-            {
-                for (var x = 0; x < xCountActual; x++)
-                {
-                    _textures.Add($"{name}[{x}][{y}]", textures[x + y * xCountActual]);
-                }
-            }
-        }
-
         public static Texture2D GetTexture(string name)
         {
             return _textures[name];

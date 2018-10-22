@@ -15,31 +15,33 @@ namespace FredflixAndChell.Shared.GameObjects
 {
     public abstract class GameObject : Component, IGameObject, IUpdatable
     {
+        private Vector2 _spawnPosition { get; set; }
         public Vector2 Velocity { get; set; }
         public Vector2 Size { get; set; }
 
-        public GameObject() : this(16, 16)
+        public GameObject(int x, int y, int width, int height)
         {
+            _spawnPosition = new Vector2(x, y);
+            Size = new Vector2(width, height); // does nothing
         }
-
-        public GameObject(int width, int height)
-        {
-            Size = new Vector2(width, height);
-        }
-
         public abstract void OnDespawn();
         public abstract void OnSpawn();
         public abstract void update();
-        public override void onEnabled()
+        public override void onAddedToEntity()
         {
-            base.onEnabled();
+            base.onAddedToEntity();
             OnSpawn();
+
             var sprite = entity.getComponent<Sprite>();
+            if (sprite != null)
+            {
+                entity.position = _spawnPosition;
+            }
         }
 
-        public override void onDisabled()
+        public override void onRemovedFromEntity()
         {
-            base.onDisabled();
+            base.onRemovedFromEntity();
             OnDespawn();
         }
     }
