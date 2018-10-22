@@ -47,8 +47,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             Rectangle sourceRectanble = new Rectangle(0,0,(int)Size.X, (int)Size.Y);
             Vector2 origin = new Vector2(Size.X/2, Size.Y/2);
             
-            spriteBatch.Draw(_sprite, destinationRectangle: Bounds, rotation:_player.FacingAngle ,effects: (_player.HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipVertically : SpriteEffects.None));
-
+            spriteBatch.Draw(_sprite, destinationRectangle: Bounds, layerDepth: 0.6f, rotation:_player.FacingAngle ,effects: (_player.HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipVertically : SpriteEffects.None));
+          
         }
 
         public void Fire()

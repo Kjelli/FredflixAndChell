@@ -34,11 +34,17 @@ namespace FredflixAndChell.Shared.Utilities
                 action.MoveY = state.ThumbSticks.Left.Y;
             }
 
-            if(capabilities.HasRightXThumbStick && capabilities.HasRightYThumbStick)
+            if(capabilities.HasRightXThumbStick && capabilities.HasRightYThumbStick && (state.ThumbSticks.Right.X != 0 || state.ThumbSticks.Right.Y != 0))
             {
                 action.AimX = state.ThumbSticks.Right.X;
                 action.AimY = state.ThumbSticks.Right.Y;
             }
+
+            if (capabilities.HasRightTrigger)
+            {
+                action.Attack = state.Triggers.Right;
+            }
+
         }
 
         public static PlayerIndex ConvertToIndex(int n)

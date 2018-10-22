@@ -69,6 +69,15 @@ namespace FredflixAndChell.Shared.Utilities
             {
                 //if (gamePad == null) gamePad = new GamePadUtility(playerIndex);
                 GamePad.Poll(Player.Actions);
+
+                Player.FacingAngle = -(float)Math.Atan2(Player.Actions.AimY, Player.Actions.AimX);
+
+                if (Player.Actions.Attack > 0)
+                {
+                    Player.Attack();
+
+                }
+
             }
             else
             {

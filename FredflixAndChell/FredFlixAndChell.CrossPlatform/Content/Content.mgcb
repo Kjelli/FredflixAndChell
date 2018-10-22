@@ -20,6 +20,18 @@
 /processorParam:TextureFormat=Compressed
 /build:font_debug.spritefont
 
+#begin kjelli_spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:kjelli_spritesheet.png;sheet_kjelli.png
+
 #begin shader_flash.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -61,18 +73,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:tex_debug.png
-
-#begin tex_gun_m4.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:tex_gun_m4.png
 
 #begin tex_gun_m4.png
 /importer:TextureImporter

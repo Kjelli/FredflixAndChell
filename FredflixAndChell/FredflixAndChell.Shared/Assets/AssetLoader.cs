@@ -23,6 +23,8 @@ namespace FredflixAndChell.Shared.Assets
 
             // Load textures to be used in the game
             LoadTexturesFromSheet("sheet_pig", 20, 20, 6, 6);
+            LoadTexturesFromSheet("sheet_kjelli",32,32,8,1);
+
             LoadTexture("tex_rainbow");
             LoadTexture("tex_lava1");
             LoadTexture("tex_lava2");
@@ -30,6 +32,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("tex_debug");
 
             // Load Gameobjects 
+
+            //Player
 
             //Weapons
             LoadTexture("tex_gun_m4");

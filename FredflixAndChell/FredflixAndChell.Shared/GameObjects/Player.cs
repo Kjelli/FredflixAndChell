@@ -43,23 +43,30 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public Gun gun;
 
-       
 
-        public Player(IScene scene, int x, int y) : base(scene,x, y, 128, 128)
+
+        public Player(IScene scene, int x, int y) : base(scene, x, y, 128, 128)
         {
             SetupAnimations();
             Actions = new InputActions();
 
             //TODO: Gunz
-            gun = new Gun(this,scene,(int)Position.X,(int)Position.Y, 64,64, cooldown: 0.15f);
+            gun = new Gun(this, scene, (int)Position.X, (int)Position.Y, 64, 64, cooldown: 0.15f);
         }
 
         private void SetupAnimations()
         {
             _animationWalking = new Animation(new Texture2D[] {
-                AssetLoader.GetTexture("pig[0][0]"),
-                AssetLoader.GetTexture("pig[1][0]"),
-                AssetLoader.GetTexture("pig[2][0]"),
+                AssetLoader.GetTexture("kjelli[1][0]"),
+                AssetLoader.GetTexture("kjelli[1][1]"),
+                AssetLoader.GetTexture("kjelli[1][2]"),
+                AssetLoader.GetTexture("kjelli[1][3]"),
+                AssetLoader.GetTexture("kjelli[1][4]"),
+                AssetLoader.GetTexture("kjelli[1][5]"),
+                AssetLoader.GetTexture("kjelli[1][6]"),
+                AssetLoader.GetTexture("kjelli[1][7]"),
+
+
             }, new AnimationSettings
             {
                 FrameDurationMillis = 80,
@@ -68,11 +75,14 @@ namespace FredflixAndChell.Shared.GameObjects
             });
 
             _animationStopped = new Animation(new Texture2D[] {
-                AssetLoader.GetTexture("pig[0][0]"),
+                AssetLoader.GetTexture("kjelli[0][0]"),
+                AssetLoader.GetTexture("kjelli[0][1]"),
+                AssetLoader.GetTexture("kjelli[0][2]"),
+                AssetLoader.GetTexture("kjelli[0][3]"),
             }, new AnimationSettings
             {
-                FrameDurationMillis = 1000,
-                Loop = false,
+                FrameDurationMillis = 200,
+                Loop = true,
                 Autoplay = true
             });
 
@@ -86,14 +96,14 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (!_hasFlashEffect)
+            if (_hasFlashEffect)
             {
                 _rainbowEffect.Parameters["gameTime"]?.SetValue((float)gameTime.TotalGameTime.TotalMilliseconds);
                 _rainbowEffect.Techniques[0].Passes[0].Apply();
             }
 
-          
-            spriteBatch.Draw(_currentAnimation.CurrentFrame, destinationRectangle: Bounds, effects: (HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
+
+            spriteBatch.Draw(_currentAnimation.CurrentFrame, layerDepth: 0.5f, destinationRectangle: Bounds, effects: (HorizontalFacing == (int)FacingCode.LEFT ? SpriteEffects.FlipHorizontally : SpriteEffects.None));
         }
 
         public override void OnDespawn()
@@ -108,6 +118,10 @@ namespace FredflixAndChell.Shared.GameObjects
         public override void Update(GameTime gameTime)
         {
             Acceleration = new Vector2(this.Actions.MoveX * _speed, -this.Actions.MoveY * _speed);
+
+            //TODO: Ikke hardcode top speed etc
+            _animationWalking.Settings.FrameDurationMillis = 200 - ((float)Acceleration.Length() * 1000); ;
+
             Velocity = new Vector2(Velocity.X * 0.8f + Acceleration.X * 0.2f, Velocity.Y * 0.8f + Acceleration.Y * 0.2f);
             Position = new Vector2(Position.X + Velocity.X * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 
@@ -132,7 +146,7 @@ namespace FredflixAndChell.Shared.GameObjects
         public void Attack()
         {
             gun.Fire();
-        } 
+        }
 
         private void SetFacing()
         {

@@ -13,5 +13,7 @@ namespace FredflixAndChell.Shared.Utilities
 
         public float AimX { get; set; }
         public float AimY { get; set; }
+
+        public float Attack { get; set; }
     }
 }
