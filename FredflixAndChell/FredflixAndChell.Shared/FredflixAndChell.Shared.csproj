@@ -54,11 +54,16 @@
     <Compile Include="BroGame.cs" />
     <Compile Include="NezGame.cs" />
     <Compile Include="Scenes\KjellScene.cs" />
+    <Compile Include="Utilities\Cooldown.cs" />
     <Compile Include="Utilities\Graphics\Animations\Animation.cs" />
     <Compile Include="Assets\AssetLoader.cs" />
+    <Compile Include="GameObjects\Bullets\Bullet.cs" />
+    <Compile Include="GameObjects\Bullets\IBullet.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\IGameObject.cs" />
     <Compile Include="GameObjects\Player.cs" />
+    <Compile Include="GameObjects\Weapons\Gun.cs" />
+    <Compile Include="GameObjects\Weapons\IWeapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Graphics\DebugDrawer.cs" />
     <Compile Include="Utilities\Input\GamePadUtility.cs" />

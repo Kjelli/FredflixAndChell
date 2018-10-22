@@ -1,4 +1,6 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
@@ -26,6 +28,7 @@ namespace FredflixAndChell.Shared.Utilities
             base.onAddedToEntity();
             Player = entity.getComponent<Player>();
 
+           
             _xAxisInput = new VirtualAxis();
             _yAxisInput = new VirtualAxis();
 
@@ -43,7 +46,22 @@ namespace FredflixAndChell.Shared.Utilities
             }
         }
 
-        public void update()
+                // Mouse aim
+                var mouseState = Mouse.GetState();
+
+                Vector2 mousePositionInMap = Vector2.Transform(mouseState.Position.ToVector2(), Matrix.Invert(_scene.Camera.GetViewMatrix()));
+
+                Player.FacingAngle = (float)Math.Atan2(mousePositionInMap.Y - Player.Position.Y, mousePositionInMap.X - Player.Position.X);
+
+                Player.Actions.AimX = (float)Math.Cos(Player.FacingAngle);
+                Player.Actions.AimY = (float)Math.Sin(Player.FacingAngle);
+
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    Player.Attack();
+                }
+
+                public void update()
         {
         }
     }

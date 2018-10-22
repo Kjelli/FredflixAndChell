@@ -118,14 +118,16 @@ namespace FredflixAndChell.Shared
             var transformMatrix = _camera.viewMatrix3D;
 
             GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
+
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
             _scene.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
             if (_isDrawingDebug)
             {
-                _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
+                _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: transformMatrix);
                 _scene.DrawDebug(_spriteBatch, gameTime);
                 _spriteBatch.DrawString(_debugFont, $"FPS:      no.", _camera.position + new Vector2(0, 0), Color.White);
                 _spriteBatch.DrawString(_debugFont, $"Time elapsed: {gameTime.TotalGameTime.TotalSeconds}", _camera.position + new Vector2(0, 20), Color.White);
