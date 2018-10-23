@@ -30,8 +30,11 @@ namespace FredflixAndChell.Shared.GameObjects
 
         enum Animations
         {
+            Walk_Unarmed,
+            Idle_Unarmed,
             Walk,
-            Idle,
+            Idle
+           
         }
 
         Sprite<Animations> _animation;
@@ -52,7 +55,7 @@ namespace FredflixAndChell.Shared.GameObjects
             var animations = new Sprite<Animations>();
             var texture = AssetLoader.GetTexture("kjelli_spritesheet");
             var subtextures = Subtexture.subtexturesFromAtlas(texture, 32, 32);
-            animations.addAnimation(Animations.Idle, new SpriteAnimation(new List<Subtexture>()
+            animations.addAnimation(Animations.Idle_Unarmed, new SpriteAnimation(new List<Subtexture>()
             {
                 subtextures[0 + 0 * 8],
                 subtextures[0 + 1 * 8],
@@ -60,7 +63,15 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[0 + 3 * 8],
             }));
 
-            animations.addAnimation(Animations.Walk, new SpriteAnimation(new List<Subtexture>()
+            animations.addAnimation(Animations.Idle, new SpriteAnimation(new List<Subtexture>()
+            {
+                subtextures[2 + 0 * 8],
+                subtextures[2 + 1 * 8],
+                subtextures[2 + 2 * 8],
+                subtextures[2 + 3 * 8],
+            }));
+
+            animations.addAnimation(Animations.Walk_Unarmed, new SpriteAnimation(new List<Subtexture>()
             {
                 subtextures[1 + 7 * 8],
                 subtextures[1 + 0 * 8],
@@ -70,6 +81,18 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[1 + 4 * 8],
                 subtextures[1 + 5 * 8],
                 subtextures[1 + 6 * 8],
+            }));
+
+            animations.addAnimation(Animations.Walk, new SpriteAnimation(new List<Subtexture>()
+            {
+                subtextures[3 + 7 * 8],
+                subtextures[3 + 0 * 8],
+                subtextures[3 + 1 * 8],
+                subtextures[3 + 2 * 8],
+                subtextures[3 + 3 * 8],
+                subtextures[3 + 4 * 8],
+                subtextures[3 + 5 * 8],
+                subtextures[3 + 6 * 8],
             }));
 
             return animations;
@@ -123,19 +146,15 @@ namespace FredflixAndChell.Shared.GameObjects
 
         private void UpdateAnimation()
         {
-            var animation = Animations.Idle;
 
-            if (_controller.XLeftAxis < 0)
+            //Todo: Fix check of unmarmed. A gun type called unarmed?
+            bool armed = _gun != null ? true : false;
+
+            var animation = armed ? Animations.Idle : Animations.Idle_Unarmed;
+
+            if (_controller.XLeftAxis < 0 || _controller.XLeftAxis > 0 || _controller.YLeftAxis != 0)
             {
-                animation = Animations.Walk;
-            }
-            else if (_controller.XLeftAxis > 0)
-            {
-                animation = Animations.Walk;
-            }
-            else if (_controller.YLeftAxis != 0)
-            {
-                animation = Animations.Walk;
+                animation = armed ? Animations.Walk : Animations.Walk_Unarmed ;
             }
 
             if (!_animation.isAnimationPlaying(animation))
