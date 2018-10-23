@@ -112,7 +112,7 @@ namespace FredflixAndChell.Shared.GameObjects
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.2f));
+            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.1f));
 
             // Assign renderable (animation) component
             var animations = SetupAnimations();
@@ -137,9 +137,9 @@ namespace FredflixAndChell.Shared.GameObjects
             _mover.move(Velocity, out CollisionResult result);
 
             if (_controller.FirePressed)
-            {
                 Attack();
-            }
+            if (_controller.ReloadPressed)
+                Reload();
 
             SetFacing();
         }
@@ -168,6 +168,11 @@ namespace FredflixAndChell.Shared.GameObjects
         public void Attack()
         {
             _gun.Fire();
+        }
+
+        public void Reload()
+        {
+            _gun.ReloadMagazine();
         }
 
         private void SetFacing()

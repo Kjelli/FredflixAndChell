@@ -10,12 +10,12 @@ namespace FredflixAndChell.Shared.Utilities
 {
     public class Cooldown
     {
-        private float _cooldown { get; set; }
+        public float _duration { get; set; }
         private float _cooldownTimer { get; set; }
 
         public Cooldown(float duration)
         {
-            _cooldown = duration;
+            _duration = duration;
         }
 
         public void Update()
@@ -33,7 +33,7 @@ namespace FredflixAndChell.Shared.Utilities
 
         public void Start()
         {
-            _cooldownTimer = _cooldown;
+            _cooldownTimer = _duration;
         }
 
         public bool IsReady()
