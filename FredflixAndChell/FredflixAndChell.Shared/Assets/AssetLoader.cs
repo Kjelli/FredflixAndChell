@@ -14,6 +14,7 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private static Dictionary<string, Effect> _effects = new Dictionary<string, Effect>();
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
+
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
         public static void Load(ContentManager cm)
@@ -42,6 +43,9 @@ namespace FredflixAndChell.Shared.Assets
 
             // Load effects to be used in the game
             LoadEffect("shader_flash");
+
+            // Load maps
+            LoadMap("firstlevel");
         }
        
         public static Texture2D GetTexture(string name)
@@ -58,6 +62,13 @@ namespace FredflixAndChell.Shared.Assets
         {
             return _fonts[name];
         }
+
+
+        public static TiledMap GetMap(string name)
+        {
+            return _maps[name];
+        }
+
 
         private static void LoadTexture(string name)
         {

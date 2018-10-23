@@ -10,15 +10,17 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Nez.dll
-/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Nez.PipelineImporter.dll
-/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Newtonsoft.Json.dll
-/reference:../../packages/Nez.PipelineImporter.{VERSION}/tools/Ionic.ZLib.dll
+/reference:../../packages/Nez.PipelineImporter.0.9.2/tools/Nez.dll
+/reference:../../packages/Nez.PipelineImporter.0.9.2/tools/Nez.PipelineImporter.dll
+/reference:../../packages/Nez.PipelineImporter.0.9.2/tools/Newtonsoft.Json.dll
+/reference:../../packages/Nez.PipelineImporter.0.9.2/tools/Ionic.ZLib.dll
 
 #---------------------------------- Content ---------------------------------#
 
 #begin firstlevel.tmx
-/copy:firstlevel.tmx
+/importer:
+/processor:
+/build:firstlevel.tmx
 
 #begin font_debug.spritefont
 /importer:FontDescriptionImporter
@@ -56,6 +58,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sheet_pig.png
+
+#begin sheet_temple.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sheet_temple.png
 
 #begin tex_debug.png
 /importer:TextureImporter
