@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework;
 using Nez.Sprites;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Assets;
+using Microsoft.Xna.Framework.Input;
+using FredflixAndChell.Shared.Utilities;
+using System;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -33,6 +36,19 @@ namespace FredflixAndChell.Shared.Scenes
             playerEntity.addComponent(new Player((int) tiledMapComponent.width / 2, (int)tiledMapComponent.height / 2));
 
             playerEntity.addComponent(new FollowCamera(playerEntity));
+            //var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
+
+            ////TODO Remove this: testing only for controllaz
+            //for (var i = 0; i < 4; i++)
+            //{
+            //    if (GamePad.GetCapabilities(GamePadUtility.ConvertToIndex(i + 1)).IsConnected)
+            //    {
+            //        Console.WriteLine($"Gamepad {i + 1} Detected - Generating player");
+            //        playerEntity.addComponent(new Player(Screen.width / 2+5, Screen.height / 2 + 5));
+            //    }
+            //}
+
+            //playerEntity.addComponent(new Player(Screen.width / 2, Screen.height / 2));
 
             camera.position = playerEntity.position;
             camera.setMinimumZoom(2);

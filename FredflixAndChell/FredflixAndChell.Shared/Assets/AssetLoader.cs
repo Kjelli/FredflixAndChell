@@ -36,7 +36,7 @@ namespace FredflixAndChell.Shared.Assets
             //Player
 
             //Weapons
-            LoadTexture("tex_gun_m4");
+            LoadTexture("tex_gun_m4_spritesheet");
 
             //Bullets
             LoadTexture("tex_standard_bullet");
