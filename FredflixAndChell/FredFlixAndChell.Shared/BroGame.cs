@@ -10,7 +10,6 @@ using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Scenes;
 using System.Diagnostics;
-using FredflixAndChell.Shared.Utilities.Graphics;
 using Nez;
 
 #endregion
@@ -27,6 +26,7 @@ namespace FredflixAndChell.Shared
             base.Initialize();
 
             Window.AllowUserResizing = true;
+            Window.Title = "Ultimate Brodown";
             scene = new BroScene();
         }
     }

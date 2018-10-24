@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
@@ -43,7 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             var shadow = entity.addComponent(new SpriteMime(sprite));
             shadow.color = new Color(0, 0, 0, 255);
             shadow.material = Material.defaultMaterial;
-            shadow.renderLayer = 1;
+            shadow.renderLayer = Layers.PlayerBehind;
             shadow.localOffset = new Vector2(1, 2);
 
             _mover = entity.addComponent(new Mover());

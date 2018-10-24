@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Nez.Sprites;
 using Nez;
 using Nez.Textures;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
@@ -102,18 +103,23 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public override void OnSpawn()
         {
-            
-
             var shadow = entity.addComponent(new SpriteMime(_sprite));
-            shadow.color = new Color(0, 0, 0, 255);
-            shadow.material = Material.defaultMaterial;
-            shadow.renderLayer = 1;
+            shadow.color = new Color(0, 0, 0, 80);
+            shadow.material = Material.stencilWrite(Stencils.EntityShadowStencil);
+            shadow.renderLayer = Layers.Shadow;
             shadow.localOffset = new Vector2(1, 2);
+
+            // Assign silhouette component when gun is visually blocked
+            var silhouette = entity.addComponent(new SpriteMime(_animation));
+            silhouette.color = new Color(0, 0, 0, 80);
+            silhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            silhouette.renderLayer = Layers.Foreground;
+            silhouette.localOffset = new Vector2(0, 0);
 
             entity.setScale(0.75f);
 
             _animation = entity.addComponent(SetupAnimations());
-            _animation.renderLayer = -2;
+            _animation.renderLayer = Layers.PlayerFront;
 
             Cooldown.Start();
             _animation.play(Animations.Held_Idle)

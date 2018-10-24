@@ -7,6 +7,7 @@ using FredflixAndChell.Shared.Assets;
 using Microsoft.Xna.Framework.Input;
 using FredflixAndChell.Shared.Utilities;
 using System;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -25,17 +26,20 @@ namespace FredflixAndChell.Shared.Scenes
             var tiledEntity = createEntity("tiled-map-entity");
             var tiledmap = AssetLoader.GetMap("firstlevel");
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Obstacles"));
+            tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
             tiledMapComponent.layerIndicesToRender = new int[] { 2,1,0 };
-            tiledMapComponent.renderLayer = 10;
+            tiledMapComponent.renderLayer = Layers.MapBackground;
 
             var tiledMapDetailsComp = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
+            tiledMapDetailsComp.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             tiledMapDetailsComp.layerIndicesToRender = new int[] { 3 };
-            tiledMapDetailsComp.renderLayer = -10;
+            tiledMapDetailsComp.renderLayer = Layers.MapForeground;
+            tiledMapDetailsComp.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
             var playerEntity = createEntity("player");
             playerEntity.addComponent(new Player((int) tiledMapComponent.width / 2, (int)tiledMapComponent.height / 2));
 
-            playerEntity.addComponent(new FollowCamera(playerEntity));
+            playerEntity.addComponent(new SmoothCamera(playerEntity));
             //var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
 
             ////TODO Remove this: testing only for controllaz
@@ -50,7 +54,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             //playerEntity.addComponent(new Player(Screen.width / 2, Screen.height / 2));
 
-            camera.position = playerEntity.position;
             camera.setMinimumZoom(2);
             camera.setMaximumZoom(6);
             camera.setZoom(6);

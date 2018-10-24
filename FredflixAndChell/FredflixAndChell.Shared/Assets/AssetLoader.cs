@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
 using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Utilities.Graphics;
 using Nez.Tiled;
 
 namespace FredflixAndChell.Shared.Assets

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Utilities.Graphics;
 using Nez;
 using Nez.Sprites;
 
