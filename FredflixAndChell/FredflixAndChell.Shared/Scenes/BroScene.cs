@@ -23,23 +23,29 @@ namespace FredflixAndChell.Shared.Scenes
             setDesignResolution(1280, 720, Scene.SceneResolutionPolicy.BestFit);
             Screen.setSize(1280, 720);
 
+            // Draw background
             var tiledEntity = createEntity("tiled-map-entity");
             var tiledmap = AssetLoader.GetMap("firstlevel");
-            var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Obstacles"));
+            var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
-            tiledMapComponent.layerIndicesToRender = new int[] { 2,1,0 };
+            tiledMapComponent.layerIndicesToRender = new int[] { 1, 0 };
             tiledMapComponent.renderLayer = Layers.MapBackground;
 
-            var tiledMapDetailsComp = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
-            tiledMapDetailsComp.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
-            tiledMapDetailsComp.layerIndicesToRender = new int[] { 3 };
-            tiledMapDetailsComp.renderLayer = Layers.MapForeground;
-            tiledMapDetailsComp.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
+            var tiledMapObstaclesComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Obstacles"));
+            tiledMapObstaclesComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
+            tiledMapObstaclesComponent.layerIndicesToRender = new int[] { 3, 2 };
+            tiledMapObstaclesComponent.renderLayer = Layers.MapObstacles;
+
+            var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
+            tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
+            tiledMapDetailsComponent.layerIndicesToRender = new int[] { 4 };
+            tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
+            tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
             var playerEntity = createEntity("player");
-            playerEntity.addComponent(new Player((int) tiledMapComponent.width / 2, (int)tiledMapComponent.height / 2));
+            playerEntity.addComponent(new Player((int)tiledMapComponent.width / 2, (int)tiledMapComponent.height / 2));
+            addSceneComponent(new SmoothCamera(playerEntity));
 
-            playerEntity.addComponent(new SmoothCamera(playerEntity));
             //var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
 
             ////TODO Remove this: testing only for controllaz

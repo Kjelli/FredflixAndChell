@@ -35,7 +35,7 @@ namespace FredflixAndChell.Shared.GameObjects
             Idle_Unarmed,
             Walk,
             Idle
-           
+
         }
 
         Sprite<Animations> _animation;
@@ -62,7 +62,11 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[0 + 1 * 8],
                 subtextures[0 + 2 * 8],
                 subtextures[0 + 3 * 8],
-            }));
+            })
+            {
+                loop = true,
+                fps = 5
+            });
 
             animations.addAnimation(Animations.Idle, new SpriteAnimation(new List<Subtexture>()
             {
@@ -70,7 +74,11 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[2 + 1 * 8],
                 subtextures[2 + 2 * 8],
                 subtextures[2 + 3 * 8],
-            }));
+            })
+            {
+                loop = true,
+                fps = 5
+            });
 
             animations.addAnimation(Animations.Walk_Unarmed, new SpriteAnimation(new List<Subtexture>()
             {
@@ -82,7 +90,11 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[1 + 4 * 8],
                 subtextures[1 + 5 * 8],
                 subtextures[1 + 6 * 8],
-            }));
+            })
+            {
+                loop = true,
+                fps = 10
+            });
 
             animations.addAnimation(Animations.Walk, new SpriteAnimation(new List<Subtexture>()
             {
@@ -94,7 +106,11 @@ namespace FredflixAndChell.Shared.GameObjects
                 subtextures[3 + 4 * 8],
                 subtextures[3 + 5 * 8],
                 subtextures[3 + 6 * 8],
-            }));
+            })
+            {
+                loop = true,
+                fps = 10
+            });
 
             return animations;
         }
@@ -113,7 +129,13 @@ namespace FredflixAndChell.Shared.GameObjects
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.2f));
+            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.1f));
+
+            // Assign collider component
+            var collider = entity.addComponent(new CircleCollider(4f));
+            collider.localOffset = new Vector2(0, 4);
+            Flags.setFlagExclusive(ref collider.collidesWithLayers, 0);
+            Flags.setFlagExclusive(ref collider.physicsLayer, Layers.MapObstacles);
 
             // Assign renderable (animation) component
             var animations = SetupAnimations();
@@ -142,21 +164,28 @@ namespace FredflixAndChell.Shared.GameObjects
             UpdateAnimation();
 
             if (_controller.FirePressed)
-            {
                 Attack();
-            }
+            if (_controller.ReloadPressed)
+                Reload();
 
         }
 
         private void Move()
         {
             var deltaTime = Time.deltaTime;
+
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
             Acceleration *= _speed;
+
             Velocity = new Vector2(Velocity.X * 0.75f + Acceleration.X * 0.25f, Velocity.Y * 0.75f + Acceleration.Y * 0.25f);
             Velocity *= deltaTime;
 
-            _mover.move(Velocity, out CollisionResult result);
+            var isColliding = _mover.move(Velocity, out CollisionResult result);
+
+            if (isColliding)
+            {
+                Console.WriteLine(result.minimumTranslationVector);
+            }
         }
 
         private void UpdateAnimation()
@@ -169,14 +198,12 @@ namespace FredflixAndChell.Shared.GameObjects
 
             if (_controller.XLeftAxis < 0 || _controller.XLeftAxis > 0 || _controller.YLeftAxis != 0)
             {
-                animation = armed ? Animations.Walk : Animations.Walk_Unarmed ;
+                animation = armed ? Animations.Walk : Animations.Walk_Unarmed;
             }
 
             if (!_animation.isAnimationPlaying(animation))
             {
-                _animation.play(animation)
-                    .setFps(10f) // Vanskelig å øke relativt til velocity...
-                    .prepareForUse();
+                _animation.play(animation);
             }
         }
 
@@ -185,12 +212,17 @@ namespace FredflixAndChell.Shared.GameObjects
             _gun.Fire();
         }
 
+        public void Reload()
+        {
+            _gun.ReloadMagazine();
+        }
+
         private void SetFacing()
         {
             FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
             _gun.entity.rotation = FacingAngle;
 
-            if (FacingAngle < - Math.PI / 2 || FacingAngle > Math.PI / 2)
+            if (FacingAngle < -Math.PI / 2 || FacingAngle > Math.PI / 2)
             {
                 VerticalFacing = (int)FacingCode.UP;
             }
@@ -199,7 +231,7 @@ namespace FredflixAndChell.Shared.GameObjects
                 VerticalFacing = (int)FacingCode.DOWN;
             }
             //Prioritizing "horizontal" sprites
-            if (FacingAngle > - Math.PI/2 && FacingAngle < Math.PI / 2)
+            if (FacingAngle > -Math.PI / 2 && FacingAngle < Math.PI / 2)
             {
                 _animation.flipX = false;
                 _gun.flipY = false;

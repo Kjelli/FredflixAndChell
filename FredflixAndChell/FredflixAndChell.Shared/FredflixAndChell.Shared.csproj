@@ -71,6 +71,7 @@
     <Compile Include="Utilities\Input\InputActions.cs" />
     <Compile Include="Utilities\Input\KeyboardUtility.cs" />
     <Compile Include="Components\PlayerController.cs" />
+    <Compile Include="Utilities\Input\MouseFollow.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />

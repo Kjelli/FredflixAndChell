@@ -29,18 +29,6 @@
 /processorParam:TextureFormat=Compressed
 /build:font_debug.spritefont
 
-#begin gun_m4_spritesheet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gun_m4_spritesheet.png;tex_gun_m4_spritesheet.png
-
 #begin kjelli_spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -106,6 +94,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:tex_debug.png
+
+#begin tex_gun_m4_spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tex_gun_m4_spritesheet.png
 
 #begin tex_lava1.jpg
 /importer:TextureImporter
