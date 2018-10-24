@@ -78,7 +78,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             animations.addAnimation(Animations.Held_Idle, new SpriteAnimation(new List<Subtexture>()
             {
                 _subtextures[1 + 0 * 8],
-            }));
+            })
+            {
+                loop = true,
+                fps = 5
+            });
 
 
             animations.addAnimation(Animations.Held_Fired, new SpriteAnimation(new List<Subtexture>()
@@ -87,7 +91,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                 _subtextures[1 + 2 * 8],
                 _subtextures[1 + 3 * 8],
                 _subtextures[1 + 0 * 8],
-            }));
+            })
+            {
+                loop = false,
+                fps = 5
+            });
 
             animations.addAnimation(Animations.Reload, new SpriteAnimation(new List<Subtexture>()
             {
@@ -102,7 +110,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                 _subtextures[2 + 1 * 8],
                 _subtextures[2 + 0 * 8],
                 _subtextures[1 + 0 * 8],
-            }));
+            })
+            {
+                loop = false,
+                fps = 15
+            });
 
 
             return animations;
@@ -122,10 +134,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     MagazineAmmo--;
 
                     //Animation
-                    _animation.play(Animations.Held_Fired)
-                        .setLoop(false)
-                        .setFps(10f)
-                        .prepareForUse();
+                    _animation.play(Animations.Held_Fired);
                 }
             }
         }
@@ -156,10 +165,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                 Ammo = Ammo - newBullets;
                 MagazineAmmo = MagazineAmmo + newBullets;
                 //Animation
-                _animation.play(Animations.Reload)
-                    .setLoop(false)
-                    .setFps(ReloadTime + 0.7f)
-                    .prepareForUse();
+                _animation.play(Animations.Reload);
             }
         }
 
@@ -191,8 +197,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             _animation.renderLayer = Layers.PlayerFront;
 
             Cooldown.Start();
-            _animation.play(Animations.Held_Idle)
-                .setLoop(false);
+            _animation.play(Animations.Held_Idle);
         }
 
         public override void update()
