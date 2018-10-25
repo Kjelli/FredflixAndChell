@@ -16,14 +16,22 @@ using Nez.Tiled;
 using FredflixAndChell.Shared.Components;
 using Nez.Textures;
 using static FredflixAndChell.Shared.Assets.Constants;
+using Nez.Shadows;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
     public class Player : GameObject
     {
         private Vector2 Acceleration;
-        private float _speed = 200f;
+        private Mover _mover;
+        private PlayerController _controller;
 
+        private Entity _gunEntity;
+        private Gun _gun;
+
+        private Entity _lightEntity;
+
+        private float _speed = 200f;
         public float FacingAngle { get; set; }
 
         public int VerticalFacing { get; set; }
@@ -40,11 +48,7 @@ namespace FredflixAndChell.Shared.GameObjects
 
         Sprite<Animations> _animation;
 
-        private Mover _mover;
-        private PlayerController _controller;
 
-        private Entity _gunEntity;
-        private Gun _gun;
 
         public Player(int x, int y) : base(x, y, 64, 64)
         {
@@ -141,6 +145,12 @@ namespace FredflixAndChell.Shared.GameObjects
             var animations = SetupAnimations();
             _animation = entity.addComponent(animations);
             _animation.renderLayer = Layers.Player;
+
+            // Assign faint glow to player
+            var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("lightmask_sm")));
+            sprite.material = Material.blendLighten();
+            sprite.color = Color.Gray;
+            sprite.renderLayer = Layers.Lights;
 
             // Assign renderable shadow component
             var shadow = entity.addComponent(new SpriteMime(_animation));

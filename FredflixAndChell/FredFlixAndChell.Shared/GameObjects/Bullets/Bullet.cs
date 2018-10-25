@@ -18,6 +18,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         private Texture2D _texture;
         private ProjectileMover _mover;
         private CircleCollider _collider;
+        private TiledMapComponent _map;
 
         public float Damage { get; set; }
         public float Direction { get; set; }
@@ -41,7 +42,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         public override void OnSpawn()
         {
             var sprite = entity.addComponent(new Sprite(_texture));
-            sprite.renderLayer = Layers.PlayerBehind;
+            sprite.renderLayer = Layers.Bullet;
 
             var shadow = entity.addComponent(new SpriteMime(sprite));
             shadow.color = new Color(0, 0, 0, 80);
@@ -51,6 +52,8 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             _collider = entity.addComponent<CircleCollider>();
             _mover = entity.addComponent(new ProjectileMover());
+
+            _map = entity.scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
 
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, 0);
             Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.MapObstacles);
@@ -72,11 +75,22 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             Velocity = new Vector2(Speed * (float)Math.Cos(Direction), Speed * (float)Math.Sin(Direction));
             Velocity *= Time.deltaTime;
             var isColliding = _mover.move(new Vector2(Velocity.X, Velocity.Y));
-            
-            if (isColliding)
+
+            if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
-                entity.setEnabled(false);
-                entity.destroy();
+                var pos = entity.position + new Vector2(-4) * collision.normal;
+
+                var tile = _map.getTileAtWorldPosition(pos);
+                var bulletsPassable = tile?
+                    .tilesetTile?
+                    .properties?
+                    .ContainsKey(TileProperties.BulletPassable) ?? false;
+
+                if (!bulletsPassable)
+                {
+                    entity.setEnabled(false);
+                    entity.destroy();
+                }
             }
         }
     }

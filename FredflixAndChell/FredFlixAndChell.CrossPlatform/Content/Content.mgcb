@@ -143,6 +143,18 @@
 /processorParam:TextureFormat=Color
 /build:tex_lightmask.png
 
+#begin tex_lightmask_sm.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tex_lightmask_sm.png
+
 #begin tex_metal1.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

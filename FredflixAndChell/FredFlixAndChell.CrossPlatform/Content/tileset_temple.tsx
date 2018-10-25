@@ -2,54 +2,141 @@
 <tileset version="1.2" tiledversion="1.2.0" name="CB-All_Temple" tilewidth="8" tileheight="8" tilecount="5406" columns="159">
  <image source="sheet_temple.png" trans="ff00ff" width="1272" height="272"/>
  <tile id="23">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="23" duration="300"/>
    <frame tileid="500" duration="300"/>
   </animation>
  </tile>
  <tile id="26">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="26" duration="300"/>
    <frame tileid="503" duration="300"/>
   </animation>
  </tile>
  <tile id="182">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="182" duration="300"/>
    <frame tileid="659" duration="300"/>
   </animation>
  </tile>
  <tile id="185">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="185" duration="300"/>
    <frame tileid="662" duration="300"/>
   </animation>
  </tile>
  <tile id="341">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="341" duration="300"/>
    <frame tileid="818" duration="300"/>
   </animation>
  </tile>
  <tile id="342">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="342" duration="300"/>
    <frame tileid="819" duration="300"/>
   </animation>
  </tile>
  <tile id="343">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="343" duration="300"/>
    <frame tileid="820" duration="300"/>
   </animation>
  </tile>
  <tile id="344">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="344" duration="300"/>
    <frame tileid="821" duration="300"/>
   </animation>
  </tile>
+ <tile id="500">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="503">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="659">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="662">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="818">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="819">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="820">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="821">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="1434">
+  <properties>
+   <property name="bullet_passable" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="1436">
+  <properties>
+   <property name="emits_light" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="1609">
+  <properties>
+   <property name="emits_light" type="bool" value="true"/>
+  </properties>
+ </tile>
+ <tile id="1613">
+  <properties>
+   <property name="emits_light" type="bool" value="true"/>
+  </properties>
+ </tile>
  <tile id="2243">
+  <properties>
+   <property name="emits_light" type="bool" value="true"/>
+  </properties>
   <animation>
    <frame tileid="2243" duration="300"/>
    <frame tileid="2245" duration="300"/>
@@ -60,6 +147,11 @@
    <frame tileid="2244" duration="300"/>
    <frame tileid="2246" duration="300"/>
   </animation>
+ </tile>
+ <tile id="2245">
+  <properties>
+   <property name="emits_light" type="bool" value="true"/>
+  </properties>
  </tile>
  <tile id="2385">
   <animation>

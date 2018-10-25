@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework.Input;
 using FredflixAndChell.Shared.Utilities;
 using System;
 using static FredflixAndChell.Shared.Assets.Constants;
+using Nez.Textures;
+using Nez.Tiled;
+using Nez.DeferredLighting;
+using Nez.Shadows;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -19,31 +23,14 @@ namespace FredflixAndChell.Shared.Scenes
 
             AssetLoader.Load(content);
 
-            // default to 1280x720 with no SceneResolutionPolicy
             setDesignResolution(1280, 720, Scene.SceneResolutionPolicy.BestFit);
             Screen.setSize(1280, 720);
 
-            // Draw background
-            var tiledEntity = createEntity("tiled-map-entity");
-            var tiledmap = AssetLoader.GetMap("firstlevel");
-            var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
-            tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
-            tiledMapComponent.layerIndicesToRender = new int[] { 1, 0 };
-            tiledMapComponent.renderLayer = Layers.MapBackground;
-
-            var tiledMapObstaclesComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Obstacles"));
-            tiledMapObstaclesComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
-            tiledMapObstaclesComponent.layerIndicesToRender = new int[] { 3, 2 };
-            tiledMapObstaclesComponent.renderLayer = Layers.MapObstacles;
-
-            var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
-            tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
-            tiledMapDetailsComponent.layerIndicesToRender = new int[] { 4 };
-            tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
-            tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
+            SetupRenderering();
+            SetupMap();
 
             var playerEntity = createEntity("player");
-            playerEntity.addComponent(new Player((int)tiledMapComponent.width / 2, (int)tiledMapComponent.height / 2));
+            playerEntity.addComponent(new Player(300, 100));
             addSceneComponent(new SmoothCamera(playerEntity));
 
             //var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
@@ -60,11 +47,88 @@ namespace FredflixAndChell.Shared.Scenes
 
             //playerEntity.addComponent(new Player(Screen.width / 2, Screen.height / 2));
 
-            camera.setMinimumZoom(2);
-            camera.setMaximumZoom(6);
-            camera.setZoom(6);
+        }
 
-            addRenderer(new DefaultRenderer(renderOrder: -1, camera: camera));
+        private void SetupMap()
+        {
+            var tiledEntity = createEntity("tiled-map-entity");
+            var tiledmap = AssetLoader.GetMap("firstlevel");
+
+            var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
+            tiledMapComponent.layerIndicesToRender = new int[] { 1, 0 };
+            tiledMapComponent.renderLayer = Layers.MapBackground;
+            //tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
+
+            var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
+            tiledMapDetailsComponent.layerIndicesToRender = new int[] { 2 };
+            tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
+            //tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
+            //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
+
+            CustomizeTiles(tiledMapComponent);
+        }
+
+        private void CustomizeTiles(TiledMapComponent mapComponent)
+        {
+            var tileSize = new Vector2(mapComponent.tiledMap.tileWidth, mapComponent.tiledMap.tileHeight);
+            for (float x = 0; x < mapComponent.width; x += tileSize.X)
+            {
+                for (float y = 0; y < mapComponent.height; y += tileSize.X)
+                {
+                    var tilePos = new Vector2(x, y);
+                    var tile = mapComponent.getTileAtWorldPosition(tilePos);
+                    CustomizeTile(tile, tilePos, tileSize);
+                }
+
+            }
+        }
+
+        private void CustomizeTile(TiledTile tile, Vector2 pos, Vector2 size)
+        {
+            if (tile == null)
+            {
+                return;
+            }
+
+            var properties = tile?.tilesetTile?.properties;
+            if (properties == null) return;
+            if (properties.ContainsKey(TileProperties.EmitsLight))
+            {
+                var entity = createEntity("world-light", pos + size);
+                entity.setScale(0.35f);
+
+                var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("lightmask")));
+                sprite.material = Material.blendLighten();
+                sprite.color = new Color(Color.White, 0.4f);
+                sprite.renderLayer = Layers.Lights;
+            }
+        }
+
+        private void SetupRenderering()
+        {
+            camera.setMinimumZoom(4);
+            camera.setMaximumZoom(6);
+            camera.setZoom(4);
+
+            // Rendering all layers but lights
+            var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
+                Layers.Lights, Layers.Lights2));
+
+            // Rendering lights
+            var lightRenderer = addRenderer(new RenderLayerRenderer(1,
+                Layers.Lights, Layers.Lights2));
+            lightRenderer.renderTexture = new RenderTexture();
+            lightRenderer.renderTargetClearColor = new Color(20, 20, 20, 255);
+
+            // Postprocessor effects for lighting
+            var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
+
+
+            var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
+            bloomPostProcessor.settings = BloomSettings.presetSettings[3];
+
+            var vignette = addPostProcessor(new VignettePostProcessor(4));
+
         }
     }
 }

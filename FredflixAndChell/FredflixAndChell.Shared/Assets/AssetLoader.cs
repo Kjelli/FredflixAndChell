@@ -13,7 +13,6 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private static Dictionary<string, Effect> _effects = new Dictionary<string, Effect>();
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
-
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
         public static void Load(ContentManager cm)
@@ -28,6 +27,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("tex_lava1");
             LoadTexture("tex_lava2");
             LoadTexture("tex_lightmask");
+            LoadTexture("tex_lightmask_sm");
             LoadTexture("tex_debug");
 
             // Load Gameobjects 
@@ -46,7 +46,8 @@ namespace FredflixAndChell.Shared.Assets
             // Load maps
             LoadMap("firstlevel");
         }
-       
+        
+        #region Loaders and Getters
         public static Texture2D GetTexture(string name)
         {
             return _textures[name];
@@ -100,5 +101,7 @@ namespace FredflixAndChell.Shared.Assets
 
             _fonts.Add(name, font);
         }
+
+        #endregion
     }
 }
