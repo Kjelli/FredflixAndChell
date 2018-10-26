@@ -30,7 +30,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             Direction = direction;
             Speed = speed;
 
-            _texture = AssetLoader.GetTexture("standard_bullet");
+            _texture = AssetLoader.GetTexture("bullets/standard");
 
         }
 
@@ -52,7 +52,6 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             _collider = entity.addComponent<CircleCollider>();
             _mover = entity.addComponent(new ProjectileMover());
-
             _map = entity.scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
 
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, 0);
@@ -62,7 +61,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             _collider.onAddedToEntity();
             _mover.onAddedToEntity();
 
-            entity.setScale(0.25f);
+            entity.setScale(0.125f);
         }
 
         public override void update()

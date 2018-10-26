@@ -18,9 +18,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
     public class Gun : GameObject, IWeapon
     {
-        private List<Subtexture> _subtextures;
-        private Texture2D _texture;
-        private Sprite _sprite;
         private Player _player;
 
         public int Damage { get; set; }
@@ -42,12 +39,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public Gun(Player owner, int x, int y, float cooldown) : base(x, y, 64, 64)
         {
-            var texture = AssetLoader.GetTexture("gun_m4_spritesheet");
-            _subtextures = Subtexture.subtexturesFromAtlas(texture, 32, 32);
-
-            _texture = owner != null ? _subtextures[0] : _subtextures[1];
-
-            BarrelOffset = new Vector2(y, x + 10);
+            BarrelOffset = new Vector2(10, 0);
             _player = owner;
 
             //TODO: Dynamicly set ammo
@@ -56,7 +48,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             MaxAmmo = 1200;
             Ammo = 6000;
             ReloadTime = 1f;
-
 
             Cooldown = new Cooldown(cooldown);
             Reload = new Cooldown(ReloadTime);
@@ -74,10 +65,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private Sprite<Animations> SetupAnimations()
         {
             var animations = new Sprite<Animations>();
+            var texture = AssetLoader.GetTexture("guns/m4");
+            var subtextures = Subtexture.subtexturesFromAtlas(texture, 32, 32);
+            subtextures.ForEach(t => t.origin = new Vector2(10, 16));
 
             animations.addAnimation(Animations.Held_Idle, new SpriteAnimation(new List<Subtexture>()
             {
-                _subtextures[1 + 0 * 8],
+                subtextures[1 + 0 * 8],
             })
             {
                 loop = true,
@@ -87,10 +81,10 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
             animations.addAnimation(Animations.Held_Fired, new SpriteAnimation(new List<Subtexture>()
             {
-                _subtextures[1 + 1 * 8],
-                _subtextures[1 + 2 * 8],
-                _subtextures[1 + 3 * 8],
-                _subtextures[1 + 0 * 8],
+                subtextures[1 + 1 * 8],
+                subtextures[1 + 2 * 8],
+                subtextures[1 + 3 * 8],
+                subtextures[1 + 0 * 8],
             })
             {
                 loop = false,
@@ -99,17 +93,17 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
             animations.addAnimation(Animations.Reload, new SpriteAnimation(new List<Subtexture>()
             {
-                _subtextures[1 + 0 * 8],
-                _subtextures[2 + 0 * 8],
-                _subtextures[2 + 1 * 8],
-                _subtextures[2 + 2 * 8],
-                _subtextures[2 + 3 * 8],
-                _subtextures[2 + 4 * 8],
-                _subtextures[2 + 3 * 8],
-                _subtextures[2 + 2 * 8],
-                _subtextures[2 + 1 * 8],
-                _subtextures[2 + 0 * 8],
-                _subtextures[1 + 0 * 8],
+                subtextures[1 + 0 * 8],
+                subtextures[2 + 0 * 8],
+                subtextures[2 + 1 * 8],
+                subtextures[2 + 2 * 8],
+                subtextures[2 + 3 * 8],
+                subtextures[2 + 4 * 8],
+                subtextures[2 + 3 * 8],
+                subtextures[2 + 2 * 8],
+                subtextures[2 + 1 * 8],
+                subtextures[2 + 0 * 8],
+                subtextures[1 + 0 * 8],
             })
             {
                 loop = false,
@@ -124,13 +118,15 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             if (!Reload.IsOnCooldown())
             {
-                checkAmmo();
+                CheckAmmo();
                 if (Cooldown.IsReady() && Reload.IsReady() && MagazineAmmo >= 0)
                 {
                     //Functionality
                     Cooldown.Start();
                     var bulletEntity = entity.scene.createEntity("bullet");
-                    bulletEntity.addComponent(new Bullet(_player, entity.position.X, entity.position.Y, 4, 4, _player.FacingAngle, 200 + .0f, 30.0f));
+                    var bulletSpawnX = entity.position.X + (float) Math.Cos(_player.FacingAngle) * BarrelOffset.X + (float)Math.Cos(_player.FacingAngle) * BarrelOffset.Y;
+                    var bulletSpawnY = entity.position.Y + (float) Math.Sin(_player.FacingAngle) * BarrelOffset.Y + (float)Math.Sin(_player.FacingAngle) * BarrelOffset.X;
+                    bulletEntity.addComponent(new Bullet(_player, bulletSpawnX, bulletSpawnY, 1, 1, _player.FacingAngle, 200f, 30f));
                     MagazineAmmo--;
 
                     //Animation
@@ -139,7 +135,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             }
         }
 
-        private void checkAmmo()
+        private void CheckAmmo()
         {
             if(MagazineAmmo == 0){
                 if(Ammo <= 0)
@@ -169,16 +165,18 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             }
         }
 
-
-
         public override void OnDespawn()
         {
         }
 
-
         public override void OnSpawn()
         {
-            var shadow = entity.addComponent(new SpriteMime(_sprite));
+            entity.setScale(0.6f);
+
+            _animation = entity.addComponent(SetupAnimations());
+            _animation.renderLayer = Layers.PlayerFrontest;
+
+            var shadow = entity.addComponent(new SpriteMime(_animation));
             shadow.color = new Color(0, 0, 0, 80);
             shadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
             shadow.renderLayer = Layers.Shadow;
@@ -191,21 +189,21 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             silhouette.renderLayer = Layers.Foreground;
             silhouette.localOffset = new Vector2(0, 0);
 
-            entity.setScale(0.6f);
-
-            _animation = entity.addComponent(SetupAnimations());
-            _animation.renderLayer = Layers.PlayerFront;
-
             Cooldown.Start();
             _animation.play(Animations.Held_Idle);
+        }
+
+        public void SetRenderLayer(int renderLayer)
+        {
+            _animation?.setRenderLayer(renderLayer);
         }
 
         public override void update()
         {
             _animation.flipY = flipY;
-            //TODO: Dont hardcore this shit 
-            var offset = _player.HorizontalFacing == 2 ? 7 : -7;
-            entity.position = new Vector2(_player.entity.position.X + offset, _player.entity.position.Y + 2);
+            var offset = 7;
+            entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(_player.FacingAngle)*offset,
+                _player.entity.position.Y + (float)Math.Sin(_player.FacingAngle) * offset/2);
 
             Cooldown.Update();
             Reload.Update();

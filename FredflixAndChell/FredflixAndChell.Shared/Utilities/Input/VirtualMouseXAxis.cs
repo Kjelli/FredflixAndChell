@@ -2,7 +2,7 @@
 using Nez;
 using System;
 
-namespace FredflixAndChell.Shared.Components
+namespace FredflixAndChell.Shared.Utilities.Input
 {
     public class VirtualMouseXAxis : VirtualAxis.Node
     {
@@ -13,6 +13,6 @@ namespace FredflixAndChell.Shared.Components
             ReferencePoint = referencePoint;
         }
 
-        public override float value => (float) Math.Cos(Mathf.angleBetweenVectors(ReferencePoint, Input.mousePosition));
+        public override float value => (float) Math.Cos(Mathf.angleBetweenVectors(ReferencePoint, Nez.Input.mousePosition));
     }
 }

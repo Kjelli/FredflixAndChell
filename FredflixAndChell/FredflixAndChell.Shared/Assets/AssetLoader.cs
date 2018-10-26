@@ -9,7 +9,8 @@ namespace FredflixAndChell.Shared.Assets
 {
     public static class AssetLoader
     {
-        private static ContentManager _content { get; set; }
+        private static ContentManager _content;
+
         private static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private static Dictionary<string, Effect> _effects = new Dictionary<string, Effect>();
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
@@ -20,31 +21,24 @@ namespace FredflixAndChell.Shared.Assets
             _content = cm;
 
             // Load fonts to be used in the game
-            LoadFont("font_debug");
+            LoadFont("fonts/debug");
 
-            LoadTexture("tex_kjelli_spritesheet");
-            LoadTexture("tex_rainbow");
-            LoadTexture("tex_lava1");
-            LoadTexture("tex_lava2");
-            LoadTexture("tex_lightmask");
-            LoadTexture("tex_lightmask_sm");
-            LoadTexture("tex_debug");
+            LoadTexture("textures/players/tormod_body");
+            LoadTexture("textures/players/tormod_head");
+            LoadTexture("textures/players/kjelli_body");
+            LoadTexture("textures/players/kjelli_head");
+            LoadTexture("textures/effects/rainbow");
+            LoadTexture("textures/effects/lava1");
+            LoadTexture("textures/effects/lava2");
+            LoadTexture("textures/effects/lightmask");
+            LoadTexture("textures/effects/lightmask_sm");
+            LoadTexture("textures/effects/lightmask_xs");
+            LoadTexture("textures/guns/m4");
+            LoadTexture("textures/bullets/standard");
 
-            // Load Gameobjects 
+            LoadEffect("effects/shader_flash");
 
-            //Player
-
-            //Weapons
-            LoadTexture("tex_gun_m4_spritesheet");
-
-            //Bullets
-            LoadTexture("tex_standard_bullet");
-
-            // Load effects to be used in the game
-            LoadEffect("shader_flash");
-
-            // Load maps
-            LoadMap("firstlevel");
+            LoadMap("maps/firstlevel");
         }
         
         #region Loaders and Getters
@@ -73,7 +67,7 @@ namespace FredflixAndChell.Shared.Assets
         private static void LoadTexture(string name)
         {
             var tex = _content.Load<Texture2D>(name);
-            name = name.Replace("tex_", "");
+            name = name.Replace("textures/", "");
 
             _textures.Add(name, tex);
         }
@@ -81,7 +75,7 @@ namespace FredflixAndChell.Shared.Assets
         private static void LoadMap(string name)
         {
             var map = _content.Load<TiledMap>(name);
-            //name = name.Replace("tex_", "");
+            name = name.Replace("maps/", "");
 
             _maps.Add(name, map);
         }
@@ -89,7 +83,7 @@ namespace FredflixAndChell.Shared.Assets
         private static void LoadEffect(string name)
         {
             var shader = _content.Load<Effect>(name);
-            name = name.Replace("shader_", "");
+            name = name.Replace("effects/", "");
 
             _effects.Add(name, shader);
         }
@@ -97,7 +91,7 @@ namespace FredflixAndChell.Shared.Assets
         private static void LoadFont(string name)
         {
             var font = _content.Load<SpriteFont>(name);
-            name = name.Replace("font_", "");
+            name = name.Replace("fonts/", "");
 
             _fonts.Add(name, font);
         }

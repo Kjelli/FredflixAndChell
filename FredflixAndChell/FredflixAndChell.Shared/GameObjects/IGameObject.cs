@@ -11,5 +11,6 @@ namespace FredflixAndChell.Shared.GameObjects
 
         void OnSpawn();
         void OnDespawn();
+
     }
 }

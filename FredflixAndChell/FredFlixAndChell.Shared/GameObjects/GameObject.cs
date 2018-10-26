@@ -14,6 +14,8 @@ namespace FredflixAndChell.Shared.GameObjects
 {
     public abstract class GameObject : Component, IGameObject, IUpdatable
     {
+        private bool _hasSpawned;
+        protected bool HasSpawned => _hasSpawned;
         private Vector2 _spawnPosition { get; set; }
         public Vector2 Velocity { get; set; }
         public Vector2 Size { get; set; }
@@ -29,13 +31,13 @@ namespace FredflixAndChell.Shared.GameObjects
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            OnSpawn();
-
-            var sprite = entity.getComponent<Sprite>();
-            if (sprite != null)
+            if (!_hasSpawned)
             {
-                entity.position = _spawnPosition;
+                OnSpawn();
+                _hasSpawned = true;
             }
+
+            entity.position = _spawnPosition;
         }
 
         public override void onRemovedFromEntity()

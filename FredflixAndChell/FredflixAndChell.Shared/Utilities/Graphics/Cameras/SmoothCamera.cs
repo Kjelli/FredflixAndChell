@@ -1,32 +1,37 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FredflixAndChell.Shared.GameObjects;
+using Microsoft.Xna.Framework;
 using Nez;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using static FredflixAndChell.Shared.Assets.Constants;
 
-namespace FredflixAndChell.Shared.Scenes
+namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
 {
     internal class SmoothCamera : SceneComponent
     {
-        private Entity playerEntity;
         private Camera camera;
         private TiledMapComponent _map;
 
-        public SmoothCamera(Entity playerEntity)
+        public SmoothCamera()
         {
-            this.playerEntity = playerEntity;
         }
 
         public override void onEnabled()
         {
             base.onEnabled();
-            camera = playerEntity.scene.camera;
-            camera.position = playerEntity.position;
+            camera = scene.camera;
             _map = scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
-            
         }
 
         public override void update()
         {
             base.update();
-            camera.position = camera.position*0.9925f + 0.0075f*playerEntity.position;
+            var players = scene.findEntitiesWithTag(Tags.Player);
+            if (players.Count == 0) return;
+
+            var centerPoint = new Vector2(players.Average(p => p.position.X), players.Average(p => p.position.Y));
+            camera.position = camera.position*0.9925f + 0.0075f* centerPoint;
 
             if (camera.bounds.left < 0) camera.position = new Vector2(camera.bounds.width/2, camera.position.Y);
             if (camera.bounds.top < 0) camera.position = new Vector2(camera.position.X, camera.bounds.height/2);

@@ -1,10 +1,10 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.Utilities.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
-using System;
 
-namespace FredflixAndChell.Shared.Components
+namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
     public class PlayerController : Component, IUpdatable
     {

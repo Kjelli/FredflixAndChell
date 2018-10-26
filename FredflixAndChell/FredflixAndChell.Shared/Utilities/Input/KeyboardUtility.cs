@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FredflixAndChell.Shared.Utilities
+namespace FredflixAndChell.Shared.Utilities.Input
 {
     public static class KeyboardUtility
     {

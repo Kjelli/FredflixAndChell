@@ -12,6 +12,7 @@ using Nez.Textures;
 using Nez.Tiled;
 using Nez.DeferredLighting;
 using Nez.Shadows;
+using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -23,15 +24,15 @@ namespace FredflixAndChell.Shared.Scenes
 
             AssetLoader.Load(content);
 
-            setDesignResolution(1280, 720, Scene.SceneResolutionPolicy.BestFit);
+            setDesignResolution(1280, 720, SceneResolutionPolicy.BestFit);
             Screen.setSize(1280, 720);
 
             SetupRenderering();
             SetupMap();
 
             var playerEntity = createEntity("player");
-            playerEntity.addComponent(new Player(300, 100));
-            addSceneComponent(new SmoothCamera(playerEntity));
+            playerEntity.addComponent(new Player(100, 100));
+            addSceneComponent(new SmoothCamera());
 
             //var playerEntity = createEntity("player", new Vector2(Screen.width / 2, Screen.height / 2));
 
@@ -57,12 +58,12 @@ namespace FredflixAndChell.Shared.Scenes
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
             tiledMapComponent.layerIndicesToRender = new int[] { 1, 0 };
             tiledMapComponent.renderLayer = Layers.MapBackground;
-            //tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
+            tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
 
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 2 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
-            //tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
+            tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
             CustomizeTiles(tiledMapComponent);
@@ -95,9 +96,9 @@ namespace FredflixAndChell.Shared.Scenes
             if (properties.ContainsKey(TileProperties.EmitsLight))
             {
                 var entity = createEntity("world-light", pos + size);
-                entity.setScale(0.35f);
+                entity.setScale(0.55f);
 
-                var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("lightmask")));
+                var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask")));
                 sprite.material = Material.blendLighten();
                 sprite.color = new Color(Color.White, 0.4f);
                 sprite.renderLayer = Layers.Lights;
@@ -118,17 +119,15 @@ namespace FredflixAndChell.Shared.Scenes
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
             lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(20, 20, 20, 255);
+            lightRenderer.renderTargetClearColor = new Color(150, 150, 150, 255);
 
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
-
             var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[3];
+            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
-
         }
     }
 }

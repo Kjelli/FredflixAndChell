@@ -6,11 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FredflixAndChell.Shared.Utilities
+namespace FredflixAndChell.Shared.Utilities.Input
 {
     public class GamePadUtility
     {
-
         private static GamePadCapabilities capabilities;
 
         private static PlayerIndex PlayerIndex;
