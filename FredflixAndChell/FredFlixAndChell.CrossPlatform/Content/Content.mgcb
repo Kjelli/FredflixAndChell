@@ -17,19 +17,37 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin firstlevel.tmx
-/importer:
-/processor:
-/build:firstlevel.tmx
+#begin effects/shader_flash.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/shader_flash.fx
 
-#begin font_debug.spritefont
+#begin effects/shader_light.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/shader_light.fx
+
+#begin effects/shader_wavy.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/shader_wavy.fx
+
+#begin fonts/debug.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:font_debug.spritefont
+/build:fonts/debug.spritefont
 
-#begin kjelli_spritesheet.png
+#begin maps/firstlevel.tmx
+/importer:
+/processor:
+/build:maps/firstlevel.tmx
+
+#begin maps/sheet_temple.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -39,27 +57,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:kjelli_spritesheet.png;tex_kjelli_spritesheet.png
+/build:maps/sheet_temple.png
 
-#begin shader_flash.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shader_flash.fx
-
-#begin shader_light.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shader_light.fx
-
-#begin shader_wavy.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shader_wavy.fx
-
-#begin sheet_pig.png
+#begin textures/bullets/standard.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -69,9 +69,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sheet_pig.png
+/build:textures/bullets/standard.png
 
-#begin sheet_temple.png
+#begin textures/effects/lava1.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -81,9 +81,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sheet_temple.png
+/build:textures/effects/lava1.jpg
 
-#begin tex_debug.png
+#begin textures/effects/lava2.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -93,9 +93,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_debug.png
+/build:textures/effects/lava2.jpg
 
-#begin tex_gun_m4_spritesheet.png
+#begin textures/effects/lightmask.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -105,9 +105,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_gun_m4_spritesheet.png
+/build:textures/effects/lightmask.png
 
-#begin tex_lava1.jpg
+#begin textures/effects/lightmask_sm.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -117,9 +117,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_lava1.jpg
+/build:textures/effects/lightmask_sm.png
 
-#begin tex_lava2.jpg
+#begin textures/effects/lightmask_xs.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -129,9 +129,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_lava2.jpg
+/build:textures/effects/lightmask_xs.png
 
-#begin tex_lightmask.png
+#begin textures/effects/metal.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -141,9 +141,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_lightmask.png
+/build:textures/effects/metal.jpg
 
-#begin tex_lightmask_sm.png
+#begin textures/effects/rainbow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -153,9 +153,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_lightmask_sm.png
+/build:textures/effects/rainbow.png
 
-#begin tex_metal1.jpg
+#begin textures/guns/m4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -165,9 +165,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_metal1.jpg
+/build:textures/guns/m4.png
 
-#begin tex_rainbow.png
+#begin textures/players/kjelli_body.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -177,9 +177,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_rainbow.png
+/build:textures/players/kjelli_body.png
 
-#begin tex_standard_bullet.png
+#begin textures/players/kjelli_head.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -189,5 +189,29 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:tex_standard_bullet.png
+/build:textures/players/kjelli_head.png
+
+#begin textures/players/tormod_body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/tormod_body.png
+
+#begin textures/players/tormod_head.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/tormod_head.png
 
