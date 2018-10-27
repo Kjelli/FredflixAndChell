@@ -31,7 +31,7 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
             if (players.Count == 0) return;
 
             var centerPoint = new Vector2(players.Average(p => p.position.X), players.Average(p => p.position.Y));
-            camera.position = camera.position*0.9925f + 0.0075f* centerPoint;
+            camera.position = camera.position*0.925f + 0.075f* centerPoint;
 
             if (camera.bounds.left < 0) camera.position = new Vector2(camera.bounds.width/2, camera.position.Y);
             if (camera.bounds.top < 0) camera.position = new Vector2(camera.position.X, camera.bounds.height/2);

@@ -130,7 +130,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     MagazineAmmo--;
 
                     //Animation
-                    _animation.play(Animations.Held_Fired);
+                    _animation?.play(Animations.Held_Fired);
                 }
             }
         }
