@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FredFlixAndChell.CrossPlatform", "FredFlixAndChell.CrossPlatform\FredFlixAndChell.CrossPlatform.csproj", "{C3A1E5D4-FAB0-4954-B47C-9194F52D164F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FredflixAndChell.CrossPlatform", "FredflixAndChell.CrossPlatform\FredflixAndChell.CrossPlatform.csproj", "{C3A1E5D4-FAB0-4954-B47C-9194F52D164F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FredflixAndChell.Shared", "FredflixAndChell.Shared\FredflixAndChell.Shared.csproj", "{2F914E2C-00AA-49CF-BE39-1E71EEC0FA74}"
 EndProject
