@@ -78,10 +78,7 @@ namespace FredflixAndChell.Shared.GameObjects
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
             var isColliding = _mover.move(Velocity, out CollisionResult result);
-            if (isColliding)
-            {
-                Console.Write("kuk");
-            }
+           
         }
 
         public void Attack()
