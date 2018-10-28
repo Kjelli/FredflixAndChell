@@ -104,7 +104,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void SetRenderLayer(int renderLayer)
         {
-            _renderer.setRenderLayer(renderLayer);
+            _renderer?.setRenderLayer(renderLayer);
         }
 
         public override void update()
