@@ -5,6 +5,7 @@ using FredflixAndChell.Shared.Components.PlayerComponents;
 using Nez;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -49,6 +50,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var collider = entity.addComponent(new CircleCollider(4f));
             collider.localOffset = new Vector2(0, 4);
             Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref collider.collidesWithLayers, Layers.Player);
             Flags.setFlagExclusive(ref collider.physicsLayer, Layers.Player);
 
             // Assign renderer component

@@ -13,6 +13,7 @@ using Nez.Tiled;
 using Nez.DeferredLighting;
 using Nez.Shadows;
 using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -45,14 +46,9 @@ namespace FredflixAndChell.Shared.Scenes
             tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };
             tiledMapComponent.renderLayer = Layers.MapBackground;
             tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
-            var obj = tiledmap.getObjectGroup("Objects").objectsWithName("collision");
-            
-            foreach( var o in obj)
-            {
-                var collidable = createEntity("collidable" + o.id, new Vector2((o.x + o.width / 2), o.y + o.height / 2));
-                var hitbox = collidable.addComponent(new BoxCollider(o.width, o.height));
-                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
-            }
+            var mapObjects = tiledmap.getObjectGroup("Objects");
+
+            SetupMapObjects(mapObjects);
 
             var spawners = tiledmap.getObjectGroup("Objects").objectsWithName("item_spawn");
             foreach(var spawnObject in spawners)
@@ -69,6 +65,24 @@ namespace FredflixAndChell.Shared.Scenes
             
 
             //CustomizeTiles(tiledMapComponent);
+        }
+
+        private void SetupMapObjects(TiledObjectGroup objectGroup)
+        {
+            foreach (var collisionObject in objectGroup.objectsWithName("collision"))
+            {
+                var collidable = createEntity("collidable" + collisionObject.id, new Vector2((collisionObject.x + collisionObject.width / 2), collisionObject.y + collisionObject.height / 2));
+                var hitbox = collidable.addComponent(new BoxCollider(collisionObject.width, collisionObject.height));
+                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+            }
+
+            foreach (var pit in objectGroup.objectsWithName("pit"))
+            {
+                var pitEntity = createEntity("pit" + pit.id, new Vector2((pit.x + pit.width / 2), pit.y + pit.height / 2));
+                pitEntity.setTag(Tags.Pit);
+                var hitbox = pitEntity.addComponent(new BoxCollider(pit.width, pit.height));
+                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+            }
         }
 
         private void CustomizeTiles(TiledMapComponent mapComponent)
@@ -127,7 +141,7 @@ namespace FredflixAndChell.Shared.Scenes
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
             var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
+            bloomPostProcessor.settings = BloomSettings.presetSettings[2];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
         }
