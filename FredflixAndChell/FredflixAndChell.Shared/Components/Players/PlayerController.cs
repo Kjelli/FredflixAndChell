@@ -17,6 +17,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public bool FirePressed => _fireButton?.isDown ?? false;
         public bool ReloadPressed => _reload?.isDown ?? false;
         public bool DebugModePressed => _debug?.isPressed ?? false;
+        public bool IsEnabled => _isEnabled;
 
         private VirtualJoystick _leftStick;
         private VirtualJoystick _rightStick;
@@ -25,8 +26,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _debug;
         private VirtualMouseJoystick _mouseJoystick;
         public Player Player;
-        public PlayerIndex PlayerIndex;
         private int _controllerIndex;
+        private bool _isEnabled;
 
         public PlayerController(int controllerIndex)
         {
@@ -93,6 +94,11 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 && capabilities.HasRightTrigger;
 
             return isCompatible;
+        }
+
+        public void SetEnabled(bool enabled)
+        {
+            _isEnabled = enabled;
         }
 
         public void update()

@@ -17,6 +17,8 @@ namespace FredflixAndChell.Shared.Assets
         public class Tags
         {
             public const int Player = 1;
+            public const int Pit = 2;
+
         }
 
         public class Layers
