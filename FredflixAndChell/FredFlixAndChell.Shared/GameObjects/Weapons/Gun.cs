@@ -3,6 +3,7 @@ using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Components.Guns;
 using Microsoft.Xna.Framework;
+using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {

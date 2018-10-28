@@ -108,8 +108,8 @@ namespace FredflixAndChell.Shared.Scenes
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
-            var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
+            //var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
+            //bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
         }

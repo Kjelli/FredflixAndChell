@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FredflixAndChell.Shared.Assets;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Nez;
-using Nez.Sprites;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.Components.Bullets;
+using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {

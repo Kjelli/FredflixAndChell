@@ -4,8 +4,9 @@ using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Components.PlayerComponents;
 using Nez;
 using static FredflixAndChell.Shared.Assets.Constants;
+using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 
-namespace FredflixAndChell.Shared.GameObjects
+namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public class Player : GameObject
     {
@@ -46,12 +47,12 @@ namespace FredflixAndChell.Shared.GameObjects
 
             // Assign collider component
             var collider = entity.addComponent(new CircleCollider(4f));
-            collider.localOffset = new Vector2(0, 2);
+            collider.localOffset = new Vector2(0, 4);
             Flags.setFlagExclusive(ref collider.collidesWithLayers, 0);
             Flags.setFlagExclusive(ref collider.physicsLayer, Layers.MapObstacles);
 
             // Assign renderer component
-            _renderer = entity.addComponent(new PlayerRenderer(PlayerSprite.Tormod, _gun));
+            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
         }
 
         public override void update()
@@ -63,7 +64,8 @@ namespace FredflixAndChell.Shared.GameObjects
                 Attack();
             if (_controller.ReloadPressed)
                 Reload();
-
+            if (_controller.DebugModePressed)
+                Core.debugRenderEnabled = !Core.debugRenderEnabled;
         }
 
         private void Move()

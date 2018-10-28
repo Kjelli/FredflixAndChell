@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
