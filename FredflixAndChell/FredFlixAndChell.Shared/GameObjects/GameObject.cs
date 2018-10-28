@@ -20,10 +20,9 @@ namespace FredflixAndChell.Shared.GameObjects
         public Vector2 Velocity { get; set; }
         public Vector2 Size { get; set; }
 
-        public GameObject(int x, int y, int width, int height)
+        public GameObject(int x, int y)
         {
             _spawnPosition = new Vector2(x, y);
-            Size = new Vector2(width, height); // does nothing
         }
         public abstract void OnDespawn();
         public abstract void OnSpawn();

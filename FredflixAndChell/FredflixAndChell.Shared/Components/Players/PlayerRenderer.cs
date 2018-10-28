@@ -248,7 +248,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         {
             if (_body != null) _body.flipX = isFlipped;
             if (_head != null) _head.flipX = isFlipped;
-            if (_gun != null) _gun.flipY = isFlipped;
+            if (_gun != null) _gun.FlipY(isFlipped);
         }
     }
 }

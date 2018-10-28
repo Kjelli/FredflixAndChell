@@ -25,7 +25,7 @@ namespace FredflixAndChell.Shared.GameObjects
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
 
-        public Player(int x, int y, int controllerIndex = -1) : base(x, y, 64, 64)
+        public Player(int x, int y, int controllerIndex = -1) : base(x, y)
         {
             _controllerIndex = controllerIndex;
         }
@@ -42,7 +42,7 @@ namespace FredflixAndChell.Shared.GameObjects
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.1f));
+            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.Fido));
 
             // Assign collider component
             var collider = entity.addComponent(new CircleCollider(4f));
