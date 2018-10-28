@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FredflixAndChell.Shared.GameObjects.Bullets
+﻿namespace FredflixAndChell.Shared.GameObjects.Bullets.Sprites
 {
     public class BulletSprite
     {
         public static readonly BulletSprite Standard = "standard";
         public static readonly BulletSprite Fido = "fido";
+        public static readonly BulletSprite Shockwave = "shockwave_sm";
 
         private readonly string _spriteName;
         private BulletSprite(string spriteName)

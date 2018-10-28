@@ -1,3 +1,7 @@
 # Don't bring Fido to a gun fight...
 
-![Image of Yaktocat](/FredflixAndChell/promo/ultimatebrodown.png)
+![dont](/FredflixAndChell/promo/ultimatebrodown.png)
+
+# Make friends
+
+![do](/FredflixAndChell/promo/friends.png)

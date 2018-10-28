@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
@@ -32,7 +33,6 @@ namespace FredflixAndChell.Shared.Components.Bullets
             shadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
             shadow.renderLayer = Layers.Shadow;
             shadow.localOffset = new Vector2(1, 2);
-            entity.setScale(0.25f);
         }
     }
 }

@@ -3,6 +3,7 @@ using Nez;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -23,6 +24,7 @@ namespace FredflixAndChell.Shared.Scenes
             base.onEnabled();
 
             Core.schedule(1, true, CheckForConnectedPlayers);
+            CheckForConnectedPlayers();
         }
 
         private void CheckForConnectedPlayers(ITimer timer = null)

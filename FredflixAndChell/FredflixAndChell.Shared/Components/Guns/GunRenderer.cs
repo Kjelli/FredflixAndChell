@@ -1,6 +1,8 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
@@ -11,24 +13,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
+using static FredflixAndChell.Shared.GameObjects.Weapons.Sprites.GunSprite;
 
 namespace FredflixAndChell.Shared.Components.Guns
 {
     public class GunRenderer : Component, IUpdatable
     {
-        enum Animations
-        {
-            Held_Idle,
-            Held_Fired,
-            Reload
-        }
-
         private Player _player;
         private Gun _gun;
-        private GunParameters _gunParameters;
 
         private float _renderOffset;
-        Sprite<Animations> _animation;
+        Sprite<GunAnimations> _animation;
 
         private bool _flipY;
 
@@ -39,63 +34,13 @@ namespace FredflixAndChell.Shared.Components.Guns
             _renderOffset = _gun.Parameters.RenderOffset;
         }
 
-        private Sprite<Animations> SetupAnimations()
+        private Sprite<GunAnimations> SetupAnimations(GunSprite sprite)
         {
-            var animations = new Sprite<Animations>();
-            var texture = AssetLoader.GetTexture($"guns/{_gun.Parameters.Sprite}");
-            var subtextures = Subtexture.subtexturesFromAtlas(texture, 32, 32);
-            subtextures.ForEach(t => t.origin = new Vector2(10, 16));
-
-            animations.addAnimation(Animations.Held_Idle, new SpriteAnimation(new List<Subtexture>()
-            {
-                subtextures[2 + 0 * 8],
-                subtextures[3 + 0 * 8], //
-                subtextures[3 + 1 * 8], // Lagt til temp for Fido gunner
-                subtextures[3 + 0 * 8], //
-                subtextures[2 + 0 * 8], //
-                subtextures[3 + 0 * 8], //
-                subtextures[2 + 0 * 8], //
-                subtextures[3 + 0 * 8], // 
-                subtextures[3 + 1 * 8], //
-                subtextures[3 + 0 * 8], //
-            })
-            {
-                loop = true,
-                fps = 4
-            });
-
-
-            animations.addAnimation(Animations.Held_Fired, new SpriteAnimation(new List<Subtexture>()
-            {
-                subtextures[1 + 1 * 8],
-                subtextures[1 + 2 * 8],
-                subtextures[1 + 3 * 8],
-                subtextures[1 + 0 * 8],
-            })
-            {
-                loop = false,
-                fps = 15
-            });
-
-            animations.addAnimation(Animations.Reload, new SpriteAnimation(new List<Subtexture>()
-            {
-                subtextures[1 + 0 * 8],
-                subtextures[2 + 0 * 8],
-                subtextures[2 + 1 * 8],
-                subtextures[2 + 2 * 8],
-                subtextures[2 + 3 * 8],
-                //subtextures[2 + 4 * 8], fjernet temp for fido gunner
-                subtextures[2 + 3 * 8],
-                subtextures[2 + 2 * 8],
-                subtextures[2 + 1 * 8],
-                subtextures[2 + 0 * 8],
-                subtextures[1 + 0 * 8],
-            })
-            {
-                loop = false,
-                fps = 15
-            });
-
+            var animations = new Sprite<GunAnimations>();
+            
+            animations.addAnimation(GunAnimations.Held_Fired, sprite.Fire.ToSpriteAnimation(sprite.Source));
+            animations.addAnimation(GunAnimations.Reload, sprite.Reload.ToSpriteAnimation(sprite.Source));
+            animations.addAnimation(GunAnimations.Held_Idle, sprite.Idle.ToSpriteAnimation(sprite.Source));
 
             return animations;
         }
@@ -105,7 +50,7 @@ namespace FredflixAndChell.Shared.Components.Guns
             base.onAddedToEntity();
             entity.setScale(0.6f);
 
-            _animation = entity.addComponent(SetupAnimations());
+            _animation = entity.addComponent(SetupAnimations(_gun.Parameters.Sprite));
             _animation.renderLayer = Layers.PlayerFrontest;
 
             var shadow = entity.addComponent(new SpriteMime(_animation));
@@ -121,13 +66,13 @@ namespace FredflixAndChell.Shared.Components.Guns
             silhouette.renderLayer = Layers.Foreground;
             silhouette.localOffset = new Vector2(0, 0);
 
-            _animation.play(Animations.Held_Idle);
+            _animation.play(GunAnimations.Held_Idle);
         }
 
 
         public void Fire()
         {
-            _animation?.play(Animations.Held_Fired);
+            _animation?.play(GunAnimations.Held_Fired);
         }
 
         public void update()
@@ -137,13 +82,13 @@ namespace FredflixAndChell.Shared.Components.Guns
                 _player.entity.position.Y + (float)Math.Sin(_player.FacingAngle) * _renderOffset / 2);
             if (!_animation.isPlaying)
             {
-                _animation.play(Animations.Held_Idle);
+                _animation.play(GunAnimations.Held_Idle);
             }
         }
 
         public void Reload()
         {
-            _animation?.play(Animations.Reload);
+            _animation?.play(GunAnimations.Reload);
         }
 
         public void setRenderLayer(int renderLayer)

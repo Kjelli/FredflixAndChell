@@ -4,6 +4,7 @@ using FredflixAndChell.Shared.Utilities.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -15,11 +16,13 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
         public bool FirePressed => _fireButton?.isDown ?? false;
         public bool ReloadPressed => _reload?.isDown ?? false;
+        public bool DebugModePressed => _debug?.isPressed ?? false;
 
         private VirtualJoystick _leftStick;
         private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reload;
+        private VirtualButton _debug;
         private VirtualMouseJoystick _mouseJoystick;
         public Player Player;
         public PlayerIndex PlayerIndex;
@@ -42,6 +45,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             // Buttons
             _fireButton = new VirtualButton();
             _reload = new VirtualButton();
+            _debug = new VirtualButton();
 
             // Virtual mouse joystick
             _mouseJoystick = new VirtualMouseJoystick(Player.entity.position);
@@ -53,7 +57,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _rightStick.nodes.Add(_mouseJoystick);
                 _fireButton.addMouseLeftButton();
                 _reload.addKeyboardKey(Keys.R);
-                
+                _debug.addKeyboardKey(Keys.F2);
+
             }
             // Player with controller at index {_controllerIndex}
             else if(GamePad.GetState(_controllerIndex).IsConnected)
@@ -68,7 +73,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
                 _fireButton.addGamePadButton(_controllerIndex, Buttons.RightTrigger);
                 _reload.addGamePadButton(_controllerIndex, Buttons.X);
-
+                _debug.addGamePadButton(_controllerIndex, Buttons.Y);
             }
             // Ghost player..?
             else
