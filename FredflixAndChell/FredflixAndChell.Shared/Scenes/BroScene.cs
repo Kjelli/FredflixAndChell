@@ -32,25 +32,39 @@ namespace FredflixAndChell.Shared.Scenes
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new PlayerConnector());
+
+            //Core.debugRenderEnabled = true;
         }
 
         private void SetupMap()
         {
             var tiledEntity = createEntity("tiled-map-entity");
-            var tiledmap = AssetLoader.GetMap("firstlevel");
+            var tiledmap = AssetLoader.GetMap("winter_1");
 
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
-            tiledMapComponent.layerIndicesToRender = new int[] { 1, 0 };
+            tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };
             tiledMapComponent.renderLayer = Layers.MapBackground;
             tiledMapComponent.setMaterial(Material.stencilWrite(Stencils.EntityShadowStencil));
+            var obj = tiledmap.getObjectGroup("Objects").objectsWithName("collision");
+            
+            foreach( var o in obj)
+            {
+                var collidable = createEntity("collidable" + o.id, new Vector2((o.x + o.width / 2), o.y + o.height / 2));
+                var hitbox = collidable.addComponent(new BoxCollider(o.width, o.height));
+                Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.MapObstacles);
+
+                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+
+            }
 
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
-            tiledMapDetailsComponent.layerIndicesToRender = new int[] { 2 };
+            tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
+            
 
-            CustomizeTiles(tiledMapComponent);
+            //CustomizeTiles(tiledMapComponent);
         }
 
         private void CustomizeTiles(TiledMapComponent mapComponent)

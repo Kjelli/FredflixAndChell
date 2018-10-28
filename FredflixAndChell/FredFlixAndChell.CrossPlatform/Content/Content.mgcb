@@ -59,7 +59,7 @@
 /processorParam:TextureFormat=Color
 /build:maps/sheet_temple.png
 
-#begin textures/bullets/standard.png
+#begin maps/snow_tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -69,7 +69,12 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/bullets/standard.png
+/build:maps/snow_tileset.png
+
+#begin maps/winter_1.tmx
+/importer:
+/processor:
+/build:maps/winter_1.tmx
 
 #begin textures/bullets/fido.png
 /importer:TextureImporter
@@ -82,6 +87,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/fido.png
+
+#begin textures/bullets/standard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/standard.png
 
 #begin textures/effects/lava1.jpg
 /importer:TextureImporter

@@ -41,6 +41,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/shader_flash");
 
             LoadMap("maps/firstlevel");
+            LoadMap("maps/winter_1");
         }
         
         #region Loaders and Getters
