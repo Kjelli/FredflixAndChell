@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
@@ -10,7 +11,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Sprite = GunSpritePresets.M4,
             BulletParameters = BulletPresets.Standard,
-            FireRate = 0.2f,
+            FireRate = 0.05f,
             BarrelOffset = new Vector2(10, 0),
             Ammo = 300,
             MaxAmmo = 300,
@@ -23,7 +24,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public static readonly GunParameters Fido = new GunParameters
         {
             Sprite = GunSpritePresets.Fido,
-            BulletParameters = BulletPresets.Fido,
+            BulletParameters = BulletPresets.Bark,
             FireRate = 0.3f,
             BarrelOffset = new Vector2(7, 0),
             Ammo = 300,
@@ -32,6 +33,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             MagazineSize = 30,
             ReloadTime = 0.8f,
             RenderOffset = 5,
+            BulletCount = 5,
+            BulletSpread = (float) Math.PI / 8
         };
     }
 }

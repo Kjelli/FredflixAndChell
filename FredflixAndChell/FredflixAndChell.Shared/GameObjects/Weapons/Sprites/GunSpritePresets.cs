@@ -21,7 +21,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
                 {
                     2 + 0 * 8
                 },
-                FPS = 0,
+                FPS = 1,
                 Loop = false,
                 Origin = _defaultGunOrigin
             },
@@ -45,9 +45,9 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
                     1 + 0 * 8,
                     2 + 0 * 8,
                     2 + 1 * 8,
+                    2 + 2 * 8,
                     2 + 3 * 8,
                     2 + 4 * 8,
-                    2 + 2 * 8,
                     2 + 3 * 8,
                     2 + 2 * 8,
                     2 + 1 * 8,

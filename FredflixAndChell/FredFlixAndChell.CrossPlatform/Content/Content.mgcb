@@ -88,6 +88,30 @@
 /processorParam:TextureFormat=Color
 /build:textures/bullets/fido.png
 
+#begin textures/bullets/shockwave.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/shockwave.png
+
+#begin textures/bullets/shockwave_sm.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/shockwave_sm.png
+
 #begin textures/bullets/standard.png
 /importer:TextureImporter
 /processor:TextureProcessor

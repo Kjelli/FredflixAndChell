@@ -49,7 +49,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var collider = entity.addComponent(new CircleCollider(4f));
             collider.localOffset = new Vector2(0, 4);
             Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.MapObstacles);
-            Flags.setFlagExclusive(ref collider.physicsLayer, Layers.MapObstacles);
+            Flags.setFlagExclusive(ref collider.physicsLayer, Layers.Player);
 
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
@@ -75,15 +75,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
             Acceleration *= _speed * deltaTime;
 
-            Velocity = (0.90f * Velocity + 0.1f * Acceleration);
+            Velocity = (0.95f * Velocity + 0.05f * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
             var isColliding = _mover.move(Velocity, out CollisionResult result);
-            if (isColliding)
-            {
-                Console.Write("kuk");
-            }
         }
 
         public void Attack()

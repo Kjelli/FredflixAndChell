@@ -4,6 +4,7 @@
     {
         public static readonly BulletSprite Standard = "standard";
         public static readonly BulletSprite Fido = "fido";
+        public static readonly BulletSprite Shockwave = "shockwave_sm";
 
         private readonly string _spriteName;
         private BulletSprite(string spriteName)

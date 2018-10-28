@@ -6,11 +6,13 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
     {
 
         public BulletSprite Sprite { get; set; }
-        public float Scale { get; set; }
-        public float Speed { get; set; }
-        public float Damage { get; set; }
-        public float LifeSpanSeconds { get; set; }
-        public bool RotateWithGun { get; set; }
+        public float Scale { get; set; } = 0.25f;
+        public float Speed { get; set; } = 50f;
+        public float Damage { get; set; } = 10f;
+        public float Knockback { get; set; } = 3.0f;
+        public float LifeSpanSeconds { get; set; } = -1f;
+        public bool RotateWithGun { get; set; } = true;
+        public bool Bounce { get; set; } = false;
 
         // Construction limited to namespace
         internal BulletParameters() { }

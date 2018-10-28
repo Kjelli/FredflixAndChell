@@ -30,25 +30,39 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         {
             _renderer = entity.addComponent(new BulletRenderer(_params.Sprite));
             _collider = entity.addComponent<CircleCollider>();
+            _collider.radius = 2f;
+
+            Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
+            Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Bullet);
+
             _mover = entity.addComponent(new ProjectileMover());
             _map = entity.scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
+
+            Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
+
+            if(_params.LifeSpanSeconds > 0)
+            {
+                Core.schedule(_params.LifeSpanSeconds, _ => entity?.destroy());
+            }
 
             if (_params.RotateWithGun)
             {
                 entity.rotation = _direction;
             }
 
-            Flags.setFlagExclusive(ref _collider.collidesWithLayers, 0);
-            Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.MapObstacles);
-
             // Hack to avoid moving without collider and causing nullreference
             _collider.onAddedToEntity();
             _mover.onAddedToEntity();
+
+            entity.setScale(_params.Scale);
         }
 
         public override void OnDespawn()
         {
-
+            _collider.unregisterColliderWithPhysicsSystem();
+            entity.setEnabled(false);
+            entity.destroy();
         }
 
         public override void update()
@@ -58,23 +72,42 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         private void Move()
         {
-            Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
-            Velocity *= Time.deltaTime;
-            var isColliding = _mover.move(new Vector2(Velocity.X, Velocity.Y));
+            var isColliding = _mover.move(Velocity * Time.deltaTime);
 
             if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
-                var pos = entity.position + new Vector2(-4) * collision.normal;
-
-                var tile = _map.getTileAtWorldPosition(pos);
-                var bulletsPassable = tile?
-                    .tilesetTile?
-                    .properties?
-                    .ContainsKey(TileProperties.BulletPassable) ?? false;
-
-                if (!bulletsPassable)
+                Console.WriteLine(collision.collider);
+                var collidedWithEntity = collision.collider.entity;
+                if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))
                 {
-                    entity.setEnabled(false);
+                    var player = collidedWithEntity.getComponent<Player>();
+                    if (player != null && player != _owner)
+                    {
+                        // Damage
+                        player.Velocity += Velocity * _params.Knockback * Time.deltaTime;
+                        entity.destroy();
+                    }
+                    else if (player == _owner)
+                    {
+                        return;
+                    }
+                }
+                else if (_params.Bounce)
+                {
+                    var distance = (collision.point - _collider.absolutePosition);
+                    _mover.move(-collision.minimumTranslationVector);
+
+                    var tangentVector = new Vector2(-distance.Y, distance.X);
+                    Vector2.Normalize(ref tangentVector, out tangentVector);
+                    var length = Vector2.Dot(Velocity, tangentVector);
+                    Vector2 velocityComponentOnTangent;
+                    Vector2.Multiply(ref tangentVector, length, out velocityComponentOnTangent);
+                    Vector2 velocityComponentPerpendicularToTangent = Velocity - velocityComponentOnTangent;
+                    Velocity = new Vector2(Velocity.X - 2 * velocityComponentPerpendicularToTangent.X,
+                        Velocity.Y - 2 * velocityComponentPerpendicularToTangent.Y);
+                }
+                else
+                {
                     entity.destroy();
                 }
             }

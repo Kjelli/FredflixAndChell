@@ -22,6 +22,17 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             Speed = 50f,
             LifeSpanSeconds = -1,
             RotateWithGun = true,
+            Bounce = true,
+        };
+
+        public static readonly BulletParameters Bark = new BulletParameters
+        {
+            Sprite = BulletSprite.Shockwave,
+            Scale = 0.25f,
+            Damage = 0f,
+            Speed = 60f,
+            LifeSpanSeconds = 0.5f,
+            RotateWithGun = true,
         };
     }
 }

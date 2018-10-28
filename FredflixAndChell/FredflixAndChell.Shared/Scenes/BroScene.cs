@@ -51,10 +51,7 @@ namespace FredflixAndChell.Shared.Scenes
             {
                 var collidable = createEntity("collidable" + o.id, new Vector2((o.x + o.width / 2), o.y + o.height / 2));
                 var hitbox = collidable.addComponent(new BoxCollider(o.width, o.height));
-                Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.MapObstacles);
-
                 Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
-
             }
 
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
@@ -117,13 +114,13 @@ namespace FredflixAndChell.Shared.Scenes
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
             lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(150, 150, 150, 255);
+            lightRenderer.renderTargetClearColor = new Color(150, 150, 180, 255);
 
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
-            //var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            //bloomPostProcessor.settings = BloomSettings.presetSettings[5];
+            var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
+            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
         }
