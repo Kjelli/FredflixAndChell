@@ -48,7 +48,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign collider component
             var collider = entity.addComponent(new CircleCollider(4f));
             collider.localOffset = new Vector2(0, 4);
-            Flags.setFlagExclusive(ref collider.collidesWithLayers, 0);
+            Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.MapObstacles);
             Flags.setFlagExclusive(ref collider.physicsLayer, Layers.MapObstacles);
 
             // Assign renderer component
@@ -80,6 +80,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
             var isColliding = _mover.move(Velocity, out CollisionResult result);
+            if (isColliding)
+            {
+                Console.Write("kuk");
+            }
         }
 
         public void Attack()
