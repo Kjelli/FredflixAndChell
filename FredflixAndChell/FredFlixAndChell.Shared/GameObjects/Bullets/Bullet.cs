@@ -9,50 +9,40 @@ using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using static FredflixAndChell.Shared.Assets.Constants;
+using FredflixAndChell.Shared.Components.Bullets;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
 
-    public class Bullet : GameObject, IBullet
+    public class Bullet : GameObject
     {
-        private Texture2D _texture;
+        private BulletParameters _params;
+        private BulletRenderer _renderer;
         private ProjectileMover _mover;
         private CircleCollider _collider;
         private TiledMapComponent _map;
+        private Player _owner;
 
-        public float Damage { get; set; }
-        public float Direction { get; set; }
-        public float Speed { get; set; }
+        private float _direction;
 
-        public Bullet(Player origin, float x, float y, int width, int height, float direction, float speed, float damage) : base((int)x, (int)y, width, height)
+        public Bullet(Player owner, float x, float y, float direction, BulletParameters bulletParameters) : base((int)x, (int)y)
         {
-            Damage = damage;
-            Direction = direction;
-            Speed = speed;
-
-            _texture = AssetLoader.GetTexture("bullets/standard");
-
-        }
-
-        public override void OnDespawn()
-        {
-
+            _owner = owner;
+            _params = bulletParameters;
+            _direction = direction;
         }
 
         public override void OnSpawn()
         {
-            var sprite = entity.addComponent(new Sprite(_texture));
-            sprite.renderLayer = Layers.Bullet;
-
-            var shadow = entity.addComponent(new SpriteMime(sprite));
-            shadow.color = new Color(0, 0, 0, 80);
-            shadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            shadow.renderLayer = Layers.Shadow;
-            shadow.localOffset = new Vector2(1, 2);
-
+            _renderer = entity.addComponent(new BulletRenderer(_params.Sprite));
             _collider = entity.addComponent<CircleCollider>();
             _mover = entity.addComponent(new ProjectileMover());
             _map = entity.scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
+
+            if (_params.RotateWithGun)
+            {
+                entity.rotation = _direction;
+            }
 
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, 0);
             Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.MapObstacles);
@@ -60,8 +50,11 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             // Hack to avoid moving without collider and causing nullreference
             _collider.onAddedToEntity();
             _mover.onAddedToEntity();
+        }
 
-            entity.setScale(0.125f);
+        public override void OnDespawn()
+        {
+
         }
 
         public override void update()
@@ -71,7 +64,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         private void Move()
         {
-            Velocity = new Vector2(Speed * (float)Math.Cos(Direction), Speed * (float)Math.Sin(Direction));
+            Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
             Velocity *= Time.deltaTime;
             var isColliding = _mover.move(new Vector2(Velocity.X, Velocity.Y));
 

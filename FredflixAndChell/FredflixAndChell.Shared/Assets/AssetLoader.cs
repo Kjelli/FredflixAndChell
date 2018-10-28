@@ -34,6 +34,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/lightmask_sm");
             LoadTexture("textures/effects/lightmask_xs");
             LoadTexture("textures/guns/m4");
+            LoadTexture("textures/guns/fido");
+            LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
 
             LoadEffect("effects/shader_flash");

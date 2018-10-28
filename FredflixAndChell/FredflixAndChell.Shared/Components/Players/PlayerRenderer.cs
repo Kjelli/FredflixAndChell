@@ -69,10 +69,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             SetupPlayerSprites();
 
             // Assign faint glow to player
-            var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-            sprite.material = Material.blendScreen();
-            sprite.color = Color.White;
-            sprite.renderLayer = Layers.Lights;
+            var light = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
+            light.material = Material.blendLinearDodge();
+            light.color = Color.White;
+            light.renderLayer = Layers.Lights;
 
             // Assign renderable shadow component
             var bodyShadow = entity.addComponent(new SpriteMime(_body));
@@ -111,6 +111,9 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             var headAnimations = SetupHeadAnimations();
             _head = entity.addComponent(headAnimations);
             _head.renderLayer = Layers.PlayerFront;
+
+            _body.play(BodyAnimations.Idle);
+            _head.play(HeadAnimations.FrontFacing);
         }
         private Sprite<BodyAnimations> SetupBodyAnimations()
         {
@@ -238,13 +241,14 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _head.setRenderLayer(Layers.PlayerFront);
                 if (_gun != null) _gun.SetRenderLayer(Layers.PlayerFrontest);
             }
+
         }
 
         public void FlipX(bool isFlipped)
         {
             if (_body != null) _body.flipX = isFlipped;
             if (_head != null) _head.flipX = isFlipped;
-            if (_gun != null) _gun.flipY = isFlipped;
+            if (_gun != null) _gun.FlipY(isFlipped);
         }
     }
 }

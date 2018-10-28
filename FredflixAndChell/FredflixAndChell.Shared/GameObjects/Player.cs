@@ -16,6 +16,7 @@ namespace FredflixAndChell.Shared.GameObjects
         private Entity _gunEntity;
         private Gun _gun;
 
+        private int _controllerIndex;
         private float _speed = 50f;
         public float FacingAngle { get; set; }
 
@@ -24,9 +25,9 @@ namespace FredflixAndChell.Shared.GameObjects
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
 
-        public Player(int x, int y) : base(x, y, 64, 64)
+        public Player(int x, int y, int controllerIndex = -1) : base(x, y)
         {
-
+            _controllerIndex = controllerIndex;
         }
 
         public override void OnSpawn()
@@ -34,14 +35,14 @@ namespace FredflixAndChell.Shared.GameObjects
             entity.setTag(Tags.Player);
 
             // Assign controller component
-            _controller = entity.addComponent(new PlayerController(0));
+            _controller = entity.addComponent(new PlayerController(_controllerIndex));
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, (int)entity.position.X, (int)entity.position.Y, 0.1f));
+            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.Fido));
 
             // Assign collider component
             var collider = entity.addComponent(new CircleCollider(4f));
@@ -94,6 +95,8 @@ namespace FredflixAndChell.Shared.GameObjects
 
         private void SetFacing()
         {
+            if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
+
             FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
 
             _gun.entity.rotation = FacingAngle;
