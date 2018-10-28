@@ -33,7 +33,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public PlayerController(int controllerIndex)
         {
-            _controllerIndex = 0;
+            _controllerIndex = controllerIndex;
         }
 
         public override void onAddedToEntity()
