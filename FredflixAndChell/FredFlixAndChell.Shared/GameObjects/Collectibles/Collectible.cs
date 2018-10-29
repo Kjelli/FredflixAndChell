@@ -2,32 +2,21 @@
 using Nez;
 using Nez.Sprites;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Nez.Tweens;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
     public class Collectible : GameObject
     {
-        public CollectibleParameters _preset;
-
-        private Sprite Sprite;
-
-        private float _scaleValue = 0.0f;
-        private float _maxScaleValue = 0.5f;
-
-        public Vector2 Acceleration;
+        private CollectibleParameters _preset;
         private Mover _mover;
+        private Sprite Sprite;
+        private Vector2 Acceleration;
 
-        private Vector2 _origin;
-
-        private bool _resetOrigin;
         private bool _dropped;
 
-        public Collectible(int x, int y, string objectName, bool dropped) : base(x, y)
+        public Collectible(float x, float y, string objectName, bool dropped) : base(x, y)
         {
             switch (objectName)
             {
@@ -43,9 +32,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                     break;
             }
 
-            _origin = new Vector2(x, y);
-            _resetOrigin = false;
-
             _dropped = dropped;
             Acceleration = new Vector2();
 
@@ -53,55 +39,41 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnDespawn()
         {
-            
+
         }
 
         public override void OnSpawn()
         {
             Sprite = entity.addComponent(new Sprite(_preset.Gun.Sprite.Icon.ToSpriteAnimation(_preset.Gun.Sprite.Source).frames[0]));
             Sprite.renderLayer = Layers.Items;
-
-            transform.setScale(_dropped ? _maxScaleValue : 0.0f);
+            entity.scale = new Vector2(0.025f, 0.025f);
+            entity.tweenLocalScaleTo(0.5f, 1f)
+                .setEaseType(EaseType.Linear)
+                .setCompletionHandler(_ => Hover(2f))
+                .start();
             _mover = entity.addComponent(new Mover());
 
         }
 
+        private void Hover(float yOffset)
+        {
+            entity.tweenLocalPositionTo(new Vector2(entity.transform.position.X, entity.transform.position.Y + yOffset), 1f)
+                .setEaseType(EaseType.SineInOut)
+                .setCompletionHandler(_ => Hover(-yOffset))
+                .start();
+        }
 
         public void PushDirection(float power, float direction)
         {
-            _resetOrigin = true;
             Acceleration = new Vector2((float)Math.Cos(direction) * power, (float)Math.Sin(direction) * power);
         }
 
         public override void update()
         {
-
-            if(_scaleValue < _maxScaleValue)
-            {
-                //Spawn scaling
-                _scaleValue += 0.025f;
-                transform.setScale(_scaleValue);
-            }
-            else
-            {
-                if(Velocity == Vector2.Zero)
-                {
-                    if (_resetOrigin)
-                    {
-                        _origin = new Vector2(transform.position.X, transform.position.Y);
-                        _resetOrigin = false;
-                    }
-
-                    //Bouncy boii
-                    transform.position = new Vector2(_origin.X, _origin.Y + (float)Math.Sin(Time.time * 5.0f)); 
-                }
-            }
-
             Acceleration *= Time.deltaTime;
             Velocity = (0.95f * Velocity + 0.05f * Acceleration);
             var isColliding = _mover.move(Velocity, out CollisionResult result);
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-
         }
     }
 }
