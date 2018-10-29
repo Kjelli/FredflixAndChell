@@ -13,9 +13,10 @@ namespace FredflixAndChell.Shared.GameObjects
     {
 
         public Gun CurrentItem;
-        public Cooldown timer { get; set; }
+        private Cooldown _timer { get; set; }
+        private Cooldown _closeDelay { get; set; }
 
-        bool deleteme;
+        bool open;
 
 
         private Sprite<Animations> _animation;
@@ -29,9 +30,10 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             _animation = SetupAnimations();
 
-            timer = new Cooldown(10f);
+            _timer = new Cooldown(10f);
+            _closeDelay = new Cooldown(1.5f);
 
-            deleteme = false;
+            open = false;
         }
 
         private Sprite<Animations> SetupAnimations()
@@ -62,8 +64,8 @@ namespace FredflixAndChell.Shared.GameObjects
 
             var close = new SpriteAnimationDescriptor
             {
-                Frames = new int[] { 4,3,2,1 },
-                FPS = 1,
+                Frames = new int[] { 4,3,2,1 ,0},
+                FPS = 15,
                 Loop = false,
                 
                 
@@ -82,7 +84,7 @@ namespace FredflixAndChell.Shared.GameObjects
             sprite.renderLayer = Layers.MapObstacles;
 
             _animation.play(Animations.Idle);
-            timer.Start();
+            _timer.Start();
 
         }
 
@@ -95,13 +97,22 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void update()
         {
-            timer.Update();
-
-            if (timer.IsReady() && deleteme != true)
+            _timer.Update();
+            _closeDelay.Update();
+        
+            if (_timer.IsReady() && !open)
             {
                 _animation.play(Animations.Open);   
-                deleteme = true ;
+                open = true ;
                 SpawnItem();
+                _closeDelay.Start();
+            }
+
+            if(open && _closeDelay.IsReady())
+            {
+                _animation.play(Animations.Close);
+                open = false;
+                _timer.Start();
             }
         }
     }
