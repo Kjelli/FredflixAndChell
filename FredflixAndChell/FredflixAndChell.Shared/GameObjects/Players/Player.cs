@@ -6,6 +6,7 @@ using Nez;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -66,6 +67,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Attack();
             if (_controller.ReloadPressed)
                 Reload();
+            if (_controller.DropGun)
+                DropGun();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
         }
@@ -86,13 +89,32 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Attack()
         {
-            _gun.Fire();
+            if(_gun != null)
+                _gun.Fire();
         }
 
         public void Reload()
         {
             _gun.ReloadMagazine();
         }
+
+        public void DropGun()
+        {
+            if(_gun != null)
+            {
+                //Throw out a new gunz
+                var gunItem = entity.scene.createEntity("item");
+                var throwedItem = gunItem.addComponent(new Collectible((int)transform.position.X,(int)transform.position.Y, _gun.Parameters.Name, true));
+
+                throwedItem.PushDirection(2000f, FacingAngle);
+
+                IsArmed = false;
+                //Destroying current gunz
+                _gun.Destroy();
+                _gun = null;
+            }
+        }
+
         public override void OnDespawn()
         {
         }
@@ -103,7 +125,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
 
-            _gun.entity.rotation = FacingAngle;
+            if(_gun != null)
+            {
+                _gun.entity.rotation = FacingAngle;
+            }
 
             if (FacingAngle > 0 && FacingAngle < Math.PI)
             {

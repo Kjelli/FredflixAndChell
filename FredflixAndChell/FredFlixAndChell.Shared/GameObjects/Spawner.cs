@@ -91,7 +91,7 @@ namespace FredflixAndChell.Shared.GameObjects
         public void SpawnItem()
         {
             var entz = entity.scene.createEntity("collectible");
-            var col = entz.addComponent(new Collectible((int)entity.position.X, (int)entity.position.Y, CollectiblePreset.M4));
+            var col = entz.addComponent(new Collectible((int)entity.position.X, (int)entity.position.Y, "M4",false));
             col.transform.setScale(0.3f);
         }
 

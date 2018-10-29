@@ -23,6 +23,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             Gun = GunPresets.Fido
         };
 
+        
+
         public enum CollectibleType
         {
             Weapon = 1

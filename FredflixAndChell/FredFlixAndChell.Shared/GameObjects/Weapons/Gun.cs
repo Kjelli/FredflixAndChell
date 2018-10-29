@@ -134,5 +134,10 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             _renderer?.FlipY(isFlipped);
         }
+
+        public void Destroy()
+        {
+            entity.destroy();
+        }
     }
 }

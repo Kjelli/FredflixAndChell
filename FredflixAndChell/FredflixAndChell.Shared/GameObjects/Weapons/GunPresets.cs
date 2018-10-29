@@ -9,6 +9,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
     {
         public static readonly GunParameters M4 = new GunParameters
         {
+            Name = "M4",
             Sprite = GunSpritePresets.M4,
             BulletParameters = BulletPresets.Standard,
             FireRate = 0.05f,
@@ -23,6 +24,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static readonly GunParameters Fido = new GunParameters
         {
+            Name = "Fido",
             Sprite = GunSpritePresets.Fido,
             BulletParameters = BulletPresets.Bark,
             FireRate = 0.3f,

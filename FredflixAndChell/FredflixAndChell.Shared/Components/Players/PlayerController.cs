@@ -16,6 +16,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
         public bool FirePressed => _fireButton?.isDown ?? false;
         public bool ReloadPressed => _reload?.isDown ?? false;
+        public bool DropGun => _dropGun?.isDown ?? false;
         public bool DebugModePressed => _debug?.isPressed ?? false;
         public bool IsEnabled => _isEnabled;
 
@@ -23,6 +24,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reload;
+        private VirtualButton _dropGun;
+
         private VirtualButton _debug;
         private VirtualMouseJoystick _mouseJoystick;
         public Player Player;
@@ -46,6 +49,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             // Buttons
             _fireButton = new VirtualButton();
             _reload = new VirtualButton();
+            _dropGun = new VirtualButton();
             _debug = new VirtualButton();
 
             // Virtual mouse joystick
@@ -58,6 +62,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _rightStick.nodes.Add(_mouseJoystick);
                 _fireButton.addMouseLeftButton();
                 _reload.addKeyboardKey(Keys.R);
+                _dropGun.addKeyboardKey(Keys.G);
                 _debug.addKeyboardKey(Keys.F2);
 
             }
