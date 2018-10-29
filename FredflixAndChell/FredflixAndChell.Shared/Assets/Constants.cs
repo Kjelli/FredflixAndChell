@@ -23,9 +23,10 @@ namespace FredflixAndChell.Shared.Assets
 
         public class Layers
         {
-            public const int Background = 10;
-            public const int MapBackground = 9;
-            public const int MapObstacles = 8;
+            public const int Background = 11;
+            public const int MapBackground = 10;
+            public const int MapObstacles = 9;
+            public const int Items = 8;
             public const int Shadow = 7;
             public const int Bullet = 6;
             public const int PlayerBehindest = 5;

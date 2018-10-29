@@ -32,6 +32,8 @@ namespace FredflixAndChell.Shared.Components.Guns
             _gun = gun;
             _player = player;
             _renderOffset = _gun.Parameters.RenderOffset;
+
+           
         }
 
         private Sprite<GunAnimations> SetupAnimations(GunSprite sprite)
@@ -41,6 +43,7 @@ namespace FredflixAndChell.Shared.Components.Guns
             animations.addAnimation(GunAnimations.Held_Fired, sprite.Fire.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Reload, sprite.Reload.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Held_Idle, sprite.Idle.ToSpriteAnimation(sprite.Source));
+
 
             return animations;
         }
@@ -100,6 +103,11 @@ namespace FredflixAndChell.Shared.Components.Guns
         public void FlipY(bool flipY)
         {
             _flipY = flipY;
+        }
+
+        public Sprite<GunAnimations> GetAnimations()
+        {
+            return _animation;
         }
     }
 }

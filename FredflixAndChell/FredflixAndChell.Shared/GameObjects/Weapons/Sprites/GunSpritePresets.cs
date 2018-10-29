@@ -15,6 +15,16 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
         public static readonly GunSprite M4 = new GunSprite
         {
             Source = "guns/m4",
+            Icon = new SpriteAnimationDescriptor
+            {
+                Frames = new int[]
+                {
+                   0
+                },
+                FPS = 1,
+                Loop = false
+            },
+
             Idle = new SpriteAnimationDescriptor
             {
                 Frames = new int[]
@@ -34,7 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
                     1 + 3 * 8,
                     1 + 0 * 8
                 },
-                FPS = 15,
+                FPS = 1,
                 Loop = false,
                 Origin = _defaultGunOrigin
             },
@@ -63,6 +73,15 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
         public static readonly GunSprite Fido = new GunSprite
         {
             Source = "guns/fido",
+            Icon = new SpriteAnimationDescriptor
+            {
+                Frames = new int[]
+                {
+                   0
+                },
+                FPS = 1,
+                Loop = false
+            },
             Idle = new SpriteAnimationDescriptor
             {
                 Frames = new int[]
