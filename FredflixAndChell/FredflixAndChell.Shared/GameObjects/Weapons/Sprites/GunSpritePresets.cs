@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
 {
-    public class GunSpritePresets
+    public static class GunSpritePresets
     {
         private static readonly Vector2 _defaultGunOrigin = new Vector2(10, 16);
 
@@ -44,7 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
                     1 + 3 * 8,
                     1 + 0 * 8
                 },
-                FPS = 1,
+                FPS = 30,
                 Loop = false,
                 Origin = _defaultGunOrigin
             },

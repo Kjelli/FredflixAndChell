@@ -6,7 +6,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
     {
         public static readonly BulletParameters Standard = new BulletParameters
         {
-            Sprite = BulletSprite.Standard,
+            Sprite = BulletSpritePresets.Standard,
             Scale = 0.15f,
             Damage = 5f,
             Speed = 200f,
@@ -16,7 +16,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         public static readonly BulletParameters Fido = new BulletParameters
         {
-            Sprite = BulletSprite.Fido,
+            Sprite = BulletSpritePresets.Fido,
             Scale = 0.25f,
             Damage = 5f,
             Speed = 50f,
@@ -27,7 +27,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         public static readonly BulletParameters Bark = new BulletParameters
         {
-            Sprite = BulletSprite.Shockwave,
+            Sprite = BulletSpritePresets.Shockwave,
             Scale = 0.25f,
             Damage = 0f,
             Speed = 60f,

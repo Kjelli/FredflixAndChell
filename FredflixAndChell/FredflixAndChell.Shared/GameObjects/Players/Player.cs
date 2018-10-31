@@ -49,7 +49,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.Fido));
+            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.M4));
 
             // Assign collider component
             _collider = entity.addComponent(new CircleCollider(4f));
@@ -114,7 +114,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _mover.setEnabled(false);
             _collider.setEnabled(false);
             var easeType = EaseType.CubicOut;
-            var duration = 1f;
+            var duration = 2f;
             var targetScale = 0.2f;
             var targetRotationDegrees = 180;
             var targetColor = new Color(0, 0, 0, 0.25f);
