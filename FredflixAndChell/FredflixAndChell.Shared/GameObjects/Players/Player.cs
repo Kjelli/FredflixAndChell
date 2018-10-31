@@ -50,9 +50,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign collider component
             var collider = entity.addComponent(new CircleCollider(4f));
             collider.localOffset = new Vector2(0, 4);
-            Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.MapObstacles);
-            Flags.setFlag(ref collider.collidesWithLayers, Layers.Player);
-            Flags.setFlagExclusive(ref collider.physicsLayer, Layers.Player);
+
+            Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.Items);
+
+            //Flags.setFlag(ref collider.collidesWithLayers, Layers.Player);
+            //Flags.setFlag(ref collider.collidesWithLayers, Layers.Items);
+
 
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
@@ -69,6 +72,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Reload();
             if (_controller.DropGun)
                 DropGun();
+            if (_controller.Interact)
+                Interact();
+
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
         }
@@ -95,7 +101,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Reload()
         {
+            if(_gun != null)
             _gun.ReloadMagazine();
+        }
+
+        public void Interact()
+        {
+            Console.WriteLine("INTERaCTRIVCIN");
         }
 
         public void DropGun()
