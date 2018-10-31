@@ -50,12 +50,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             SetupMapObjects(mapObjects);
 
-            var spawners = tiledmap.getObjectGroup("Objects").objectsWithName("item_spawn");
-            foreach(var spawnObject in spawners)
-            {
-                var spawnerEntity = createEntity("spawner" + spawnObject.id);
-                var sprite = spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
-            }
 
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
@@ -82,6 +76,12 @@ namespace FredflixAndChell.Shared.Scenes
                 pitEntity.setTag(Tags.Pit);
                 var hitbox = pitEntity.addComponent(new BoxCollider(pit.width, pit.height));
                 Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+            }
+
+            foreach (var spawnObject in objectGroup.objectsWithName("item_spawn"))
+            {
+                var spawnerEntity = createEntity("spawner" + spawnObject.id);
+                spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
             }
         }
 
