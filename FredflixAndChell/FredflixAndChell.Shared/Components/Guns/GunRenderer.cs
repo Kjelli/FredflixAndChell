@@ -25,8 +25,6 @@ namespace FredflixAndChell.Shared.Components.Guns
         private float _renderOffset;
         Sprite<GunAnimations> _animation;
 
-        private bool _flipY;
-
         public GunRenderer(Gun gun, Player player)
         {
             _gun = gun;
@@ -77,7 +75,7 @@ namespace FredflixAndChell.Shared.Components.Guns
 
         public void update()
         {
-            _animation.flipY = _flipY;
+            _animation.flipY = _player.FlipGun;
             entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(_player.FacingAngle) * _renderOffset,
                 _player.entity.position.Y + (float)Math.Sin(_player.FacingAngle) * _renderOffset / 2);
             if (!_animation.isPlaying)
@@ -96,11 +94,6 @@ namespace FredflixAndChell.Shared.Components.Guns
             _animation?.setRenderLayer(renderLayer);
         }
 
-
-        public void FlipY(bool flipY)
-        {
-            _flipY = flipY;
-        }
 
         public Sprite<GunAnimations> GetAnimations()
         {

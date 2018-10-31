@@ -131,11 +131,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             Reload.Update();
         }
 
-        public void FlipY(bool isFlipped)
-        {
-            _renderer?.FlipY(isFlipped);
-        }
-
         public void Destroy()
         {
             entity.destroy();
