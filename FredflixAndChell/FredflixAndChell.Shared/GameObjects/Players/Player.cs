@@ -5,16 +5,19 @@ using FredflixAndChell.Shared.Components.PlayerComponents;
 using Nez;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
-using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
+using Nez.Tweens;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
-    public class Player : GameObject
+    public class Player : GameObject, ITriggerListener
     {
+        private const float ThrowSpeed = 1.0f;
+
         private Mover _mover;
         private PlayerRenderer _renderer;
         private PlayerController _controller;
+        private Collider _collider;
 
         private Entity _gunEntity;
         private Gun _gun;
@@ -24,6 +27,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public float FacingAngle { get; set; }
 
         public Vector2 Acceleration;
+
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
@@ -48,11 +52,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _gun = _gunEntity.addComponent(new Gun(this, GunPresets.Fido));
 
             // Assign collider component
-            var collider = entity.addComponent(new CircleCollider(4f));
-            collider.localOffset = new Vector2(0, 4);
-            Flags.setFlagExclusive(ref collider.collidesWithLayers, Layers.MapObstacles);
-            Flags.setFlag(ref collider.collidesWithLayers, Layers.Player);
-            Flags.setFlagExclusive(ref collider.physicsLayer, Layers.Player);
+            _collider = entity.addComponent(new CircleCollider(4f));
+            _collider.localOffset = new Vector2(0, 4);
+            Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
+            Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Player);
 
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
@@ -60,8 +64,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void update()
         {
-            SetFacing();
+            ReadInputs();
             Move();
+            SetFacing();
+        }
+
+        private void ReadInputs()
+        {
+            if (!_controller.InputEnabled) return;
 
             if (_controller.FirePressed)
                 Attack();
@@ -71,20 +81,56 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 DropGun();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
+
+            Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
+            FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
+
         }
 
         private void Move()
         {
             var deltaTime = Time.deltaTime;
 
-            Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
             Acceleration *= _speed * deltaTime;
-
             Velocity = (0.95f * Velocity + 0.05f * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
-            var isColliding = _mover.move(Velocity, out CollisionResult result);
+            var isColliding = _mover.move(Velocity, out CollisionResult collision);
+
+            if (isColliding)
+            {
+                // Handle collisions here
+            }
+
+        }
+
+        private void FallIntoPit(Entity pitEntity)
+        {
+            _controller.SetInputEnabled(false);
+            DropGun();
+            Velocity = Vector2.Zero;
+            Acceleration = Vector2.Zero;
+            _mover.setEnabled(false);
+            _collider.setEnabled(false);
+            var easeType = EaseType.CubicOut;
+            var duration = 1f;
+            var targetScale = 0.2f;
+            var targetRotationDegrees = 180;
+            var targetColor = new Color(0, 0, 0, 0.25f);
+            var destination = pitEntity.localPosition;
+
+            entity.tweenRotationDegreesTo(targetRotationDegrees, duration)
+                .setEaseType(easeType)
+                .start();
+            entity.tweenScaleTo(targetScale, duration)
+                .setEaseType(easeType)
+                .start();
+            entity.tweenPositionTo(destination, duration)
+                .setEaseType(easeType)
+                .setCompletionHandler(_ => entity.setEnabled(false))
+                .start();
+            _renderer.TweenColor(targetColor, duration, easeType);
         }
 
         public void Attack()
@@ -104,11 +150,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 //Throw out a new gunz
                 var gunItem = entity.scene.createEntity("item");
-                var throwedItem = gunItem.addComponent(new Collectible((int)transform.position.X,(int)transform.position.Y, _gun.Parameters.Name, true));
+                var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
-                throwedItem.PushDirection(2000f, FacingAngle);
-
+                throwedItem.Velocity = new Vector2(Mathf.cos(FacingAngle) * ThrowSpeed, Mathf.sin(FacingAngle) * ThrowSpeed) + Velocity * 2f;
                 IsArmed = false;
+
                 //Destroying current gunz
                 _gun.Destroy();
                 _gun = null;
@@ -117,13 +163,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnDespawn()
         {
+            _gun.entity.setEnabled(false);
+            _gun.Destroy();
         }
 
         private void SetFacing()
         {
             if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
-
-            FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
 
             if(_gun != null)
             {
@@ -149,6 +195,19 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _renderer.FlipX(true);
                 HorizontalFacing = (int)FacingCode.LEFT;
             }
+        }
+
+        public void onTriggerEnter(Collider other, Collider local)
+        {
+            if(other.entity.tag == Tags.Pit)
+            {
+                FallIntoPit(other.entity);
+            }
+        }
+
+        public void onTriggerExit(Collider other, Collider local)
+        {
+            Console.WriteLine($"TriggerExit: {other}, {other.entity.tag}");
         }
     }
 

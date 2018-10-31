@@ -1,13 +1,5 @@
-﻿using FredflixAndChell.Shared.Components.Guns;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Utilities.Graphics.Animations;
-using Nez.Sprites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePreset;
+﻿using FredflixAndChell.Shared.GameObjects.Weapons;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {

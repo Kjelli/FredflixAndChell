@@ -1,15 +1,9 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
     
-    public static class CollectiblePreset
+    public static class CollectiblePresets
     {
         public static readonly CollectibleParameters M4 = new CollectibleParameters
         {
@@ -22,8 +16,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             Type = CollectibleType.Weapon,
             Gun = GunPresets.Fido
         };
-
-        
 
         public enum CollectibleType
         {

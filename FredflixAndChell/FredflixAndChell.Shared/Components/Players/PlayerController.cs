@@ -10,6 +10,20 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
     public class PlayerController : Component, IUpdatable
     {
+
+        private VirtualJoystick _leftStick;
+        private VirtualJoystick _rightStick;
+        private VirtualButton _fireButton;
+        private VirtualButton _reload;
+        private VirtualButton _dropGun;
+        private VirtualButton _debug;
+        private VirtualMouseJoystick _mouseJoystick;
+
+        private Player Player;
+
+        private int _controllerIndex;
+        private bool _inputEnabled = true;
+
         public float XLeftAxis => _leftStick?.value.X ?? 0;
         public float YLeftAxis => -1 * _leftStick?.value.Y ?? 0;
         public float XRightAxis => _rightStick?.value.X ?? 0;
@@ -18,19 +32,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public bool ReloadPressed => _reload?.isDown ?? false;
         public bool DropGun => _dropGun?.isDown ?? false;
         public bool DebugModePressed => _debug?.isPressed ?? false;
-        public bool IsEnabled => _isEnabled;
+        public bool InputEnabled => _inputEnabled;
 
-        private VirtualJoystick _leftStick;
-        private VirtualJoystick _rightStick;
-        private VirtualButton _fireButton;
-        private VirtualButton _reload;
-        private VirtualButton _dropGun;
-
-        private VirtualButton _debug;
-        private VirtualMouseJoystick _mouseJoystick;
-        public Player Player;
-        private int _controllerIndex;
-        private bool _isEnabled;
 
         public PlayerController(int controllerIndex)
         {
@@ -101,9 +104,9 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             return isCompatible;
         }
 
-        public void SetEnabled(bool enabled)
+        public void SetInputEnabled(bool enabled)
         {
-            _isEnabled = enabled;
+            _inputEnabled = enabled;
         }
 
         public void update()
