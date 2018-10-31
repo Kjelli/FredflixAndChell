@@ -75,6 +75,7 @@ namespace FredflixAndChell.Shared.Scenes
                 var pitEntity = createEntity("pit" + pit.id, new Vector2((pit.x + pit.width / 2), pit.y + pit.height / 2));
                 pitEntity.setTag(Tags.Pit);
                 var hitbox = pitEntity.addComponent(new BoxCollider(pit.width, pit.height));
+                hitbox.isTrigger = true;
                 Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
             }
 
@@ -141,7 +142,7 @@ namespace FredflixAndChell.Shared.Scenes
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
             var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[2];
+            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
         }

@@ -11,8 +11,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
     {
         private CollectibleParameters _preset;
         private Mover _mover;
-        private Sprite Sprite;
-        private Vector2 Acceleration;
+        private Sprite _sprite;
+        private Vector2 _acceleration;
 
         private bool _dropped;
 
@@ -33,7 +33,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
 
             _dropped = dropped;
-            Acceleration = new Vector2();
+            _acceleration = new Vector2();
 
         }
 
@@ -44,11 +44,11 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnSpawn()
         {
-            Sprite = entity.addComponent(new Sprite(_preset.Gun.Sprite.Icon.ToSpriteAnimation(_preset.Gun.Sprite.Source).frames[0]));
-            Sprite.renderLayer = Layers.Items;
+            _sprite = entity.addComponent(new Sprite(_preset.Gun.Sprite.Icon.ToSpriteAnimation(_preset.Gun.Sprite.Source).frames[0]));
+            _sprite.renderLayer = Layers.Items;
             entity.scale = new Vector2(0.025f, 0.025f);
-            entity.tweenLocalScaleTo(0.5f, 1f)
-                .setEaseType(EaseType.Linear)
+            entity.tweenLocalScaleTo(0.5f, 0.5f)
+                .setEaseType(EaseType.ExpoOut)
                 .setCompletionHandler(_ => Hover(2f))
                 .start();
             _mover = entity.addComponent(new Mover());
@@ -63,15 +63,9 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 .start();
         }
 
-        public void PushDirection(float power, float direction)
-        {
-            Acceleration = new Vector2((float)Math.Cos(direction) * power, (float)Math.Sin(direction) * power);
-        }
-
         public override void update()
         {
-            Acceleration *= Time.deltaTime;
-            Velocity = (0.95f * Velocity + 0.05f * Acceleration);
+            Velocity = (0.975f * Velocity + 0.025f * _acceleration);
             var isColliding = _mover.move(Velocity, out CollisionResult result);
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
         }
