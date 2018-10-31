@@ -8,9 +8,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
     public class GunParameters
     {
-        // Construction limited to namespace
-        internal GunParameters() { }
-
         public string Name { get; set; }
         public GunSprite Sprite { get; set; }
         public BulletParameters BulletParameters { get; set; }

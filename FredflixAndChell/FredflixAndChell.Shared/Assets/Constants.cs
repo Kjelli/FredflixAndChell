@@ -8,6 +8,10 @@ namespace FredflixAndChell.Shared.Assets
 {
     public class Constants
     {
+        public class Assets
+        {
+            public const string DataDirectory = "Content/data";
+        }
         public class TileProperties
         {
             public const string BulletPassable = "bullet_passable";

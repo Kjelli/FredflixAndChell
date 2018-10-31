@@ -13,8 +13,5 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         public float LifeSpanSeconds { get; set; } = -1f;
         public bool RotateWithGun { get; set; } = true;
         public bool Bounce { get; set; } = false;
-
-        // Construction limited to namespace
-        internal BulletParameters() { }
     }
 }

@@ -12,8 +12,5 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets.Sprites
         public string Source { get; set; }
 
         public SpriteAnimationDescriptor Bullet { get; set; }
-
-        // Construction limited to namespace
-        internal BulletSprite() { }
     }
 }

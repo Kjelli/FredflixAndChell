@@ -26,7 +26,7 @@ namespace FredflixAndChell.Shared
         {
             base.Initialize();
 
-            new YamlSerializer().SerializeGun();
+            //YamlSerializer.SerializeAll();
 
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
