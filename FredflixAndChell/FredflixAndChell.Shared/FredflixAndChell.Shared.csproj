@@ -60,7 +60,7 @@
     <Compile Include="GameObjects\Bullets\BulletPresets.cs" />
     <Compile Include="GameObjects\Bullets\Sprites\BulletSprite.cs" />
     <Compile Include="GameObjects\Collectibles\Collectible.cs" />
-    <Compile Include="GameObjects\Collectibles\CollectiblePreset.cs" />
+    <Compile Include="GameObjects\Collectibles\CollectiblePresets.cs" />
     <Compile Include="GameObjects\Collectibles\CollectibleParameters.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerBodySprite.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerHeadSprite.cs" />

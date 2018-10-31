@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerBodySprite;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprite;
+using System;
+using Nez.Tweens;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -96,6 +98,16 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 bodySprite.WalkingUnarmed.ToSpriteAnimation(_playerSprite.Source + "_body"));
 
             return animations;
+        }
+
+        public void TweenColor(Color c, float durationSeconds, EaseType easeType = EaseType.CubicOut)
+        {
+            _head.tweenColorTo(c, durationSeconds)
+                .setEaseType(easeType)
+                .start();
+            _body.tweenColorTo(c, durationSeconds)
+                .setEaseType(easeType)
+                .start();
         }
 
         private Sprite<HeadAnimations> SetupHeadAnimations(PlayerHeadSprite headSprite)
