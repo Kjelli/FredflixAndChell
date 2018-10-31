@@ -21,10 +21,10 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             switch (objectName)
             {
                 case "M4":
-                    _preset = CollectiblePreset.M4;
+                    _preset = CollectiblePresets.M4;
                     break;
                 case "Fido":
-                    _preset = CollectiblePreset.Fido;
+                    _preset = CollectiblePresets.Fido;
                     break;
                 default:
                     _preset = null;
