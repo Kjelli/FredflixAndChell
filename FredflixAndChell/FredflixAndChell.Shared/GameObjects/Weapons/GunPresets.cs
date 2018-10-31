@@ -36,7 +36,22 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             ReloadTime = 0.8f,
             RenderOffset = 5,
             BulletCount = 5,
-            BulletSpread = (float) Math.PI / 8
+            BulletSpread = (float)Math.PI / 8
+        };
+
+        public static readonly GunParameters PewPew = new GunParameters
+        {
+            Name = "PewPew",
+            Sprite = GunSpritePresets.PewPew,
+            BulletParameters = BulletPresets.Standard,
+            FireRate = 0.05f,
+            BarrelOffset = new Vector2(10, 0),
+            Ammo = 300,
+            MaxAmmo = 300,
+            MagazineAmmo = 30,
+            MagazineSize = 30,
+            ReloadTime = 2f,
+            RenderOffset = 7f
         };
     }
 }
