@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="42">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="44">
  <tileset firstgid="1" source="tileset_winter.tsx"/>
  <tileset firstgid="1025" source="tileset_temple.tsx"/>
  <layer id="1" name="Floor" width="50" height="30">
@@ -61,5 +61,7 @@
   <object id="39" name="pit" x="320" y="112" width="8" height="8"/>
   <object id="40" name="pit" x="328" y="120" width="8" height="8"/>
   <object id="41" name="pit" x="328" y="112" width="8" height="8"/>
+  <object id="42" name="pit" x="208" y="64" width="32.25" height="32.25"/>
+  <object id="43" name="pit" x="208" y="160" width="32.25" height="32.25"/>
  </objectgroup>
 </map>
