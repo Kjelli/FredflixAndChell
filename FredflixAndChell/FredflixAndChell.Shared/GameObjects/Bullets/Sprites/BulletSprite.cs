@@ -1,25 +1,19 @@
-﻿namespace FredflixAndChell.Shared.GameObjects.Bullets.Sprites
+﻿using FredflixAndChell.Shared.Utilities.Graphics.Animations;
+
+namespace FredflixAndChell.Shared.GameObjects.Bullets.Sprites
 {
     public class BulletSprite
     {
-        public static readonly BulletSprite Standard = "standard";
-        public static readonly BulletSprite Fido = "fido";
-        public static readonly BulletSprite Shockwave = "shockwave_sm";
-
-        private readonly string _spriteName;
-        private BulletSprite(string spriteName)
+        public enum BulletAnimations
         {
-            _spriteName = spriteName;
+            Bullet
         }
 
-        public static implicit operator BulletSprite(string input)
-        {
-            return new BulletSprite(input);
-        }
+        public string Source { get; set; }
 
-        public override string ToString()
-        {
-            return _spriteName;
-        }
+        public SpriteAnimationDescriptor Bullet { get; set; }
+
+        // Construction limited to namespace
+        internal BulletSprite() { }
     }
 }

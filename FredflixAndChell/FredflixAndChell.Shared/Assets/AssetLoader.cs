@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System;
-using FredflixAndChell.Shared.Utilities;
 using Nez.Tiled;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -35,6 +33,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/lightmask_xs");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
+            LoadTexture("textures/guns/pewpew");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
@@ -46,7 +45,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/winter_1");
             LoadTexture("maps/spawner_tile");
         }
-        
+
         #region Loaders and Getters
         public static Texture2D GetTexture(string name)
         {

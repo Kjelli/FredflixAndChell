@@ -50,12 +50,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             SetupMapObjects(mapObjects);
 
-            var spawners = tiledmap.getObjectGroup("Objects").objectsWithName("item_spawn");
-            foreach(var spawnObject in spawners)
-            {
-                var spawnerEntity = createEntity("spawner" + spawnObject.id);
-                var sprite = spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
-            }
 
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
@@ -81,7 +75,14 @@ namespace FredflixAndChell.Shared.Scenes
                 var pitEntity = createEntity("pit" + pit.id, new Vector2((pit.x + pit.width / 2), pit.y + pit.height / 2));
                 pitEntity.setTag(Tags.Pit);
                 var hitbox = pitEntity.addComponent(new BoxCollider(pit.width, pit.height));
+                hitbox.isTrigger = true;
                 Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+            }
+
+            foreach (var spawnObject in objectGroup.objectsWithName("item_spawn"))
+            {
+                var spawnerEntity = createEntity("spawner" + spawnObject.id);
+                spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
             }
         }
 
@@ -141,7 +142,7 @@ namespace FredflixAndChell.Shared.Scenes
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
             var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[2];
+            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
             var vignette = addPostProcessor(new VignettePostProcessor(4));
         }

@@ -11,6 +11,7 @@ using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Scenes;
 using System.Diagnostics;
 using Nez;
+using FredflixAndChell.Shared.Utilities.Serialization;
 
 #endregion
 
@@ -24,6 +25,8 @@ namespace FredflixAndChell.Shared
         protected override void Initialize()
         {
             base.Initialize();
+
+            new YamlSerializer().SerializeGun();
 
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";

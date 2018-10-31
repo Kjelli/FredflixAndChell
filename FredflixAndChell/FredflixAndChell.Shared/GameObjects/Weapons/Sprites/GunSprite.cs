@@ -14,7 +14,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
         }
 
         public string Source { get; set; }
-    
 
         public SpriteAnimationDescriptor Idle { get; set; }
         public SpriteAnimationDescriptor Fire { get; set; }

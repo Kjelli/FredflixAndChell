@@ -43,8 +43,8 @@
 /build:fonts/debug.spritefont
 
 #begin maps/firstlevel.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/firstlevel.tmx
 
 #begin maps/sheet_temple.png
@@ -84,8 +84,8 @@
 /build:maps/spawner_tile.png
 
 #begin maps/winter_1.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_1.tmx
 
 #begin textures/bullets/fido.png
@@ -243,6 +243,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/m4.png
+
+#begin textures/guns/pewpew.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/pewpew.png
 
 #begin textures/players/kjelli_body.png
 /importer:TextureImporter
