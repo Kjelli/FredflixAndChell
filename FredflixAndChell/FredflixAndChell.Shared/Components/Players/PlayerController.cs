@@ -17,6 +17,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _reload;
         private VirtualButton _dropGun;
         private VirtualButton _debug;
+        private VirtualButton _interact;
         private VirtualMouseJoystick _mouseJoystick;
 
         private Player Player;

@@ -9,7 +9,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
     public class Collectible : GameObject
     {
-        private CollectibleParameters _preset;
+        public CollectibleParameters Preset;
         private Mover _mover;
         private Sprite _sprite;
         private Vector2 _acceleration;
@@ -21,20 +21,22 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             switch (objectName)
             {
                 case "M4":
-                    _preset = CollectiblePresets.M4;
+                    Preset = CollectiblePresets.M4;
                     break;
                 case "Fido":
-                    _preset = CollectiblePresets.Fido;
+                    Preset = CollectiblePresets.Fido;
+                    break;
+                case "PewPew":
+                    Preset = CollectiblePresets.PewPew;
                     break;
                 default:
-                    _preset = null;
+                    Preset = null;
                     Console.WriteLine("Object name not found when trying to drop. Check player -> dropgun()");
                     break;
             }
 
             _dropped = dropped;
             _acceleration = new Vector2();
-
         }
 
         public override void OnDespawn()
@@ -44,7 +46,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnSpawn()
         {
-            _sprite = entity.addComponent(new Sprite(_preset.Gun.Sprite.Icon.ToSpriteAnimation(_preset.Gun.Sprite.Source).frames[0]));
+            _sprite = entity.addComponent(new Sprite(Preset.Gun.Sprite.Icon.ToSpriteAnimation(Preset.Gun.Sprite.Source).frames[0]));
             _sprite.renderLayer = Layers.Items;
             entity.scale = new Vector2(0.025f, 0.025f);
             entity.tweenLocalScaleTo(0.5f, 0.5f)
@@ -52,6 +54,14 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 .setCompletionHandler(_ => Hover(2f))
                 .start();
             _mover = entity.addComponent(new Mover());
+
+            entity.setTag(Tags.Collectible);
+            //Collision
+            var hitbox = this.addComponent(new BoxCollider());
+            hitbox.isTrigger = true;
+            Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
+
+
 
         }
 
@@ -69,5 +79,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             var isColliding = _mover.move(Velocity, out CollisionResult result);
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
         }
+
+        
     }
 }

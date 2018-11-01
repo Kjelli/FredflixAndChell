@@ -7,6 +7,7 @@ using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using Nez.Tweens;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -49,7 +50,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.M4));
+            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.PewPew));
 
             // Assign collider component
             _collider = entity.addComponent(new CircleCollider(4f));
@@ -61,6 +62,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
         }
+
 
         public override void update()
         {
@@ -79,6 +81,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Reload();
             if (_controller.DropGun)
                 DropGun();
+            if (_controller.Interact)
+                Interact();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
@@ -102,6 +106,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 // Handle collisions here
             }
+        }
+
+        public void EquipGun()
+        {
 
         }
 
@@ -133,6 +141,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _renderer.TweenColor(targetColor, duration, easeType);
         }
 
+
         public void Attack()
         {
             if(_gun != null)
@@ -141,7 +150,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Reload()
         {
+
+            if(_gun != null)
             _gun.ReloadMagazine();
+        }
+
+        public void Interact()
+        {
+            Console.WriteLine("Interact");
         }
 
         public void DropGun()
@@ -199,9 +215,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void onTriggerEnter(Collider other, Collider local)
         {
+
             if(other.entity.tag == Tags.Pit)
             {
                 FallIntoPit(other.entity);
+            }
+
+            if(other.entity.tag == Tags.Collectible)
+            {
+                //other.entity.destroy();
+                var collectiblePreset = other.entity.getComponent<Collectible>().Preset;
+                if(collectiblePreset.Type == CollectibleType.Weapon)
+                {
+                    _gun = _gunEntity.addComponent(new Gun(this, collectiblePreset.Gun));
+                }
             }
         }
 

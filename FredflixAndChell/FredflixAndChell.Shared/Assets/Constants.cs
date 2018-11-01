@@ -18,6 +18,7 @@ namespace FredflixAndChell.Shared.Assets
         {
             public const int Player = 1;
             public const int Pit = 2;
+            public const int Collectible = 3;
 
         }
 

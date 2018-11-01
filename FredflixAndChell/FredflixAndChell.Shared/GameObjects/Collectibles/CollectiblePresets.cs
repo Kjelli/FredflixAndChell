@@ -17,6 +17,12 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             Gun = GunPresets.Fido
         };
 
+        public static readonly CollectibleParameters PewPew = new CollectibleParameters
+        {
+            Type = CollectibleType.Weapon,
+            Gun = GunPresets.PewPew
+        };
+
         public enum CollectibleType
         {
             Weapon = 1
