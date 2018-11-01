@@ -67,10 +67,13 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void Hover(float yOffset)
         {
-            entity.tweenLocalPositionTo(new Vector2(entity.transform.position.X, entity.transform.position.Y + yOffset), 1f)
-                .setEaseType(EaseType.SineInOut)
-                .setCompletionHandler(_ => Hover(-yOffset))
-                .start();
+            if(entity != null)
+            {
+                entity.tweenLocalPositionTo(new Vector2(entity.transform.position.X, entity.transform.position.Y + yOffset), 1f)
+               .setEaseType(EaseType.SineInOut)
+               .setCompletionHandler(_ => Hover(-yOffset))
+               .start();
+            }
         }
 
         public override void update()

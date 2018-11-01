@@ -51,8 +51,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _mover = entity.addComponent(new Mover());
 
             // Assign gun component
-            _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get("Fido")));
+            EquipGun("Fido");
 
             // Assign collider component
             _collider = entity.addComponent(new CircleCollider(4f));
@@ -119,9 +118,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        public void EquipGun()
+        public void EquipGun(string name)
         {
+            if (_gun != null)
+            {
+                UnEquipGun();
+            }
+            _gunEntity = entity.scene.createEntity("gun");
+            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
+            IsArmed = true;
+        }
 
+        public void UnEquipGun()
+        {
+            IsArmed = false;
+            //Destroying current gunz
+            _gunEntity.destroy();
+            _gun = null;
         }
 
         private void FallIntoPit(Entity pitEntity)
@@ -181,11 +194,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
                 throwedItem.Velocity = new Vector2(Mathf.cos(FacingAngle) * ThrowSpeed, Mathf.sin(FacingAngle) * ThrowSpeed) + Velocity * 2f;
-                IsArmed = false;
-
-                //Destroying current gunz
-                _gunEntity.destroy();
-                _gun = null;
+                UnEquipGun();
             }
         }
 
@@ -238,17 +247,18 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if(other.entity.tag == Tags.Collectible)
             {
                 //other.entity.destroy();
-                var collectiblePreset = other.entity.getComponent<Collectible>().Preset;
-                if(collectiblePreset.Type == CollectibleType.Weapon)
+                var collectible= other.entity.getComponent<Collectible>();
+                if(collectible.Preset.Type == CollectibleType.Weapon)
                 {
-                    _gun = _gunEntity.addComponent(new Gun(this, collectiblePreset.Gun));
+                    EquipGun(collectible.Preset.Gun.Name);
                 }
+                collectible.entity.destroy();
             }
         }
 
         public void onTriggerExit(Collider other, Collider local)
         {
-            Console.WriteLine($"TriggerExit: {other}, {other.entity.tag}");
+            //Console.WriteLine($"TriggerExit: {other}, {other.entity.tag}");
         }
     }
 

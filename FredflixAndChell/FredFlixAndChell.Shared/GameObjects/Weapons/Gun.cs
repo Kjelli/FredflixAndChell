@@ -129,11 +129,14 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Cooldown.Update();
             Reload.Update();
+            
         }
 
         public void Destroy()
         {
             entity.destroy();
         }
+
+
     }
 }
