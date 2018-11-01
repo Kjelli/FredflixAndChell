@@ -85,7 +85,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 DropGun();
             if (_controller.SwitchWeaponPressed)
                 SwitchWeapon();
-            if (_controller.Interact)
+            if (_controller.InteractPressed)
                 Interact();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
