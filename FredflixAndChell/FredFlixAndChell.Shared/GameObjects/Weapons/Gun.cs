@@ -14,15 +14,15 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private GunRenderer _renderer;
         private Player _player;
 
-        private int Ammo;
-        private int MaxAmmo;
-        private int MagazineAmmo;
-        private int MagazineSize;
-
+        private int _ammo;
+        private int _maxAmmo;
+        private int _magazineAmmo;
+        private int _magazineSize;
         private int _bulletCount;
+
         private float _bulletSpread;
 
-        private Vector2 BarrelOffset;
+        private Vector2 _barrelOffset;
 
         public Cooldown Cooldown { get; set; }
         public Cooldown Reload { get; set; }
@@ -43,11 +43,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void SetupParameters()
         {
-            Ammo = _params.Ammo;
-            MaxAmmo = _params.MaxAmmo;
-            MagazineAmmo = _params.MagazineAmmo;
-            MagazineSize = _params.MagazineSize;
-            BarrelOffset = _params.BarrelOffset;
+            _ammo = _params.Ammo;
+            _maxAmmo = _params.MaxAmmo;
+            _magazineAmmo = _params.MagazineAmmo;
+            _magazineSize = _params.MagazineSize;
+            _barrelOffset = _params.BarrelOffset;
             Cooldown = new Cooldown(_params.FireRate);
             Reload = new Cooldown(_params.ReloadTime);
 
@@ -60,12 +60,12 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             if (!Reload.IsOnCooldown())
             {
                 CheckAmmo();
-                if (Cooldown.IsReady() && Reload.IsReady() && MagazineAmmo >= 0)
+                if (Cooldown.IsReady() && Reload.IsReady() && _magazineAmmo >= 0)
                 {
                     //Functionality
                     Cooldown.Start();
-                    var bulletSpawnX = entity.position.X + (float)Math.Cos(_player.FacingAngle) * BarrelOffset.X + (float)Math.Cos(_player.FacingAngle) * BarrelOffset.Y;
-                    var bulletSpawnY = entity.position.Y + (float)Math.Sin(_player.FacingAngle) * BarrelOffset.Y + (float)Math.Sin(_player.FacingAngle) * BarrelOffset.X;
+                    var bulletSpawnX = entity.position.X + (float)Math.Cos(_player.FacingAngle) * _barrelOffset.X + (float)Math.Cos(_player.FacingAngle) * _barrelOffset.Y;
+                    var bulletSpawnY = entity.position.Y + (float)Math.Sin(_player.FacingAngle) * _barrelOffset.Y + (float)Math.Sin(_player.FacingAngle) * _barrelOffset.X;
                     for (float i = 0; i < _bulletCount; i++)
                     {
                         var bulletEntity = entity.scene.createEntity("bullet");
@@ -76,7 +76,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                                 _player.FacingAngle + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
                                 _params.BulletParameters));
                     }
-                    MagazineAmmo--;
+                    _magazineAmmo--;
 
                     //Animation
                     _renderer?.Fire();
@@ -86,9 +86,9 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void CheckAmmo()
         {
-            if (MagazineAmmo == 0)
+            if (_magazineAmmo == 0)
             {
-                if (Ammo <= 0)
+                if (_ammo <= 0)
                 {
                     //Totally out of ammo? 
                     //TODO: Throw away this
@@ -103,13 +103,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void ReloadMagazine()
         {
-            if (!Reload.IsOnCooldown() && MagazineAmmo != MagazineSize)
+            if (!Reload.IsOnCooldown() && _magazineAmmo != _magazineSize)
             {
                 //Function
                 Reload.Start();
-                int newBullets = Math.Min(MagazineSize - MagazineAmmo, Ammo);
-                Ammo = Ammo - newBullets;
-                MagazineAmmo = MagazineAmmo + newBullets;
+                int newBullets = Math.Min(_magazineSize - _magazineAmmo, _ammo);
+                _ammo = _ammo - newBullets;
+                _magazineAmmo = _magazineAmmo + newBullets;
 
                 //Animation
                 _renderer.Reload();
@@ -129,11 +129,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Cooldown.Update();
             Reload.Update();
-        }
-
-        public void FlipY(bool isFlipped)
-        {
-            _renderer?.FlipY(isFlipped);
         }
 
         public void Destroy()

@@ -29,6 +29,9 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 case "PewPew":
                     Preset = CollectiblePresets.PewPew;
                     break;
+                case "PewPew":
+                    _preset = CollectiblePresets.PewPew;
+                    break;
                 default:
                     Preset = null;
                     Console.WriteLine("Object name not found when trying to drop. Check player -> dropgun()");

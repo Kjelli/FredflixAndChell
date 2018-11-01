@@ -18,9 +18,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
         public SpriteAnimationDescriptor Idle { get; set; }
         public SpriteAnimationDescriptor Fire { get; set; }
         public SpriteAnimationDescriptor Reload { get; set; }
-        public SpriteAnimationDescriptor Icon { get; internal set; }
+        public SpriteAnimationDescriptor Icon { get; set; }
 
-        // Construction limited to namespace
-        internal GunSprite() { }
     }
 }

@@ -8,6 +8,7 @@ using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
+using FredflixAndChell.Shared.Utilities.Serialization;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -32,6 +33,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
+        public bool FlipGun { get; set; }
 
         public Player(int x, int y, int controllerIndex = -1) : base(x, y)
         {
@@ -50,7 +52,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, GunPresets.PewPew));
+            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get("Fido")));
 
             // Assign collider component
             _collider = entity.addComponent(new CircleCollider(4f));
@@ -79,8 +81,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Attack();
             if (_controller.ReloadPressed)
                 Reload();
-            if (_controller.DropGun)
+            if (_controller.DropGunPressed)
                 DropGun();
+            if (_controller.SwitchWeaponPressed)
+                SwitchWeapon();
             if (_controller.Interact)
                 Interact();
             if (_controller.DebugModePressed)
@@ -89,6 +93,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
             FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
 
+        }
+
+        private void SwitchWeapon()
+        {
+            var nextGun = Guns.GetNextAfter(_gun.Parameters.Name);
+            _gunEntity.removeAllComponents();
+            _gun = _gunEntity.addComponent(new Gun(this, nextGun));
         }
 
         private void Move()
@@ -121,6 +132,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Acceleration = Vector2.Zero;
             _mover.setEnabled(false);
             _collider.setEnabled(false);
+
             var easeType = EaseType.CubicOut;
             var duration = 2f;
             var targetScale = 0.2f;
@@ -172,7 +184,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 IsArmed = false;
 
                 //Destroying current gunz
-                _gun.Destroy();
+                _gunEntity.destroy();
                 _gun = null;
             }
         }
@@ -187,9 +199,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
 
-            if(_gun != null)
+            if(_gun != null && _gunEntity != null)
             {
-                _gun.entity.rotation = FacingAngle;
+                _gunEntity.rotation = FacingAngle;
             }
 
             if (FacingAngle > 0 && FacingAngle < Math.PI)
@@ -204,11 +216,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (FacingAngle > -Math.PI / 2 && FacingAngle < Math.PI / 2)
             {
                 _renderer.FlipX(false);
+                FlipGun = false;
                 HorizontalFacing = (int)FacingCode.RIGHT;
             }
             else
             {
                 _renderer.FlipX(true);
+                FlipGun = true;
                 HorizontalFacing = (int)FacingCode.LEFT;
             }
         }

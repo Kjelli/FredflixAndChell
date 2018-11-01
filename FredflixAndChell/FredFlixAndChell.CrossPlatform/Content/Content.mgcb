@@ -17,6 +17,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin data/guns/Fido.fml
+/copy:data/guns/Fido.fml
+
+#begin data/guns/M4.fml
+/copy:data/guns/M4.fml
+
+#begin data/guns/PewPew.fml
+/copy:data/guns/PewPew.fml
+
 #begin effects/shader_flash.fx
 /importer:EffectImporter
 /processor:EffectProcessor

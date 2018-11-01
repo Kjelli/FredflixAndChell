@@ -1,0 +1,85 @@
+Ammo: 300
+BarrelOffset:
+  X: 7.0
+  Y: 0.0
+BulletCount: 5
+BulletParameters:
+  Bounce: false
+  Damage: 0.0
+  Knockback: 3.0
+  LifeSpanSeconds: 0.5
+  RotateWithGun: true
+  Scale: 0.25
+  Speed: 60.0
+  Sprite:
+    Bullet:
+      FPS: 1.0
+      Frames:
+        - 0
+      Loop: false
+      Origin:
+        X: 0.0
+        Y: 0.0
+    Source: bullets/shockwave_sm
+BulletSpread: 0.392699093
+FireRate: 0.300000012
+MagazineAmmo: 30
+MagazineSize: 30
+MaxAmmo: 300
+Name: Fido
+ReloadTime: 0.800000012
+RenderOffset: 5.0
+Sprite:
+  Fire:
+    FPS: 15.0
+    Frames:
+      - 9
+      - 17
+      - 25
+      - 1
+    Loop: false
+    Origin:
+      X: 10.0
+      Y: 16.0
+  Icon:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0
+  Idle:
+    FPS: 4.0
+    Frames:
+      - 2
+      - 3
+      - 11
+      - 3
+      - 2
+      - 3
+      - 2
+      - 3
+      - 11
+      - 3
+    Loop: true
+    Origin:
+      X: 10.0
+      Y: 16.0
+  Reload:
+    FPS: 15.0
+    Frames:
+      - 1
+      - 2
+      - 10
+      - 18
+      - 26
+      - 18
+      - 10
+      - 2
+      - 1
+    Loop: false
+    Origin:
+      X: 10.0
+      Y: 16.0
+  Source: guns/fido
