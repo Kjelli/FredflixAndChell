@@ -51,6 +51,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _mover = entity.addComponent(new Mover());
 
             // Assign gun component
+            _gunEntity = entity.scene.createEntity("gun");
             EquipGun("Fido");
 
             // Assign collider component
@@ -94,11 +95,27 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         }
 
+        public void EquipGun(string name)
+        {
+            if (_gun != null)
+            {
+                UnEquipGun();
+            }
+            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
+            IsArmed = true;
+        }
+
+        public void UnEquipGun()
+        {
+            IsArmed = false;
+            _gunEntity.removeAllComponents();
+            _gun = null;
+        }
+
         private void SwitchWeapon()
         {
             var nextGun = Guns.GetNextAfter(_gun.Parameters.Name);
-            _gunEntity.removeAllComponents();
-            _gun = _gunEntity.addComponent(new Gun(this, nextGun));
+            EquipGun(nextGun.Name);
         }
 
         private void Move()
@@ -118,24 +135,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        public void EquipGun(string name)
-        {
-            if (_gun != null)
-            {
-                UnEquipGun();
-            }
-            _gunEntity = entity.scene.createEntity("gun");
-            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
-            IsArmed = true;
-        }
-
-        public void UnEquipGun()
-        {
-            IsArmed = false;
-            //Destroying current gunz
-            _gunEntity.destroy();
-            _gun = null;
-        }
+       
 
         private void FallIntoPit(Entity pitEntity)
         {
@@ -238,7 +238,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void onTriggerEnter(Collider other, Collider local)
         {
-
+            
             if(other.entity.tag == Tags.Pit)
             {
                 FallIntoPit(other.entity);
