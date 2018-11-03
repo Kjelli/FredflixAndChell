@@ -22,12 +22,12 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             if (!_isInitialized)
             {
-                Initialize();
+                LoadFromData();
             }
             return _guns[name];
         }
 
-        private static void Initialize()
+        public static void LoadFromData()
         {
             var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)

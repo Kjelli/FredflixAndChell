@@ -76,14 +76,13 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
-                Console.WriteLine(collision.collider);
                 var collidedWithEntity = collision.collider.entity;
                 if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))
                 {
                     var player = collidedWithEntity.getComponent<Player>();
                     if (player != null && player != _owner)
                     {
-                        // Damage
+                        // TODO Damage
                         player.Velocity += Velocity * _params.Knockback * Time.deltaTime;
                         entity.destroy();
                     }
