@@ -134,6 +134,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void Destroy()
         {
+            entity.setEnabled(false);
             entity.destroy();
         }
 

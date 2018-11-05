@@ -21,6 +21,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _switchWeaponButton;
         private VirtualMouseJoystick _mouseJoystick;
 
+
         private Player Player;
 
         private int _controllerIndex;
@@ -65,7 +66,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _mouseJoystick = new VirtualMouseJoystick(Player.entity.position);
 
             // Keyboard player
-            if (_controllerIndex == 0)
+            if (_controllerIndex == -1)
             {
                 _leftStick.addKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.A, Keys.D, Keys.S, Keys.W);
                 _rightStick.nodes.Add(_mouseJoystick);
@@ -121,7 +122,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public void update()
         {
-            if (_controllerIndex == 0)
+            if (_controllerIndex == -1)
             {
                 _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(Player.entity.position);
             }
