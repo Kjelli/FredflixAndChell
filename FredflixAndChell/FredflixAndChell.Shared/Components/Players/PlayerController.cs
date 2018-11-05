@@ -12,7 +12,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
     {
 
         private VirtualJoystick _leftStick;
-        private VirtualJoystick _rightStick;
+        public VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reloadButton;
         private VirtualButton _dropGunButton;
@@ -21,6 +21,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _switchWeaponButton;
         private VirtualMouseJoystick _mouseJoystick;
 
+        
 
         private Player Player;
 
@@ -29,7 +30,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public float XLeftAxis => _leftStick?.value.X ?? 0;
         public float YLeftAxis => -1 * _leftStick?.value.Y ?? 0;
-        public float XRightAxis => _rightStick?.value.X ?? 0;
+        public float XRightAxis =>  _rightStick?.value.X ?? 0;
         public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
         public bool FirePressed => _fireButton?.isDown ?? false;
         public bool ReloadPressed => _reloadButton?.isDown ?? false;

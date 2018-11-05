@@ -9,6 +9,7 @@ using FredflixAndChell.Shared.GameObjects.Collectibles;
 using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
 using FredflixAndChell.Shared.Utilities.Serialization;
+using Microsoft.Xna.Framework.Input;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -16,7 +17,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     {
         private const float ThrowSpeed = 1.0f;
 
-        private int _hitPoints { get; set; }
+        private int _health { get; set; }
 
         private Mover _mover;
         private PlayerRenderer _renderer;
@@ -72,7 +73,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
 
             //TODO: Character based 
-            _hitPoints = 100;
+            _health = 100;
         }
 
 
@@ -81,6 +82,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ReadInputs();
             Move();
             SetFacing();
+
+            var state = GamePad.GetState(0);
+            //Console.WriteLine("X: " + state.ThumbSticks.Right.X + " : " + state.ThumbSticks.Right.Y);
         }
 
         private void ReadInputs()
@@ -105,7 +109,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             previousValidRightStickInput = new Vector2(
                 _controller.XRightAxis == 0 ? previousValidRightStickInput.X : _controller.XRightAxis,
                 _controller.YRightAxis == 0 ? previousValidRightStickInput.Y : _controller.YRightAxis
-                );
+            );
 
             FacingAngle = (float)Math.Atan2(previousValidRightStickInput.Y, previousValidRightStickInput.X);
 
@@ -119,8 +123,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
             _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
             IsArmed = true;
-
-
         }
 
         public void UnEquipGun()
@@ -157,13 +159,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void FallIntoPit(Entity pitEntity)
         {
-            _controller.SetInputEnabled(false);
-            DropGun();
-            Velocity = Vector2.Zero;
-            Acceleration = Vector2.Zero;
-            _mover.setEnabled(false);
-            _collider.setEnabled(false);
-
+            DisablePlayer();
             var easeType = EaseType.CubicOut;
             var duration = 2f;
             var targetScale = 0.2f;
@@ -182,6 +178,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .setCompletionHandler(_ => entity.setEnabled(false))
                 .start();
             _renderer.TweenColor(targetColor, duration, easeType);
+        }
+
+        public void DisablePlayer()
+        {
+            _controller.SetInputEnabled(false);
+            DropGun();
+            Velocity = Vector2.Zero;
+            Acceleration = Vector2.Zero;
+            _mover.setEnabled(false);
+            _collider.setEnabled(false);
         }
 
 
@@ -209,6 +215,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                    EquipGun(collectible.Preset.Gun.Name);
                }
                collectible.entity.destroy();
+            }
+        }
+
+        public void Damage(int damage)
+        {
+            Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
+            _health -= damage;
+            if(_health < 0)
+            {
+                DisablePlayer();
             }
         }
 

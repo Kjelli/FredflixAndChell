@@ -38,8 +38,6 @@ namespace FredflixAndChell.Shared.Scenes
             {
                 var gamePadState = GamePad.GetState(playerIndex);
 
-                Console.WriteLine(playerIndex);
-
                 if (gamePadState.IsConnected && !_connectedPlayers.Contains(playerIndex))
                 {
                     SpawnPlayer(playerIndex);
