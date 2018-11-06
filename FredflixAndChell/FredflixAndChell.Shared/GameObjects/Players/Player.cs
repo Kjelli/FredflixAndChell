@@ -1,46 +1,42 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Components.PlayerComponents;
-using Nez;
-using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+﻿using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
-using Nez.Tweens;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
-using FredflixAndChell.Shared.Utilities.Serialization;
+using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Nez;
+using Nez.Tweens;
+using System;
+using static FredflixAndChell.Shared.Assets.Constants;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public class Player : GameObject, ITriggerListener
     {
         private const float ThrowSpeed = 1.0f;
+        private readonly int _controllerIndex;
 
-        private int _health { get; set; }
-
+        private int _health;
         private Mover _mover;
         private PlayerRenderer _renderer;
         private PlayerController _controller;
         private Collider _collider;
+        private float _accelerationMultiplier = 0.05f;
+        private float _speed = 50f;
 
         private Entity _gunEntity;
         private Gun _gun;
 
-        private int _controllerIndex;
-        private float _speed = 50f;
-        public float FacingAngle { get; set; }
+        private Vector2 _previousValidRightStickInput;
+        private Collider _touchingObject;
 
-        public Vector2 Acceleration;
-
+        public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
-
-        private Vector2 previousValidRightStickInput { get; set; }
-
-        public Collider TouchingObject;
+        public float FacingAngle { get; set; }
 
         public Player(int x, int y, int controllerIndex = -1) : base(x, y)
         {
@@ -56,7 +52,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
-            previousValidRightStickInput = new Vector2(0,0);
+            _previousValidRightStickInput = new Vector2(0, 0);
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
@@ -75,7 +71,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             //TODO: Character based 
             _health = 100;
         }
-
 
         public override void update()
         {
@@ -104,15 +99,24 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
+            ToggleSprint();
+
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
-            previousValidRightStickInput = new Vector2(
-                _controller.XRightAxis == 0 ? previousValidRightStickInput.X : _controller.XRightAxis,
-                _controller.YRightAxis == 0 ? previousValidRightStickInput.Y : _controller.YRightAxis
+            _previousValidRightStickInput = new Vector2(
+                _controller.XRightAxis == 0 ? _previousValidRightStickInput.X : _controller.XRightAxis,
+                _controller.YRightAxis == 0 ? _previousValidRightStickInput.Y : _controller.YRightAxis
             );
 
-            FacingAngle = (float)Math.Atan2(previousValidRightStickInput.Y, previousValidRightStickInput.X);
+            FacingAngle = (float)Math.Atan2(_previousValidRightStickInput.Y, _previousValidRightStickInput.X);
+        }
 
+        private void ToggleSprint()
+        {
+            if (_controller.SprintPressed)
+                _accelerationMultiplier = 0.10f;
+            else
+                _accelerationMultiplier = 0.05f;
         }
 
         public void EquipGun(string name)
@@ -143,7 +147,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + 0.05f * Acceleration);
+            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
@@ -154,8 +158,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 // Handle collisions here
             }
         }
-
-       
 
         private void FallIntoPit(Entity pitEntity)
         {
@@ -190,31 +192,30 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _collider.setEnabled(false);
         }
 
-
         public void Attack()
         {
-            if(_gun != null)
+            if (_gun != null)
                 _gun.Fire();
         }
 
         public void Reload()
         {
 
-            if(_gun != null)
-            _gun.ReloadMagazine();
+            if (_gun != null)
+                _gun.ReloadMagazine();
         }
 
         public void Interact()
         {
-            if(TouchingObject != null)
+            if (_touchingObject != null)
             {
-                
-               var collectible= TouchingObject.entity.getComponent<Collectible>();
-               if(collectible.Preset.Type == CollectibleType.Weapon)
-               {
-                   EquipGun(collectible.Preset.Gun.Name);
-               }
-               collectible.entity.destroy();
+
+                var collectible = _touchingObject.entity.getComponent<Collectible>();
+                if (collectible.Preset.Type == CollectibleType.Weapon)
+                {
+                    EquipGun(collectible.Preset.Gun.Name);
+                }
+                collectible.entity.destroy();
             }
         }
 
@@ -222,7 +223,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
-            if(_health < 0)
+            if (_health < 0)
             {
                 DisablePlayer();
             }
@@ -230,7 +231,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void DropGun()
         {
-            if(_gun != null)
+            if (_gun != null)
             {
                 //Throw out a new gunz
                 var gunItem = entity.scene.createEntity("item");
@@ -250,7 +251,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
 
-            if(_gun != null && _gunEntity != null)
+            if (_gun != null && _gunEntity != null)
             {
                 _gunEntity.rotation = FacingAngle;
             }
@@ -280,16 +281,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void onTriggerEnter(Collider other, Collider local)
         {
-            
-            if(other.entity.tag == Tags.Pit)
+            if (other.entity.tag == Tags.Pit)
             {
                 FallIntoPit(other.entity);
             }
 
-            if(other.entity.tag == Tags.Collectible)
+            if (other.entity.tag == Tags.Collectible)
             {
-                TouchingObject = other;
-               
+                _touchingObject = other;
             }
         }
 
@@ -305,6 +304,5 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         RIGHT = 2,
         DOWN = 3,
         LEFT = 4
-
     }
 }

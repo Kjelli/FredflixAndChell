@@ -1,10 +1,8 @@
-﻿using System;
-using FredflixAndChell.Shared.GameObjects;
+﻿using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities.Input;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
-using FredflixAndChell.Shared.GameObjects.Players;
+using System;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -19,9 +17,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _debugButton;
         private VirtualButton _interactButton;
         private VirtualButton _switchWeaponButton;
+        private VirtualButton _sprintButton;
         private VirtualMouseJoystick _mouseJoystick;
-
-        
 
         private Player Player;
 
@@ -30,7 +27,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public float XLeftAxis => _leftStick?.value.X ?? 0;
         public float YLeftAxis => -1 * _leftStick?.value.Y ?? 0;
-        public float XRightAxis =>  _rightStick?.value.X ?? 0;
+        public float XRightAxis => _rightStick?.value.X ?? 0;
         public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
         public bool FirePressed => _fireButton?.isDown ?? false;
         public bool ReloadPressed => _reloadButton?.isDown ?? false;
@@ -38,8 +35,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public bool InteractPressed => _interactButton?.isDown ?? false;
         public bool DebugModePressed => _debugButton?.isPressed ?? false;
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? false;
+        public bool SprintPressed => _sprintButton?.isDown ?? false;
         public bool InputEnabled => _inputEnabled;
-
 
         public PlayerController(int controllerIndex)
         {
@@ -62,6 +59,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _debugButton = new VirtualButton();
             _interactButton = new VirtualButton();
             _switchWeaponButton = new VirtualButton();
+            _sprintButton = new VirtualButton();
 
             // Virtual mouse joystick
             _mouseJoystick = new VirtualMouseJoystick(Player.entity.position);
@@ -77,10 +75,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _dropGunButton.addKeyboardKey(Keys.G);
                 _debugButton.addKeyboardKey(Keys.F2);
                 _switchWeaponButton.addKeyboardKey(Keys.Q);
-
+                _sprintButton.addKeyboardKey(Keys.LeftShift);
             }
             // Player with controller at index {_controllerIndex}
-            else if(GamePad.GetState(_controllerIndex).IsConnected)
+            else if (GamePad.GetState(_controllerIndex).IsConnected)
             {
                 var isControllerCompatible = VerifyControllerCompatible(_controllerIndex);
                 if (!isControllerCompatible)
@@ -92,9 +90,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
                 _fireButton.addGamePadButton(_controllerIndex, Buttons.RightTrigger);
                 _interactButton.addGamePadButton(_controllerIndex, Buttons.A);
-                _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.B);
+                _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.Y);
                 _reloadButton.addGamePadButton(_controllerIndex, Buttons.X);
-                _debugButton.addGamePadButton(_controllerIndex, Buttons.Y);
+                _debugButton.addGamePadButton(_controllerIndex, Buttons.Start);
+                _sprintButton.addGamePadButton(_controllerIndex, Buttons.B);
             }
             // Ghost player..?
             else
@@ -127,7 +126,6 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             {
                 _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(Player.entity.position);
             }
-
         }
     }
 }
