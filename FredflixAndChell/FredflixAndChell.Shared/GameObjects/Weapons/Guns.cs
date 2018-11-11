@@ -15,6 +15,10 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static List<GunParameters> All()
         {
+            if (!_isInitialized)
+            {
+                LoadFromData();
+            }
             return _guns.Values.ToList();
         }
 
@@ -29,6 +33,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static void LoadFromData()
         {
+            Console.WriteLine("=== LOADING FML FILES FOR GUNS ===");
             var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)
             {

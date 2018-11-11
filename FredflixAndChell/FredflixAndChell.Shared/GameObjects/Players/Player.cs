@@ -8,7 +8,7 @@ using Nez;
 using Nez.Tweens;
 using System;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
 using FredflixAndChell.Shared.Utilities.Serialization;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,14 +30,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Entity _gunEntity;
         private Gun _gun;
 
-        private int _controllerIndex;
         private float _speed = 50f;
+        private float _accelerationMultiplier;
 
         private List<Entity> _entitiesInProximity;
-
-        public float FacingAngle { get; set; }
-        private Vector2 _previousValidRightStickInput;
-        private Collider _touchingObject;
 
         public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
@@ -61,7 +57,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
-            _previousValidRightStickInput = new Vector2(0, 0);
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
@@ -118,12 +113,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
-            _previousValidRightStickInput = new Vector2(
-                _controller.XRightAxis == 0 ? _previousValidRightStickInput.X : _controller.XRightAxis,
-                _controller.YRightAxis == 0 ? _previousValidRightStickInput.Y : _controller.YRightAxis
-            );
-
-            FacingAngle = (float)Math.Atan2(_previousValidRightStickInput.Y, _previousValidRightStickInput.X);
+            if(!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
+            {
+                FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
+            }
         }
 
         private void ToggleSprint()
@@ -140,7 +133,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 DropGun();
             }
-            _gun = _gunEntity.addComponent(new Gun(this, gun));
+            _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
             IsArmed = true;
         }
 
@@ -153,7 +146,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
-            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4");
+            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
             EquipGun(nextGun);
         }
 
@@ -204,7 +197,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;
             _mover.setEnabled(false);
-            _collider.setEnabled(false);
+            _playerHitbox.setEnabled(false);
+            _proximityHitbox.setEnabled(false);
         }
 
         public void Attack()
@@ -233,7 +227,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (collectible.Preset.Type == CollectibleType.Weapon)
             {
-                EquipGun(collectible.Preset.Gun);
+                EquipGun(collectible.Preset.Gun.Name);
                 collectible.OnPickup();
                 _entitiesInProximity.Remove(closestEntity);
             }
@@ -249,6 +243,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         }
 
         static int itemId = 0;
+
         public void DropGun()
         {
             if (_gun != null)

@@ -28,11 +28,6 @@ namespace FredflixAndChell.Components.Players
 
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
-            //TODO: Testing
-            if(!_connectedPlayers.Contains(0))
-                SpawnPlayer(-1);
-
-
             for (var playerIndex = 0; playerIndex < _maxPlayers; playerIndex++)
             {
                 var gamePadState = GamePad.GetState(playerIndex);
@@ -45,7 +40,7 @@ namespace FredflixAndChell.Components.Players
 
             if(_connectedPlayers.Count == 0)
             {
-                SpawnPlayer(0);
+                SpawnPlayer(-1);
             }
 
             timer?.reset();

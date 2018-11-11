@@ -10,7 +10,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
     
     public static class Collectibles
     {
-
         private static bool _isInitialized = false;
         private static Dictionary<string, CollectibleParameters> _collectibles = 
             new Dictionary<string, CollectibleParameters>();
@@ -35,7 +34,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public static void LoadFromData()
         {
-            Guns.LoadFromData();
             foreach (var gun in Guns.All())
             {
                 _collectibles.Add(gun.Name, new CollectibleParameters

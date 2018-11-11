@@ -10,7 +10,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
     {
 
         private VirtualJoystick _leftStick;
-        public VirtualJoystick _rightStick;
+        private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reloadButton;
         private VirtualButton _dropGunButton;

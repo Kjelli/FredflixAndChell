@@ -12,7 +12,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
     public class Collectible : GameObject
     {
         private Effect _flashEffect;
-
         private Mover _mover;
         private Sprite _sprite;
         private Vector2 _acceleration;
@@ -20,8 +19,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private Collider _collisionHitbox;
 
         private bool _dropped;
-        private int _numberOfPlayersInProximity;
         private bool _isHighlighted;
+        private int _numberOfPlayersInProximity;
 
         public CollectibleParameters Preset { get; set; }
 
@@ -130,7 +129,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 _isHighlighted = true;
 
                 var flashEffect = Assets.AssetLoader.GetEffect("shader_flash");
-                var flashTexture = Assets.AssetLoader.GetTexture("effects/lava1");
+                var flashTexture = Assets.AssetLoader.GetTexture("effects/lava2");
 
                 flashEffect.Parameters["flash_texture"].SetValue(flashTexture);
                 flashEffect.Parameters["flashRate"].SetValue(0f);
