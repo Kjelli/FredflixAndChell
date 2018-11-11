@@ -54,7 +54,7 @@ namespace FredflixAndChell.Shared.Assets
 
         public static Effect GetEffect(string name)
         {
-            return _effects[name];
+            return _effects[name].Clone();
         }
 
         public static SpriteFont GetFont(string name)

@@ -35,8 +35,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public static void LoadFromData()
         {
-            _isInitialized = true;
-
             Guns.LoadFromData();
             foreach (var gun in Guns.All())
             {
@@ -46,6 +44,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                     Type = CollectibleType.Weapon
                 });
             }
+
+            _isInitialized = true;
         }
     }
 }

@@ -21,26 +21,9 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private bool _dropped;
         private int _numberOfPlayersInProximity;
-
-        static int temp = 0;
+        private bool _isHighlighted;
 
         public CollectibleParameters Preset { get; set; }
-        public Effect FlashEffect
-        {
-            get
-            {
-                if (_flashEffect == null)
-                {
-                    _flashEffect = Assets.AssetLoader.GetEffect("shader_flash");
-                    var flashTexture = Assets.AssetLoader.GetTexture("effects/rainbow");
-                    _flashEffect.Parameters["flash_texture"].SetValue(flashTexture);
-                    _flashEffect.Parameters["flashRate"].SetValue(0f);
-                    _flashEffect.Parameters["flashOffset"].SetValue(1f);
-                    _flashEffect.Parameters["scrollSpeed"].SetValue(new Vector2(0.45f, 0.45f));
-                }
-                return _flashEffect;
-            }
-        }
 
         public Collectible(float x, float y, string name, bool dropped) : base(x, y)
         {
@@ -51,7 +34,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnDespawn()
         {
-
+            Console.WriteLine($"Despawned entity {entity}");
         }
 
         public override void OnSpawn()
@@ -69,16 +52,21 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 .start();
             _mover = entity.addComponent(new Mover());
 
-            entity.setTag(Tags.Collectible);
+            // Delay pickup (debug)
+            Core.schedule(0.5f, _ => SetupPickupHitbox());
 
             //Collision
-            _pickupHitbox = entity.addComponent(new BoxCollider());
-            _pickupHitbox.isTrigger = true;
-            Flags.setFlagExclusive(ref _pickupHitbox.physicsLayer, Layers.Items);
-
             _collisionHitbox = entity.addComponent(new CircleCollider(4));
             Flags.setFlagExclusive(ref _collisionHitbox.collidesWithLayers, Layers.MapObstacles);
             Flags.setFlag(ref _collisionHitbox.collidesWithLayers, Layers.Items);
+        }
+
+        private void SetupPickupHitbox()
+        {
+            entity.setTag(Tags.Collectible);
+            _pickupHitbox = entity.addComponent(new BoxCollider());
+            _pickupHitbox.isTrigger = true;
+            Flags.setFlagExclusive(ref _pickupHitbox.physicsLayer, Layers.Items);
         }
 
         private void FallIntoPit(Entity pitEntity)
@@ -135,12 +123,29 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void UpdateHighlightRendering()
         {
-            if (_numberOfPlayersInProximity > 0)
+            if (_numberOfPlayersInProximity > 0 && !_isHighlighted)
             {
-                _sprite.material.effect = FlashEffect;
+                Console.WriteLine($"Highlighting entity {entity.name}");
+
+                _isHighlighted = true;
+
+                var flashEffect = Assets.AssetLoader.GetEffect("shader_flash");
+                var flashTexture = Assets.AssetLoader.GetTexture("effects/lava1");
+
+                flashEffect.Parameters["flash_texture"].SetValue(flashTexture);
+                flashEffect.Parameters["flashRate"].SetValue(0f);
+                flashEffect.Parameters["flashOffset"].SetValue(1f);
+                flashEffect.Parameters["scrollSpeed"].SetValue(new Vector2(0.45f, 0.45f));
+
+                _flashEffect = flashEffect;
+                _sprite.material.effect = _flashEffect;
             }
-            else
+            else if (_numberOfPlayersInProximity == 0 && _isHighlighted)
             {
+                Console.WriteLine($"Unhighlighting entity {entity.name}");
+
+                _isHighlighted = false;
+
                 _sprite.material.effect = null;
             }
         }
@@ -149,15 +154,23 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             Velocity = (0.975f * Velocity + 0.025f * _acceleration);
             var isColliding = _mover.move(Velocity, out CollisionResult result);
-            if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-            FlashEffect.Parameters["gameTime"].SetValue(Time.time);
+
+            if (Velocity.Length() < 0.001f)
+            {
+                Velocity = Vector2.Zero;
+            }
+
+            if (_isHighlighted)
+            {
+                _flashEffect.Parameters["gameTime"].SetValue(Time.time);
+            }
         }
 
         public void OnPickup()
         {
+            Console.WriteLine($"Picked up {entity.name}");
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
-            entity.setEnabled(false);
             entity.destroy();
         }
     }

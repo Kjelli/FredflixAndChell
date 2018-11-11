@@ -126,7 +126,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
-            var nextGun = Guns.GetNextAfter(_gun.Parameters.Name);
+            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4");
             EquipGun(nextGun);
         }
 
@@ -194,6 +194,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_entitiesInProximity.Count == 0) return;
 
+            // Find closest entity based on distance between player and collectible
             var closestEntity = _entitiesInProximity.Aggregate((curMin, x) =>
             ((x.position - entity.position).Length() < (curMin.position - entity.position).Length() ? x : curMin));
 
@@ -214,6 +215,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_gun != null)
             {
                 //Throw out a new gunz
+                Console.WriteLine($"Dropping {_gun.Parameters.Name}");
                 var gunItem = entity.scene.createEntity($"item_{++itemId}");
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
@@ -277,12 +279,18 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ProximityTriggerEnter(Collider other, Collider local)
         {
-            Console.WriteLine($"Adding {other.entity} to proximity");
+            if (other == null || other.entity == null) return;
+            if (_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Entered proximity: ${other.entity}");
+
             _entitiesInProximity.Add(other.entity);
 
+            // TODO change tag to include other interactables if relevant
             if (Flags.isFlagSet(other.entity.tag, Tags.Collectible))
             {
                 var collectible = other.entity.getComponent<Collectible>();
+                if (collectible == null) Console.Error.WriteLine("Entity has no collectible component!");
                 collectible?.Highlight();
             }
         }
@@ -313,7 +321,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ProximityTriggerExit(Collider other, Collider local)
         {
-            Console.WriteLine($"Removing {other.entity} from proximity");
+            if (other == null || other.entity == null) return;
+            if (!_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Left proximity: ${other.entity}");
             _entitiesInProximity.Remove(other.entity);
             if (other.entity != null && Flags.isFlagSet(other.entity.tag, Tags.Collectible))
             {

@@ -35,6 +35,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                 var gun = YamlSerializer.Deserialize(gunFilename);
                 _guns[gun.Name] = gun;
             }
+            _isInitialized = true;
         }
 
         public static GunParameters GetNextAfter(string name)

@@ -2,10 +2,9 @@
 using Nez;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
 
-namespace FredflixAndChell.Shared.Scenes
+namespace FredflixAndChell.Components.Players
 {
     public class PlayerConnector : SceneComponent
     {
@@ -37,6 +36,12 @@ namespace FredflixAndChell.Shared.Scenes
                     SpawnPlayer(playerIndex);
                 }
             }
+
+            if(_connectedPlayers.Count == 0)
+            {
+                SpawnPlayer(0);
+            }
+
             timer?.reset();
         }
 

@@ -1,19 +1,14 @@
-﻿using Nez;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Nez;
+using Nez.Textures;
+using Nez.Tiled;
 using Nez.Sprites;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Assets;
-using Microsoft.Xna.Framework.Input;
-using FredflixAndChell.Shared.Utilities;
-using System;
-using static FredflixAndChell.Shared.Assets.Constants;
-using Nez.Textures;
-using Nez.Tiled;
-using Nez.DeferredLighting;
-using Nez.Shadows;
 using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
-using System.Collections.Generic;
+using FredflixAndChell.Components.Players;
+using static FredflixAndChell.Shared.Assets.Constants;
+using System;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -50,13 +45,11 @@ namespace FredflixAndChell.Shared.Scenes
 
             SetupMapObjects(mapObjects);
 
-
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
-            
 
             //CustomizeTiles(tiledMapComponent);
         }
