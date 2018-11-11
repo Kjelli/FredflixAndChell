@@ -1,13 +1,14 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Components.PlayerComponents;
-using Nez;
-using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+﻿using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Nez;
 using Nez.Tweens;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
+using System;
+using static FredflixAndChell.Shared.Assets.Constants;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
 using FredflixAndChell.Shared.Utilities.Serialization;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     public class Player : GameObject, ITriggerListener
     {
         private const float ThrowSpeed = 0.5f;
+        private readonly int _controllerIndex;
 
+        private int _health;
         private Mover _mover;
         private PlayerRenderer _renderer;
         private PlayerController _controller;
@@ -33,13 +36,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private List<Entity> _entitiesInProximity;
 
         public float FacingAngle { get; set; }
+        private Vector2 _previousValidRightStickInput;
+        private Collider _touchingObject;
 
-        public Vector2 Acceleration;
-
+        public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
+        public float FacingAngle { get; set; }
 
         public Player(int x, int y, int controllerIndex = 0) : base(x, y)
         {
@@ -56,10 +61,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
+            _previousValidRightStickInput = new Vector2(0, 0);
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
-            EquipGun(Guns.Get("Fido"));
+            EquipGun("M4");
 
             // Assign collider component
             _playerHitbox = entity.addComponent(new CircleCollider(4f));
@@ -75,7 +81,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
-            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Tormod, _gun));
+            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
+
+            //TODO: Character based 
+            _health = 100;
         }
 
         public override void update()
@@ -83,6 +92,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ReadInputs();
             Move();
             SetFacing();
+
+            var state = GamePad.GetState(0);
+            //Console.WriteLine("X: " + state.ThumbSticks.Right.X + " : " + state.ThumbSticks.Right.Y);
         }
 
         private void ReadInputs()
@@ -102,12 +114,27 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
-            Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
-            FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
+            ToggleSprint();
 
+            Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
+
+            _previousValidRightStickInput = new Vector2(
+                _controller.XRightAxis == 0 ? _previousValidRightStickInput.X : _controller.XRightAxis,
+                _controller.YRightAxis == 0 ? _previousValidRightStickInput.Y : _controller.YRightAxis
+            );
+
+            FacingAngle = (float)Math.Atan2(_previousValidRightStickInput.Y, _previousValidRightStickInput.X);
         }
 
-        public void EquipGun(GunParameters gun)
+        private void ToggleSprint()
+        {
+            if (_controller.SprintPressed)
+                _accelerationMultiplier = 0.10f;
+            else
+                _accelerationMultiplier = 0.05f;
+        }
+
+        public void EquipGun(string name)
         {
             if (_gun != null)
             {
@@ -135,7 +162,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + 0.05f * Acceleration);
+            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
 
@@ -149,14 +176,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void FallIntoPit(Entity pitEntity)
         {
-            _controller.SetInputEnabled(false);
-            DropGun();
-            Velocity = Vector2.Zero;
-            Acceleration = Vector2.Zero;
-            _mover.setEnabled(false);
-            _playerHitbox.setEnabled(false);
-            _proximityHitbox.setEnabled(false);
-
+            DisablePlayer();
             var easeType = EaseType.CubicOut;
             var durationSeconds = 2f;
             var targetScale = 0.2f;
@@ -175,6 +195,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .setCompletionHandler(_ => entity.setEnabled(false))
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
+        }
+
+        public void DisablePlayer()
+        {
+            _controller.SetInputEnabled(false);
+            DropGun();
+            Velocity = Vector2.Zero;
+            Acceleration = Vector2.Zero;
+            _mover.setEnabled(false);
+            _collider.setEnabled(false);
         }
 
         public void Attack()
@@ -208,6 +238,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _entitiesInProximity.Remove(closestEntity);
             }
         }
+        public void Damage(int damage)
+        {
+            Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
+            _health -= damage;
+            if (_health < 0)
+            {
+                DisablePlayer();
+            }
+        }
 
         static int itemId = 0;
         public void DropGun()
@@ -229,7 +268,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnDespawn()
         {
-            _gun.entity.setEnabled(false);
             _gun.Destroy();
         }
 
@@ -340,6 +378,5 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         RIGHT = 2,
         DOWN = 3,
         LEFT = 4
-
     }
 }

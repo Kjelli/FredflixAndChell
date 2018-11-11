@@ -1,10 +1,8 @@
-﻿using System;
-using FredflixAndChell.Shared.GameObjects;
+﻿using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities.Input;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
-using FredflixAndChell.Shared.GameObjects.Players;
+using System;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -12,13 +10,14 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
     {
 
         private VirtualJoystick _leftStick;
-        private VirtualJoystick _rightStick;
+        public VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reloadButton;
         private VirtualButton _dropGunButton;
         private VirtualButton _debugButton;
         private VirtualButton _interactButton;
         private VirtualButton _switchWeaponButton;
+        private VirtualButton _sprintButton;
         private VirtualMouseJoystick _mouseJoystick;
 
         private Player Player;
@@ -36,8 +35,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public bool InteractPressed => _interactButton?.isPressed ?? false;
         public bool DebugModePressed => _debugButton?.isPressed ?? false;
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? false;
+        public bool SprintPressed => _sprintButton?.isDown ?? false;
         public bool InputEnabled => _inputEnabled;
-
 
         public PlayerController(int controllerIndex)
         {
@@ -60,12 +59,13 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _debugButton = new VirtualButton();
             _interactButton = new VirtualButton();
             _switchWeaponButton = new VirtualButton();
+            _sprintButton = new VirtualButton();
 
             // Virtual mouse joystick
             _mouseJoystick = new VirtualMouseJoystick(Player.entity.position);
 
             // Keyboard player
-            if (_controllerIndex == 0)
+            if (_controllerIndex == -1)
             {
                 _leftStick.addKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.A, Keys.D, Keys.S, Keys.W);
                 _rightStick.nodes.Add(_mouseJoystick);
@@ -75,10 +75,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _dropGunButton.addKeyboardKey(Keys.G);
                 _debugButton.addKeyboardKey(Keys.F2);
                 _switchWeaponButton.addKeyboardKey(Keys.Q);
-
+                _sprintButton.addKeyboardKey(Keys.LeftShift);
             }
             // Player with controller at index {_controllerIndex}
-            else if(GamePad.GetState(_controllerIndex).IsConnected)
+            else if (GamePad.GetState(_controllerIndex).IsConnected)
             {
                 var isControllerCompatible = VerifyControllerCompatible(_controllerIndex);
                 if (!isControllerCompatible)
@@ -90,9 +90,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
                 _fireButton.addGamePadButton(_controllerIndex, Buttons.RightTrigger);
                 _interactButton.addGamePadButton(_controllerIndex, Buttons.A);
-                _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.B);
+                _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.Y);
                 _reloadButton.addGamePadButton(_controllerIndex, Buttons.X);
-                _debugButton.addGamePadButton(_controllerIndex, Buttons.Y);
+                _debugButton.addGamePadButton(_controllerIndex, Buttons.Start);
+                _sprintButton.addGamePadButton(_controllerIndex, Buttons.B);
             }
             // Ghost player..?
             else
@@ -121,11 +122,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public void update()
         {
-            if (_controllerIndex == 0)
+            if (_controllerIndex == -1)
             {
                 _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(Player.entity.position);
             }
-
         }
     }
 }

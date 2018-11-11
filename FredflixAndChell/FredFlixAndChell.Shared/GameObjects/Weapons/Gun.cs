@@ -53,6 +53,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
             _bulletCount = _params.BulletCount;
             _bulletSpread = _params.BulletSpread;
+         
         }
 
         public void Fire()
@@ -134,6 +135,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void Destroy()
         {
+            entity.setEnabled(false);
             entity.destroy();
         }
 
