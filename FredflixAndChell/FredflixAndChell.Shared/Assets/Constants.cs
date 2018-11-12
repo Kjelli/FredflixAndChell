@@ -8,6 +8,9 @@ namespace FredflixAndChell.Shared.Assets
 {
     public class Constants
     {
+        public const int ScreenWidth = 1280;
+        public const int ScreenHeight = 720;
+
         public class Assets
         {
             public const string DataDirectory = "Content/data";
@@ -23,7 +26,6 @@ namespace FredflixAndChell.Shared.Assets
             public const int Player = 1;
             public const int Pit = 2;
             public const int Collectible = 3;
-
         }
 
         public class Layers

@@ -30,7 +30,7 @@ namespace FredflixAndChell.Shared.Scenes
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
             //TODO: Testing
-            if(!_connectedPlayers.Contains(0))
+            if(!_connectedPlayers.Contains(-1))
                 SpawnPlayer(-1);
 
 
