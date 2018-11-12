@@ -25,8 +25,8 @@ namespace FredflixAndChell.Shared.Scenes
 
             AssetLoader.Load(content);
 
-            setDesignResolution(1280, 720, SceneResolutionPolicy.BestFit);
-            Screen.setSize(1280, 720);
+            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ExactFit);
+            Screen.setSize(ScreenWidth, ScreenHeight);
 
             SetupRenderering();
             SetupMap();
