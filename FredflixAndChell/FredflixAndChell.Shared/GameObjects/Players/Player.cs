@@ -8,28 +8,32 @@ using Nez;
 using Nez.Tweens;
 using System;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
+using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
+using FredflixAndChell.Shared.Utilities.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public class Player : GameObject, ITriggerListener
     {
-        private const float ThrowSpeed = 1.0f;
+        private const float ThrowSpeed = 0.5f;
         private readonly int _controllerIndex;
 
         private int _health;
         private Mover _mover;
         private PlayerRenderer _renderer;
         private PlayerController _controller;
-        private Collider _collider;
-        private float _accelerationMultiplier = 0.05f;
-        private float _speed = 50f;
+        private Collider _proximityHitbox;
+        private Collider _playerHitbox;
 
         private Entity _gunEntity;
         private Gun _gun;
 
-        private Vector2 _previousValidRightStickInput;
-        private Collider _touchingObject;
+        private float _speed = 50f;
+        private float _accelerationMultiplier;
+
+        private List<Entity> _entitiesInProximity;
 
         public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
@@ -38,9 +42,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool FlipGun { get; set; }
         public float FacingAngle { get; set; }
 
-        public Player(int x, int y, int controllerIndex = -1) : base(x, y)
+        public Player(int x, int y, int controllerIndex = 0) : base(x, y)
         {
             _controllerIndex = controllerIndex;
+            _entitiesInProximity = new List<Entity>();
         }
 
         public override void OnSpawn()
@@ -52,18 +57,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
-            _previousValidRightStickInput = new Vector2(0, 0);
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
             EquipGun("M4");
 
             // Assign collider component
-            _collider = entity.addComponent(new CircleCollider(4f));
-            _collider.localOffset = new Vector2(0, 4);
-            Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
-            Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
-            Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Player);
+            _playerHitbox = entity.addComponent(new CircleCollider(4f));
+            _playerHitbox.localOffset = new Vector2(0, 4);
+            Flags.setFlagExclusive(ref _playerHitbox.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref _playerHitbox.collidesWithLayers, Layers.Player);
+            Flags.setFlagExclusive(ref _playerHitbox.physicsLayer, Layers.Player);
+
+            // Assign proximity interaction hitbox
+            _proximityHitbox = entity.addComponent(new CircleCollider(20f));
+            Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Items);
+            Flags.setFlagExclusive(ref _proximityHitbox.physicsLayer, 0);
+            _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
@@ -103,12 +113,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
-            _previousValidRightStickInput = new Vector2(
-                _controller.XRightAxis == 0 ? _previousValidRightStickInput.X : _controller.XRightAxis,
-                _controller.YRightAxis == 0 ? _previousValidRightStickInput.Y : _controller.YRightAxis
-            );
-
-            FacingAngle = (float)Math.Atan2(_previousValidRightStickInput.Y, _previousValidRightStickInput.X);
+            if(!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
+            {
+                FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
+            }
         }
 
         private void ToggleSprint()
@@ -123,7 +131,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_gun != null)
             {
-                UnEquipGun();
+                DropGun();
             }
             _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
             IsArmed = true;
@@ -138,8 +146,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
-            var nextGun = Guns.GetNextAfter(_gun.Parameters.Name);
-            EquipGun(nextGun.Name);
+            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
+            EquipGun(nextGun);
         }
 
         private void Move()
@@ -163,23 +171,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             DisablePlayer();
             var easeType = EaseType.CubicOut;
-            var duration = 2f;
+            var durationSeconds = 2f;
             var targetScale = 0.2f;
             var targetRotationDegrees = 180;
             var targetColor = new Color(0, 0, 0, 0.25f);
             var destination = pitEntity.localPosition;
 
-            entity.tweenRotationDegreesTo(targetRotationDegrees, duration)
+            entity.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            entity.tweenScaleTo(targetScale, duration)
+            entity.tweenScaleTo(targetScale, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            entity.tweenPositionTo(destination, duration)
+            entity.tweenPositionTo(destination, durationSeconds)
                 .setEaseType(easeType)
                 .setCompletionHandler(_ => entity.setEnabled(false))
                 .start();
-            _renderer.TweenColor(targetColor, duration, easeType);
+            _renderer.TweenColor(targetColor, durationSeconds, easeType);
         }
 
         public void DisablePlayer()
@@ -189,7 +197,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;
             _mover.setEnabled(false);
-            _collider.setEnabled(false);
+            _playerHitbox.setEnabled(false);
+            _proximityHitbox.setEnabled(false);
         }
 
         public void Attack()
@@ -207,18 +216,22 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Interact()
         {
-            if (_touchingObject != null)
-            {
+            if (_entitiesInProximity.Count == 0) return;
 
-                var collectible = _touchingObject.entity.getComponent<Collectible>();
-                if (collectible.Preset.Type == CollectibleType.Weapon)
-                {
-                    EquipGun(collectible.Preset.Gun.Name);
-                }
-                collectible.entity.destroy();
+            // Find closest entity based on distance between player and collectible
+            var closestEntity = _entitiesInProximity.Aggregate((curMin, x) =>
+            ((x.position - entity.position).Length() < (curMin.position - entity.position).Length() ? x : curMin));
+
+            var collectible = closestEntity.getComponent<Collectible>();
+            if (collectible == null) return;
+
+            if (collectible.Preset.Type == CollectibleType.Weapon)
+            {
+                EquipGun(collectible.Preset.Gun.Name);
+                collectible.OnPickup();
+                _entitiesInProximity.Remove(closestEntity);
             }
         }
-
         public void Damage(int damage)
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
@@ -229,15 +242,21 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
+        static int itemId = 0;
+
         public void DropGun()
         {
             if (_gun != null)
             {
                 //Throw out a new gunz
-                var gunItem = entity.scene.createEntity("item");
+                Console.WriteLine($"Dropping {_gun.Parameters.Name}");
+                var gunItem = entity.scene.createEntity($"item_{++itemId}");
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
-                throwedItem.Velocity = new Vector2(Mathf.cos(FacingAngle) * ThrowSpeed, Mathf.sin(FacingAngle) * ThrowSpeed) + Velocity * 2f;
+                throwedItem.Velocity = new Vector2(
+                    Mathf.cos(FacingAngle) * ThrowSpeed, 
+                    Mathf.sin(FacingAngle) * ThrowSpeed)
+                    + Velocity * 2f;
                 UnEquipGun();
             }
         }
@@ -281,20 +300,70 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void onTriggerEnter(Collider other, Collider local)
         {
+            if (local == _playerHitbox)
+            {
+                HitboxTriggerEnter(other, local);
+            }
+            else if (local == _proximityHitbox)
+            {
+                ProximityTriggerEnter(other, local);
+            }
+        }
+
+        private void ProximityTriggerEnter(Collider other, Collider local)
+        {
+            if (other == null || other.entity == null) return;
+            if (_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Entered proximity: ${other.entity}");
+
+            _entitiesInProximity.Add(other.entity);
+
+            // TODO change tag to include other interactables if relevant
+            if (Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+            {
+                var collectible = other.entity.getComponent<Collectible>();
+                if (collectible == null) Console.Error.WriteLine("Entity has no collectible component!");
+                collectible?.Highlight();
+            }
+        }
+
+        private void HitboxTriggerEnter(Collider other, Collider local)
+        {
             if (other.entity.tag == Tags.Pit)
             {
                 FallIntoPit(other.entity);
-            }
-
-            if (other.entity.tag == Tags.Collectible)
-            {
-                _touchingObject = other;
             }
         }
 
         public void onTriggerExit(Collider other, Collider local)
         {
-            //Console.WriteLine($"TriggerExit: {other}, {other.entity.tag}");
+            if (local == _playerHitbox)
+            {
+                HitboxTriggerExit(other, local);
+            }
+            else if (local == _proximityHitbox)
+            {
+                ProximityTriggerExit(other, local);
+            }
+        }
+
+        private void HitboxTriggerExit(Collider other, Collider local)
+        {
+        }
+
+        private void ProximityTriggerExit(Collider other, Collider local)
+        {
+            if (other == null || other.entity == null) return;
+            if (!_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Left proximity: ${other.entity}");
+            _entitiesInProximity.Remove(other.entity);
+            if (other.entity != null && Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+            {
+                var collectible = other.entity.getComponent<Collectible>();
+                collectible?.Unhighlight();
+            }
         }
     }
 

@@ -10,7 +10,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
     {
 
         private VirtualJoystick _leftStick;
-        public VirtualJoystick _rightStick;
+        private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
         private VirtualButton _reloadButton;
         private VirtualButton _dropGunButton;
@@ -30,9 +30,9 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public float XRightAxis => _rightStick?.value.X ?? 0;
         public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
         public bool FirePressed => _fireButton?.isDown ?? false;
-        public bool ReloadPressed => _reloadButton?.isDown ?? false;
-        public bool DropGunPressed => _dropGunButton?.isDown ?? false;
-        public bool InteractPressed => _interactButton?.isDown ?? false;
+        public bool ReloadPressed => _reloadButton?.isPressed ?? false;
+        public bool DropGunPressed => _dropGunButton?.isPressed ?? false;
+        public bool InteractPressed => _interactButton?.isPressed ?? false;
         public bool DebugModePressed => _debugButton?.isPressed ?? false;
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? false;
         public bool SprintPressed => _sprintButton?.isDown ?? false;

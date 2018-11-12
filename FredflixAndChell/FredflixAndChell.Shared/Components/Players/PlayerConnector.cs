@@ -2,10 +2,9 @@
 using Nez;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
 
-namespace FredflixAndChell.Shared.Scenes
+namespace FredflixAndChell.Components.Players
 {
     public class PlayerConnector : SceneComponent
     {
@@ -29,11 +28,6 @@ namespace FredflixAndChell.Shared.Scenes
 
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
-            //TODO: Testing
-            if(!_connectedPlayers.Contains(-1))
-                SpawnPlayer(-1);
-
-
             for (var playerIndex = 0; playerIndex < _maxPlayers; playerIndex++)
             {
                 var gamePadState = GamePad.GetState(playerIndex);
@@ -43,6 +37,12 @@ namespace FredflixAndChell.Shared.Scenes
                     SpawnPlayer(playerIndex);
                 }
             }
+
+            if(_connectedPlayers.Count == 0)
+            {
+                SpawnPlayer(-1);
+            }
+
             timer?.reset();
         }
 

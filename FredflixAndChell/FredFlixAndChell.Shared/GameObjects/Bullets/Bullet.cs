@@ -76,7 +76,6 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
-                Console.WriteLine(collision.collider);
                 var collidedWithEntity = collision.collider.entity;
                 if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))
                 {
