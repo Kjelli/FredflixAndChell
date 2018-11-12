@@ -7,11 +7,9 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Tweens;
 using System;
-using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
-using FredflixAndChell.Shared.Utilities.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -32,6 +30,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private float _speed = 50f;
         private float _accelerationMultiplier;
+        private float _stamina = 100;
+        private bool _shouldRegenStamina = false;
+        private readonly float _walkAcceleration = 0.05f;
+        private readonly float _sprintAcceleration = 0.10f;
+        static int itemId = 0;
 
         private List<Entity> _entitiesInProximity;
 
@@ -110,21 +113,42 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
             ToggleSprint();
+            ToggleStaminaRegen();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
-            if(!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
+            if (!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
             {
                 FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
             }
         }
 
+        private void ToggleStaminaRegen()
+        {
+            if (!_shouldRegenStamina)
+                return;
+
+            _stamina += 25 * Time.deltaTime;
+
+            if (_stamina > 99)
+                _shouldRegenStamina = false;
+        }
+
         private void ToggleSprint()
         {
-            if (_controller.SprintPressed)
-                _accelerationMultiplier = 0.10f;
+            if (_controller.SprintPressed && !_shouldRegenStamina)
+            {
+                _accelerationMultiplier = _sprintAcceleration;
+                _stamina -= 50 * Time.deltaTime;
+            }
             else
-                _accelerationMultiplier = 0.05f;
+                _accelerationMultiplier = _walkAcceleration;
+
+            if (_stamina < 1)
+            {
+                _shouldRegenStamina = true;
+                _accelerationMultiplier = _walkAcceleration;
+            }
         }
 
         public void EquipGun(string name)
@@ -242,7 +266,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        static int itemId = 0;
 
         public void DropGun()
         {
@@ -254,7 +277,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
                 throwedItem.Velocity = new Vector2(
-                    Mathf.cos(FacingAngle) * ThrowSpeed, 
+                    Mathf.cos(FacingAngle) * ThrowSpeed,
                     Mathf.sin(FacingAngle) * ThrowSpeed)
                     + Velocity * 2f;
                 UnEquipGun();
