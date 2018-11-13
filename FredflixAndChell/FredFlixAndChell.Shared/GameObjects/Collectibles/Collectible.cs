@@ -151,8 +151,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             if (CanBeCollected() && _numberOfPlayersInProximity > 0 && !_isHighlighted)
             {
-                Console.WriteLine($"Highlighting entity {entity.name}");
-
                 _isHighlighted = true;
 
                 var flashEffect = Assets.AssetLoader.GetEffect("shader_flash");
@@ -190,6 +188,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void Move()
         {
+            if (Velocity.Length() == 0) return;
             Velocity = (0.975f * Velocity + 0.025f * _acceleration);
             var isColliding = _mover.move(Velocity, out CollisionResult result);
 

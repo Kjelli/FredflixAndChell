@@ -162,12 +162,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
                 headAnimation = HeadAnimation.BackFacing;
-                if (_gun != null) _gun.SetRenderLayer(Layers.PlayerBehindest);
             }
             else if (_player.VerticalFacing == (int)FacingCode.DOWN)
             {
                 headAnimation = HeadAnimation.FrontFacing;
-                if (_gun != null) _gun.SetRenderLayer(Layers.PlayerFrontest);
             }
 
             // Play Animations

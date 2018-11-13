@@ -51,6 +51,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
                 bottom = -10000;
             float paddingX = 32, paddingY = 32;
 
+            bool anyToTrack = false;
             foreach(var tracker in _trackers)
             {
                 if (!tracker.enabled || !tracker.ShouldTrackEntity()) continue;
@@ -58,7 +59,9 @@ namespace FredflixAndChell.Shared.Components.Cameras
                 right = Math.Max(tracker.Position.X + paddingX / 2, right);
                 top = Math.Min(tracker.Position.Y - paddingY / 2, top);
                 bottom = Math.Max(tracker.Position.Y + paddingY / 2, bottom);
+                anyToTrack = true;
             }
+            if (!anyToTrack) return;
 
             var baseZoom = 10f;
             var targetWidth = Math.Max(ScreenWidth, (right - left) * baseZoom);

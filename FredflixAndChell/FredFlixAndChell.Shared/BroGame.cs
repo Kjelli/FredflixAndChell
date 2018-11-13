@@ -19,9 +19,6 @@ namespace FredflixAndChell.Shared
 {
     public class BroGame : Core
     {
-        public BroGame() : base()
-        {
-        }
         protected override void Initialize()
         {
             base.Initialize();
@@ -29,8 +26,6 @@ namespace FredflixAndChell.Shared
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
             scene = new BroScene();
-            IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 120);
         }
     }
 }

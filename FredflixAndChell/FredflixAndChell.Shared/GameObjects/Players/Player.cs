@@ -49,6 +49,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private List<Entity> _entitiesInProximity;
 
         public PlayerState PlayerState => _playerState;
+        public int PlayerIndex => _controllerIndex;
+        public int Health => (int) _health;
+        public int Stamina => (int)_stamina;
         public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
@@ -198,7 +201,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (isColliding)
             {
-                // Handle collisions here
+                if (collision.collider.entity.tag == Tags.Player)
+                {
+                    var player = collision.collider.entity.getComponent<Player>();
+                    player.Acceleration = collision.minimumTranslationVector * 4;
+                }
             }
         }
 
@@ -237,10 +244,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             DropGun();
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;
-            _mover.setEnabled(false);
-            _playerHitbox.unregisterColliderWithPhysicsSystem();
-            _playerHitbox.collidesWithLayers = 0;
-            _playerHitbox.setEnabled(false);
+            //_mover.setEnabled(false);
+            //_playerHitbox.unregisterColliderWithPhysicsSystem();
+            //_playerHitbox.collidesWithLayers = 0;
+            //_playerHitbox.setEnabled(false);
             _proximityHitbox.unregisterColliderWithPhysicsSystem();
             _proximityHitbox.setEnabled(false);
             _proximityHitbox.collidesWithLayers = 0;
@@ -281,7 +288,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
-            if (_health < 0 && _playerState != PlayerState.Dead)
+            if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
                 _playerState = PlayerState.Dying;
                 DropDead();

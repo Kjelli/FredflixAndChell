@@ -72,26 +72,16 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
         private void Move()
         {
-            var isColliding = _mover.move(Velocity * Time.deltaTime);
-
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
+            if (Velocity.Length() == 0) return;
 
+            var isColliding = _mover.move(Velocity * Time.deltaTime);
             if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
                 var collidedWithEntity = collision.collider.entity;
                 if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))
                 {
-                    var player = collidedWithEntity.getComponent<Player>();
-                    if (player != null && player != _owner)
-                    {
-                        player.Damage((int)_params.Damage);
-                        player.Velocity += Velocity * _params.Knockback * Time.deltaTime;
-                        entity.destroy();
-                    }
-                    else if (player == _owner)
-                    {
-                        return;
-                    }
+                    HitPlayer(collision.collider.entity);
                 }
                 else if (_params.Bounce)
                 {
@@ -111,6 +101,17 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
                 {
                     entity.destroy();
                 }
+            }
+        }
+
+        private void HitPlayer(Entity playerEntity)
+        {
+            var player = playerEntity.getComponent<Player>();
+            if (player != null && player != _owner)
+            {
+                player.Damage((int)_params.Damage);
+                player.Velocity += Velocity * _params.Knockback * Time.deltaTime;
+                entity.destroy();
             }
         }
     }

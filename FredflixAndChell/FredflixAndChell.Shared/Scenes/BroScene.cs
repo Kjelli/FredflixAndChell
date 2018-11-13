@@ -9,18 +9,25 @@ using FredflixAndChell.Components.Players;
 using static FredflixAndChell.Shared.Assets.Constants;
 using System;
 using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Components.HUD;
+using Microsoft.Xna.Framework.Graphics;
+using Nez.Console;
 
 namespace FredflixAndChell.Shared.Scenes
 {
-    public class BroScene : Scene
+    public class BroScene : Scene, IFinalRenderDelegate
     {
+        private ScreenSpaceRenderer _screenSpaceRenderer;
+
         public override void initialize()
         {
             base.initialize();
 
             AssetLoader.Load(content);
 
-            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ExactFit);
+            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.BestFit);
             Screen.setSize(ScreenWidth, ScreenHeight);
             
             SetupRenderering();
@@ -28,8 +35,12 @@ namespace FredflixAndChell.Shared.Scenes
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new PlayerConnector());
+            addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
 
-            //Core.debugRenderEnabled = true;
+            addEntity(new DebugHud());
+            var canvas = createEntity("ui").addComponent(new UICanvas());
+            canvas.isFullScreen = true;
+            canvas.renderLayer = Layers.HUD;
         }
 
         private void SetupMap()
@@ -49,7 +60,6 @@ namespace FredflixAndChell.Shared.Scenes
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
-            //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
             //CustomizeTiles(tiledMapComponent);
         }
@@ -121,7 +131,7 @@ namespace FredflixAndChell.Shared.Scenes
             camera.setMaximumZoom(6);
             camera.setZoom(4);
 
-            // Rendering all layers but lights
+            // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
                 Layers.Lights, Layers.Lights2));
 
@@ -131,13 +141,46 @@ namespace FredflixAndChell.Shared.Scenes
             lightRenderer.renderTexture = new RenderTexture();
             lightRenderer.renderTargetClearColor = new Color(150, 150, 180, 255);
 
+
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
-            var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
+            //var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
+            //bloomPostProcessor.settings = BloomSettings.presetSettings[5];
 
-            var vignette = addPostProcessor(new VignettePostProcessor(4));
+            //var vignette = addPostProcessor(new VignettePostProcessor(4));
+
+            // Render screenspace
+            _screenSpaceRenderer = new ScreenSpaceRenderer(100, Layers.HUD);
+            _screenSpaceRenderer.shouldDebugRender = false;
+            finalRenderDelegate = this;
+
         }
+
+        #region IFinalRenderDelegate
+        public Scene scene { get; set; }
+        void IFinalRenderDelegate.onAddedToScene()
+        {
+        }
+
+        public void onSceneBackBufferSizeChanged(int newWidth, int newHeight)
+        {
+            _screenSpaceRenderer.onSceneBackBufferSizeChanged(newWidth, newHeight);
+        }
+        public void handleFinalRender(Color letterboxColor, Microsoft.Xna.Framework.Graphics.RenderTarget2D source, Rectangle finalRenderDestinationRect, Microsoft.Xna.Framework.Graphics.SamplerState samplerState)
+        {
+            Core.graphicsDevice.SetRenderTarget(null);
+            Core.graphicsDevice.Clear(letterboxColor);
+            Graphics.instance.batcher.begin(BlendState.Opaque, samplerState, DepthStencilState.None, RasterizerState.CullNone, null);
+            Graphics.instance.batcher.draw(source, finalRenderDestinationRect, Color.White);
+            Graphics.instance.batcher.end();
+
+            _screenSpaceRenderer.render(scene);
+        }
+
+        void IFinalRenderDelegate.unload()
+        {
+        }
+        #endregion
     }
 }

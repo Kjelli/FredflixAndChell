@@ -31,6 +31,8 @@ namespace FredflixAndChell.Shared.Assets
 
         public class Layers
         {
+            public const int HUD = 999;
+
             public const int Background = 15;
             public const int MapBackground = 14;
             public const int MapObstacles = 13;

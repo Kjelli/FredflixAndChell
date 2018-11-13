@@ -3,6 +3,7 @@ using Nez;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Systems;
 
 namespace FredflixAndChell.Components.Players
 {
@@ -10,6 +11,7 @@ namespace FredflixAndChell.Components.Players
     {
         private int _maxPlayers;
         private List<int> _connectedPlayers;
+        private GameSystem _gameSystem;
 
         public PlayerConnector(int maxPlayers = 4)
         {
@@ -21,6 +23,8 @@ namespace FredflixAndChell.Components.Players
         public override void onEnabled()
         {
             base.onEnabled();
+
+            _gameSystem = scene.getEntityProcessor<GameSystem>();
 
             Core.schedule(1, true, CheckForConnectedPlayers);
             CheckForConnectedPlayers();

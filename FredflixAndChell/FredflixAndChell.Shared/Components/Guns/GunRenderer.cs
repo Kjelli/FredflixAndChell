@@ -89,10 +89,5 @@ namespace FredflixAndChell.Shared.Components.Guns
         {
             _animation?.play(GunAnimations.Reload);
         }
-
-        public void setRenderLayer(int renderLayer)
-        {
-            //_animation?.setRenderLayer(renderLayer);
-        }
     }
 }
