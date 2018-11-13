@@ -14,6 +14,7 @@ using Nez.DeferredLighting;
 using Nez.Shadows;
 using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
 using System.Collections.Generic;
+using FredflixAndChell.Shared.Particles;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -56,9 +57,13 @@ namespace FredflixAndChell.Shared.Scenes
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
-            
+
 
             //CustomizeTiles(tiledMapComponent);
+
+            var particlesEntity = createEntity("particles");
+            particlesEntity.setPosition(new Vector2(100, 100));
+            particlesEntity.addComponent(new ParticleEngine());
         }
 
         private void SetupMapObjects(TiledObjectGroup objectGroup)

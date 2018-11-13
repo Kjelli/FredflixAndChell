@@ -73,6 +73,7 @@
     <Compile Include="GameObjects\Weapons\Guns.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSprite.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSpritePresets.cs" />
+    <Compile Include="Particles\ParticleEngine.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="BroGame.cs" />

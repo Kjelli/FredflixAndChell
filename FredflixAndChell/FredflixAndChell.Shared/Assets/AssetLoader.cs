@@ -44,6 +44,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/firstlevel");
             LoadMap("maps/winter_1");
             LoadTexture("maps/spawner_tile");
+
+            
         }
 
         #region Loaders and Getters
@@ -102,5 +104,11 @@ namespace FredflixAndChell.Shared.Assets
         }
 
         #endregion
+
+       
+    }
+    public static class ParticleDesigner
+    {
+        public const string fire = @"data/particles/Fire";
     }
 }

@@ -26,6 +26,11 @@
 #begin data/guns/PewPew.fml
 /copy:data/guns/PewPew.fml
 
+#begin data/particles/Fire.pex
+/importer:
+/processor:
+/build:data/particles/Fire.pex
+
 #begin effects/shader_flash.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -264,6 +269,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/pewpew.png
+
+#begin textures/particles1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/particles1.png
 
 #begin textures/players/kjelli_body.png
 /importer:TextureImporter
