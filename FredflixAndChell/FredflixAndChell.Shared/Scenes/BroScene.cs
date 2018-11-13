@@ -13,6 +13,7 @@ using FredflixAndChell.Shared.GameObjects.Players;
 
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Utilities;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -21,6 +22,8 @@ namespace FredflixAndChell.Shared.Scenes
         private ScreenSpaceRenderer _screenSpaceRenderer;
 
         public CinematicLetterboxPostProcessor LetterBox { get; private set; }
+
+        public PlayerSpawner PlayerSpawner { get; private set; }
 
         public BroScene()
         {
@@ -37,7 +40,7 @@ namespace FredflixAndChell.Shared.Scenes
             SetupMap();
 
             addSceneComponent(new SmoothCamera());
-            addSceneComponent(new PlayerConnector());
+            addSceneComponent(new PlayerConnector(spawnLocations : PlayerSpawner));
             addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
 
             // TODO turn back on for sweet details. Sweetails.
@@ -105,9 +108,10 @@ namespace FredflixAndChell.Shared.Scenes
                 spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
             }
 
+            PlayerSpawner = new PlayerSpawner();
             foreach (var spawnObject in objectGroup.objectsWithName("player_spawn"))
             {
-                PlayerSpawner s = new PlayerSpawner("player_spawner" + spawnObject.id, spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2); 
+                PlayerSpawner.AddLocation("player_spawner" + spawnObject.id, spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2);
             }
         }
 

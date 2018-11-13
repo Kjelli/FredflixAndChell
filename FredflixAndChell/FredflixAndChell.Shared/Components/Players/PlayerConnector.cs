@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
 
 namespace FredflixAndChell.Components.Players
 {
@@ -13,11 +15,14 @@ namespace FredflixAndChell.Components.Players
         private List<int> _connectedPlayers;
         private GameSystem _gameSystem;
 
-        public PlayerConnector(int maxPlayers = 4)
+        public PlayerSpawner _spawnLocations { get; set; }
+
+        public PlayerConnector(int maxPlayers = 4, PlayerSpawner spawnLocations = null)
         {
             Input.maxSupportedGamePads = maxPlayers;
             _maxPlayers = maxPlayers;
             _connectedPlayers = new List<int>();
+            _spawnLocations = spawnLocations;
         }
 
         public override void onEnabled()
@@ -58,8 +63,9 @@ namespace FredflixAndChell.Components.Players
 
         private void SpawnPlayer(int playerIndex)
         {
-            var spawnX = 100 + playerIndex * 32;
-            var spawnY = 100;
+            Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
+            var spawnX = (int)spawnLocation.X;
+            var spawnY = (int)spawnLocation.Y;
             var player = scene.createEntity($"player_{playerIndex}");
             player.addComponent(new Player(spawnX, spawnY, playerIndex));
             _connectedPlayers.Add(playerIndex);
