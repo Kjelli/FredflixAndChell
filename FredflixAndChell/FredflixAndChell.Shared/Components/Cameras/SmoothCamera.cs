@@ -1,21 +1,21 @@
-﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.GameObjects;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Nez;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
 
-namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
+namespace FredflixAndChell.Shared.Components.Cameras
 {
-    internal class SmoothCamera : SceneComponent
+    public class SmoothCamera : SceneComponent
     {
         private Camera camera;
         private TiledMapComponent _map;
+        private List<CameraTracker> _trackers;
 
         public SmoothCamera()
         {
+            _trackers = new List<CameraTracker>();
         }
 
         public override void onEnabled()
@@ -31,16 +31,19 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
             CenterCamera();
         }
 
+        public void Register(CameraTracker cameraTracker)
+        {
+            _trackers.Add(cameraTracker);
+        }
+
+        public void Unregister(CameraTracker cameraTracker)
+        {
+            _trackers.Remove(cameraTracker);
+        }
+
         private void CenterCamera()
         {
-            var entitiesToTrack = new List<Entity>();
-            var playerEntities = scene.findEntitiesWithTag(Tags.Player);
-            var collectibleEntities = scene.findEntitiesWithTag(Tags.Collectible);
-
-            entitiesToTrack.AddRange(playerEntities);
-            entitiesToTrack.AddRange(collectibleEntities);
-
-            if (entitiesToTrack.Count == 0) return;
+            if (_trackers.Count == 0) return;
 
             float left = 10000, 
                 right = -10000, 
@@ -48,13 +51,13 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
                 bottom = -10000;
             float paddingX = 32, paddingY = 32;
 
-            foreach(var entity in entitiesToTrack)
+            foreach(var tracker in _trackers)
             {
-                if (!entity.enabled || float.IsNaN(entity.position.X) || float.IsNaN(entity.position.X)) continue;
-                left = Math.Min(entity.position.X - paddingX / 2, left);
-                right = Math.Max(entity.position.X + paddingX / 2, right);
-                top = Math.Min(entity.position.Y - paddingY / 2, top);
-                bottom = Math.Max(entity.position.Y + paddingY / 2, bottom);
+                if (!tracker.enabled || !tracker.ShouldTrackEntity()) continue;
+                left = Math.Min(tracker.Position.X - paddingX / 2, left);
+                right = Math.Max(tracker.Position.X + paddingX / 2, right);
+                top = Math.Min(tracker.Position.Y - paddingY / 2, top);
+                bottom = Math.Max(tracker.Position.Y + paddingY / 2, bottom);
             }
 
             var baseZoom = 10f;
@@ -62,11 +65,8 @@ namespace FredflixAndChell.Shared.Utilities.Graphics.Cameras
             var targetHeight = Math.Max(ScreenHeight, (bottom - top) * baseZoom);
             var zoom = baseZoom * Math.Min(ScreenWidth / targetWidth, ScreenHeight / targetHeight);
             var center = new Vector2(left + (right - left) / 2, top + (bottom - top) / 2);
-            Console.WriteLine($"zoom: {zoom}, center: {center}" +
-                $"\nbounds: {right - left},{bottom - top}" +
-                $"\ntargetWidth: {targetWidth}");
 
-            camera.rawZoom = camera.rawZoom * 0.925f + 0.075f * zoom;
+            camera.rawZoom = camera.rawZoom * 0.975f + 0.025f * zoom;
             camera.position = camera.position * 0.925f + 0.075f * center;
 
             if (camera.bounds.left < 0) camera.position = new Vector2(camera.bounds.width / 2, camera.position.Y);

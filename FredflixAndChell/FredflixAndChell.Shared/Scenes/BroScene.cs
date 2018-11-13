@@ -5,10 +5,10 @@ using Nez.Tiled;
 using Nez.Sprites;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
 using FredflixAndChell.Components.Players;
 using static FredflixAndChell.Shared.Assets.Constants;
 using System;
+using FredflixAndChell.Shared.Components.Cameras;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -22,7 +22,7 @@ namespace FredflixAndChell.Shared.Scenes
 
             setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ExactFit);
             Screen.setSize(ScreenWidth, ScreenHeight);
-
+            
             SetupRenderering();
             SetupMap();
 

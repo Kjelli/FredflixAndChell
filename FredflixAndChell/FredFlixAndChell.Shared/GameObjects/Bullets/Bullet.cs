@@ -74,6 +74,8 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         {
             var isColliding = _mover.move(Velocity * Time.deltaTime);
 
+            if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
+
             if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
             {
                 var collidedWithEntity = collision.collider.entity;

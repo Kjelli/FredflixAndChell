@@ -14,7 +14,7 @@ float4 PixelShaderFunction(float2 coords: TEXCOORD0) : COLOR0
 	
 	if (color.a > 0 && color.r == 0 && color.g == 0 && color.b == 0){
 		float p =  (1-flashOffset) * (sin(gameTime * flashRate) * 0.5 + 0.5) + flashOffset;
-		flash_color.rgb = p * flash_color.rgb + (1-p) * color.rgb;
+		flash_color.rgba = p * flash_color.rgba + (1-p) * color.rgba;
 		return flash_color;
 	}
 	return color;

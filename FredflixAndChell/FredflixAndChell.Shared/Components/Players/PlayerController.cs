@@ -20,7 +20,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private VirtualButton _sprintButton;
         private VirtualMouseJoystick _mouseJoystick;
 
-        private Player Player;
+        private Player _player;
 
         private int _controllerIndex;
         private bool _inputEnabled = true;
@@ -46,7 +46,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            Player = entity.getComponent<Player>();
+            _player = entity.getComponent<Player>();
 
             // Virtual joysticks
             _leftStick = new VirtualJoystick(false);
@@ -62,10 +62,10 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _sprintButton = new VirtualButton();
 
             // Virtual mouse joystick
-            _mouseJoystick = new VirtualMouseJoystick(Player.entity.position);
+            _mouseJoystick = new VirtualMouseJoystick(_player.entity.position);
 
             // Keyboard player
-            if (_controllerIndex == -1)
+            if (_controllerIndex < 0)
             {
                 _leftStick.addKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.A, Keys.D, Keys.S, Keys.W);
                 _rightStick.nodes.Add(_mouseJoystick);
@@ -124,7 +124,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         {
             if (_controllerIndex == -1)
             {
-                _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(Player.entity.position);
+                _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(_player.entity.position);
             }
         }
     }

@@ -29,6 +29,8 @@ namespace FredflixAndChell.Shared
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
             scene = new BroScene();
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000 / 120);
         }
     }
 }

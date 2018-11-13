@@ -5,7 +5,7 @@ BarrelOffset:
 BulletCount: 1
 BulletParameters:
   Bounce: false
-  Damage: 5.0
+  Damage: 50.0
   Knockback: 0
   LifeSpanSeconds: -1.0
   RotateWithGun: false
@@ -22,7 +22,7 @@ BulletParameters:
         Y: 0.0
     Source: bullets/standard
 BulletSpread: 0.0
-FireRate: 0.0500000007
+FireRate: 0.1500000007
 MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300

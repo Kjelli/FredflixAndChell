@@ -10,6 +10,7 @@ namespace FredflixAndChell.Shared.Assets
     {
         public const int ScreenWidth = 1280;
         public const int ScreenHeight = 720;
+        public const float RenderLayerDepthFactor = 1 / 10000f;
 
         public class Assets
         {

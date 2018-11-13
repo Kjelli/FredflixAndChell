@@ -8,21 +8,28 @@ using Nez;
 using Nez.Tweens;
 using System;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
-using FredflixAndChell.Shared.Utilities.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using FredflixAndChell.Shared.Components.Cameras;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
+    public enum PlayerState
+    {
+        Normal, Dying, Dead
+    }
+
     public class Player : GameObject, ITriggerListener
     {
         private const float ThrowSpeed = 0.5f;
+
         private readonly int _controllerIndex;
 
-        private int _health;
+        private PlayerState _playerState;
+
         private Mover _mover;
         private PlayerRenderer _renderer;
+        private CameraTracker _cameraTracker;
         private PlayerController _controller;
         private Collider _proximityHitbox;
         private Collider _playerHitbox;
@@ -30,11 +37,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Entity _gunEntity;
         private Gun _gun;
 
+        private int _health;
         private float _speed = 50f;
         private float _accelerationMultiplier;
 
         private List<Entity> _entitiesInProximity;
 
+        public PlayerState PlayerState => _playerState;
         public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
@@ -78,6 +87,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
 
+            // Assign camera tracker component
+            _cameraTracker = entity.addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
+
             //TODO: Character based 
             _health = 100;
         }
@@ -87,9 +99,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ReadInputs();
             Move();
             SetFacing();
-
-            var state = GamePad.GetState(0);
-            //Console.WriteLine("X: " + state.ThumbSticks.Right.X + " : " + state.ThumbSticks.Right.Y);
         }
 
         private void ReadInputs()
@@ -113,7 +122,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
-            if(!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
+            if (!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
             {
                 FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
             }
@@ -158,7 +167,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-
+            if(Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
             var isColliding = _mover.move(Velocity, out CollisionResult collision);
 
             if (isColliding)
@@ -185,9 +194,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .start();
             entity.tweenPositionTo(destination, durationSeconds)
                 .setEaseType(easeType)
-                .setCompletionHandler(_ => entity.setEnabled(false))
+                .setCompletionHandler(_ => DeclareDead())
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
+        }
+
+        private void DeclareDead()
+        {
+            _playerState = PlayerState.Dead;
+            _cameraTracker.setEnabled(false);
         }
 
         public void DisablePlayer()
@@ -197,8 +212,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;
             _mover.setEnabled(false);
+            _playerHitbox.unregisterColliderWithPhysicsSystem();
+            _playerHitbox.collidesWithLayers = 0;
             _playerHitbox.setEnabled(false);
+            _proximityHitbox.unregisterColliderWithPhysicsSystem();
             _proximityHitbox.setEnabled(false);
+            _proximityHitbox.collidesWithLayers = 0;
         }
 
         public void Attack()
@@ -223,7 +242,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ((x.position - entity.position).Length() < (curMin.position - entity.position).Length() ? x : curMin));
 
             var collectible = closestEntity.getComponent<Collectible>();
-            if (collectible == null) return;
+            if (collectible == null || !collectible.CanBeCollected()) return;
 
             if (collectible.Preset.Type == CollectibleType.Weapon)
             {
@@ -236,10 +255,26 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
-            if (_health < 0)
+            if (_health < 0 && _playerState != PlayerState.Dead)
             {
+                _playerState = PlayerState.Dying;
+                DropDead();
                 DisablePlayer();
             }
+        }
+
+        private void DropDead()
+        {
+            var easeType = EaseType.BounceOut;
+            var durationSeconds = 1.5f;
+            var targetRotationDegrees = 90;
+            var targetColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+            entity.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
+                .setEaseType(easeType)
+                .setCompletionHandler(_ => DeclareDead())
+                .start();
+            _renderer.TweenColor(targetColor, durationSeconds, easeType);
         }
 
         static int itemId = 0;
@@ -254,7 +289,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
                 throwedItem.Velocity = new Vector2(
-                    Mathf.cos(FacingAngle) * ThrowSpeed, 
+                    Mathf.cos(FacingAngle) * ThrowSpeed,
                     Mathf.sin(FacingAngle) * ThrowSpeed)
                     + Velocity * 2f;
                 UnEquipGun();
@@ -323,8 +358,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (Flags.isFlagSet(other.entity.tag, Tags.Collectible))
             {
                 var collectible = other.entity.getComponent<Collectible>();
-                if (collectible == null) Console.Error.WriteLine("Entity has no collectible component!");
-                collectible?.Highlight();
+                if (collectible.CanBeCollected())
+                {
+                    collectible?.Highlight();
+                }
             }
         }
 

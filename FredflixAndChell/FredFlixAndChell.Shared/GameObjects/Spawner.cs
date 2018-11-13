@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Utilities;
@@ -9,15 +10,16 @@ using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
+    public enum SpawnerState
+    {
+        Closed, Opening, Closing
+    }
     public class Spawner : GameObject
     {
-
+        private SpawnerState _spawnerState;
         public Gun CurrentItem;
-        private Cooldown _timer { get; set; }
-        private Cooldown _closeDelay { get; set; }
-
-        bool open;
-
+        private Cooldown _spawnTimer { get; set; }
+        private Cooldown _stayOpenTimer { get; set; }
 
         private Sprite<Animations> _animation;
         public enum Animations
@@ -30,10 +32,8 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             _animation = SetupAnimations();
 
-            _timer = new Cooldown(10f);
-            _closeDelay = new Cooldown(1.5f);
-
-            open = false;
+            _spawnTimer = new Cooldown(10f);
+            _stayOpenTimer = new Cooldown(3.5f);
         }
 
         private Sprite<Animations> SetupAnimations()
@@ -83,9 +83,10 @@ namespace FredflixAndChell.Shared.GameObjects
             var sprite = entity.addComponent(_animation);
             sprite.renderLayer = Layers.MapObstacles;
 
-            _animation.play(Animations.Idle);
-            _timer.Start();
+            entity.addComponent(new CameraTracker(() => _spawnerState != SpawnerState.Closed));
 
+            _animation.play(Animations.Idle);
+            _spawnTimer.Start();
         }
 
         public void SpawnItem()
@@ -97,22 +98,30 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void update()
         {
-            _timer.Update();
-            _closeDelay.Update();
+            _spawnTimer.Update();
+            _stayOpenTimer.Update();
         
-            if (_timer.IsReady() && !open)
+            if (_spawnTimer.IsReady() && _spawnerState == SpawnerState.Closed)
             {
-                _animation.play(Animations.Open);   
-                open = true ;
+                _spawnerState = SpawnerState.Opening;
+                _animation.play(Animations.Open);
+                _stayOpenTimer.Start();
+
                 SpawnItem();
-                _closeDelay.Start();
             }
 
-            if(open && _closeDelay.IsReady())
+            if(_stayOpenTimer.IsReady() && _spawnerState == SpawnerState.Opening)
             {
+                _spawnerState = SpawnerState.Closing;
                 _animation.play(Animations.Close);
-                open = false;
-                _timer.Start();
+            }
+
+            if(_animation.isAnimationPlaying(Animations.Close) && !_animation.isPlaying)
+            {
+                // TODO Don't start unless current spawned item is picked up
+                _animation.play(Animations.Idle);
+                _spawnerState = SpawnerState.Closed;
+                _spawnTimer.Start();
             }
         }
     }

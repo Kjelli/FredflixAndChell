@@ -22,8 +22,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private Gun _gun;
         private PlayerSprite _playerSprite;
 
-        Sprite<BodyAnimations> _body;
-        Sprite<HeadAnimations> _head;
+        Sprite<BodyAnimation> _body;
+        Sprite<HeadAnimation> _head;
 
         public PlayerRenderer(PlayerSprite playerSprite, Gun gun)
         {
@@ -79,22 +79,22 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
             var headAnimations = SetupHeadAnimations(_playerSprite.Head);
             _head = entity.addComponent(headAnimations);
-            _head.renderLayer = Layers.PlayerFront;
+            _head.renderLayer = Layers.Player;
 
-            _body.play(BodyAnimations.Idle);
-            _head.play(HeadAnimations.FrontFacing);
+            _body.play(BodyAnimation.Idle);
+            _head.play(HeadAnimation.FrontFacing);
         }
-        private Sprite<BodyAnimations> SetupBodyAnimations(PlayerBodySprite bodySprite)
+        private Sprite<BodyAnimation> SetupBodyAnimations(PlayerBodySprite bodySprite)
         {
-            var animations = new Sprite<BodyAnimations>();
+            var animations = new Sprite<BodyAnimation>();
 
-            animations.addAnimation(BodyAnimations.Idle, 
+            animations.addAnimation(BodyAnimation.Idle, 
                 bodySprite.Idle.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimations.IdleUnarmed, 
+            animations.addAnimation(BodyAnimation.IdleUnarmed, 
                 bodySprite.IdleUnarmed.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimations.Walking, 
+            animations.addAnimation(BodyAnimation.Walking, 
                 bodySprite.Walking.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimations.WalkingUnarmed, 
+            animations.addAnimation(BodyAnimation.WalkingUnarmed, 
                 bodySprite.WalkingUnarmed.ToSpriteAnimation(_playerSprite.Source + "_body"));
 
             return animations;
@@ -110,13 +110,13 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 .start();
         }
 
-        private Sprite<HeadAnimations> SetupHeadAnimations(PlayerHeadSprite headSprite)
+        private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
         {
-            var animations = new Sprite<HeadAnimations>();
+            var animations = new Sprite<HeadAnimation>();
 
-            animations.addAnimation(HeadAnimations.FrontFacing,
+            animations.addAnimation(HeadAnimation.FrontFacing,
                 headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "_head"));
-            animations.addAnimation(HeadAnimations.BackFacing,
+            animations.addAnimation(HeadAnimation.BackFacing,
                 headSprite.Back.ToSpriteAnimation(_playerSprite.Source + "_head"));
 
             return animations;
@@ -127,35 +127,59 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             UpdateAnimation();
         }
 
+        public void UpdateRenderLayerDepth()
+        {
+            _head.layerDepth = 1 - (entity.position.Y + (float)Math.Sin(_player.FacingAngle)) * Constants.RenderLayerDepthFactor;
+            _body.layerDepth = 1 - (entity.position.Y + (float)Math.Sin(_player.FacingAngle) + 0.001f) * Constants.RenderLayerDepthFactor;
+        }
+
         private void UpdateAnimation()
         {
             //Todo: Fix check of unmarmed. A gun type called unarmed?
             bool armed = _player.IsArmed;
 
-            var animation = armed ? BodyAnimations.Idle : BodyAnimations.IdleUnarmed;
+            // Select Animations (Idle initially)
+            BodyAnimation bodyAnimation = armed ? BodyAnimation.Idle : BodyAnimation.IdleUnarmed;
+            HeadAnimation headAnimation = HeadAnimation.FrontFacing;
 
-            if (_player.Acceleration.Length() > 0)
+            // Body
+            if(_player.PlayerState == PlayerState.Dead || _player.PlayerState == PlayerState.Dying)
             {
-                animation = armed ? BodyAnimations.Walking : BodyAnimations.WalkingUnarmed;
+                bodyAnimation = BodyAnimation.IdleUnarmed;
+                _body.pause();
+            }
+            else if (_player.Acceleration.Length() > 0)
+            {
+                bodyAnimation = armed ? BodyAnimation.Walking : BodyAnimation.WalkingUnarmed;
             }
 
-            if (!_body.isAnimationPlaying(animation))
+            // Head
+            if(_player.PlayerState == PlayerState.Dead)
             {
-                _body.play(animation);
+                headAnimation = _head.currentAnimation;
+                _head.pause();
             }
-
-            if (_player.VerticalFacing == (int)FacingCode.UP && !_head.isAnimationPlaying(HeadAnimations.BackFacing))
+            else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
-                _head.play(HeadAnimations.BackFacing);
-                _head.setRenderLayer(Layers.PlayerBehind);
+                headAnimation = HeadAnimation.BackFacing;
                 if (_gun != null) _gun.SetRenderLayer(Layers.PlayerBehindest);
             }
-
-            if (_player.VerticalFacing == (int)FacingCode.DOWN && !_head.isAnimationPlaying(HeadAnimations.FrontFacing))
+            else if (_player.VerticalFacing == (int)FacingCode.DOWN)
             {
-                _head.play(HeadAnimations.FrontFacing);
-                _head.setRenderLayer(Layers.PlayerFront);
+                headAnimation = HeadAnimation.FrontFacing;
                 if (_gun != null) _gun.SetRenderLayer(Layers.PlayerFrontest);
+            }
+
+            // Play Animations
+
+            if (!_body.isAnimationPlaying(bodyAnimation))
+            {
+                _body.play(bodyAnimation);
+            }
+
+            if (!_head.isAnimationPlaying(headAnimation))
+            {
+                _head.play(headAnimation);
             }
 
         }

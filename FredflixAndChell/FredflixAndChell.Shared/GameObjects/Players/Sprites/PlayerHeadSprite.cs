@@ -9,7 +9,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
 {
     public class PlayerHeadSprite
     {
-        public enum HeadAnimations
+        public enum HeadAnimation
         {
             FrontFacing,
             BackFacing

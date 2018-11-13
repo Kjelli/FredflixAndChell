@@ -38,9 +38,14 @@ namespace FredflixAndChell.Components.Players
                 }
             }
 
-            if(_connectedPlayers.Count == 0)
+            if(!_connectedPlayers.Contains(-1))
             {
                 SpawnPlayer(-1);
+            }
+
+            if (!_connectedPlayers.Contains(-2))
+            {
+                SpawnPlayer(-2);
             }
 
             timer?.reset();
