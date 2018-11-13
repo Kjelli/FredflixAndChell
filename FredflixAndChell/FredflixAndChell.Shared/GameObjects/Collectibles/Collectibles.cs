@@ -14,6 +14,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private static Dictionary<string, CollectibleParameters> _collectibles = 
             new Dictionary<string, CollectibleParameters>();
 
+
         public static List<CollectibleParameters> All()
         {
             if (!_isInitialized)
@@ -38,8 +39,10 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             {
                 _collectibles.Add(gun.Name, new CollectibleParameters
                 {
+                    Name = gun.Name,
                     Gun = gun,
-                    Type = CollectibleType.Weapon
+                    Type = CollectibleType.Weapon,
+                    DropChance = gun.DropChange
                 });
             }
 

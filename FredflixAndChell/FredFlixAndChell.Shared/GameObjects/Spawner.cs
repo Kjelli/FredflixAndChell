@@ -1,13 +1,10 @@
-﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.Cameras;
+﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
-using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
-using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
-using System;
+using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects
@@ -28,6 +25,10 @@ namespace FredflixAndChell.Shared.GameObjects
         private bool _unoccupied { get; set; } = true;
 
         private Sprite<Animations> _animation;
+
+        private System.Random rng = new System.Random();
+        private List<CollectibleParameters> _collectibles;
+
         public enum Animations
         {
             Idle,
@@ -40,6 +41,8 @@ namespace FredflixAndChell.Shared.GameObjects
 
             _spawnTimer = new Cooldown(10f);
             _stayOpenTimer = new Cooldown(3.5f);
+
+            _collectibles = Collectibles.Collectibles.All();
         }
 
         private Sprite<Animations> SetupAnimations()
@@ -116,13 +119,40 @@ namespace FredflixAndChell.Shared.GameObjects
         public void SpawnItem()
         {
             var entz = entity.scene.createEntity("collectible");
-            CurrentItem = new Collectible((int)entity.position.X, (int)entity.position.Y, "M4", false);
+            CurrentItem = new Collectible((int)entity.position.X, (int)entity.position.Y, GetRandomItem(), false);
             var col = entz.addComponent(CurrentItem);
             col.transform.setScale(0.3f);
             _unoccupied = false;
         }
 
-       
+        public string GetRandomItem()
+        {
+            ShuffleCollectibleList();
+            double rand = rng.NextDouble();
+            foreach(var item in _collectibles)
+            {
+                if(item.DropChance > rand)
+                {
+                    return item.Name;
+                }
+            }
+            return _collectibles[0].Gun.Name;
+        }
+
+        public void ShuffleCollectibleList()
+        {
+            int n = _collectibles.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                var value = _collectibles[k];
+                _collectibles[k] = _collectibles[n];
+                _collectibles[n] = value;
+            }
+        }
+
+
         public bool ReadyToSpawn()
         {
             if (_spawnTimer.IsReady())

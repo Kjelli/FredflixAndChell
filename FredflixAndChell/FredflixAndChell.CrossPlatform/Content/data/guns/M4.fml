@@ -22,6 +22,7 @@ BulletParameters:
         Y: 0.0
     Source: bullets/standard
 BulletSpread: 0.0
+DropChange: 0.6
 FireRate: 0.1500000007
 MagazineAmmo: 30
 MagazineSize: 30
