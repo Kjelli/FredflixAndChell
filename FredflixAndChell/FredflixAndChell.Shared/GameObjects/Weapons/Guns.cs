@@ -15,6 +15,10 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static List<GunParameters> All()
         {
+            if (!_isInitialized)
+            {
+                LoadFromData();
+            }
             return _guns.Values.ToList();
         }
 
@@ -22,19 +26,21 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             if (!_isInitialized)
             {
-                Initialize();
+                LoadFromData();
             }
             return _guns[name];
         }
 
-        private static void Initialize()
+        public static void LoadFromData()
         {
+            Console.WriteLine("=== LOADING FML FILES FOR GUNS ===");
             var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)
             {
                 var gun = YamlSerializer.Deserialize(gunFilename);
                 _guns[gun.Name] = gun;
             }
+            _isInitialized = true;
         }
 
         public static GunParameters GetNextAfter(string name)

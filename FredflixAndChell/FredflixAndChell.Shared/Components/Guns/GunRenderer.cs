@@ -49,7 +49,7 @@ namespace FredflixAndChell.Shared.Components.Guns
             entity.setScale(0.6f);
 
             _animation = entity.addComponent(SetupAnimations(_gun.Parameters.Sprite));
-            _animation.renderLayer = Layers.PlayerFrontest;
+            _animation.renderLayer = Layers.Player;
 
             var shadow = entity.addComponent(new SpriteMime(_animation));
             shadow.color = new Color(0, 0, 0, 80);
@@ -75,9 +75,12 @@ namespace FredflixAndChell.Shared.Components.Guns
 
         public void update()
         {
+            _animation.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
             _animation.flipY = _player.FlipGun;
-            entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(_player.FacingAngle) * _renderOffset,
-                _player.entity.position.Y + (float)Math.Sin(_player.FacingAngle) * _renderOffset / 2);
+            entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(entity.localRotation) * _renderOffset,
+                _player.entity.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
+            entity.localRotation = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
+
             if (!_animation.isPlaying)
             {
                 _animation.play(GunAnimations.Held_Idle);
@@ -87,17 +90,6 @@ namespace FredflixAndChell.Shared.Components.Guns
         public void Reload()
         {
             _animation?.play(GunAnimations.Reload);
-        }
-
-        public void setRenderLayer(int renderLayer)
-        {
-            _animation?.setRenderLayer(renderLayer);
-        }
-
-
-        public Sprite<GunAnimations> GetAnimations()
-        {
-            return _animation;
         }
     }
 }

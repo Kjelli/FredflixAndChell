@@ -2,15 +2,16 @@
 using Nez;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Systems;
 
-namespace FredflixAndChell.Shared.Scenes
+namespace FredflixAndChell.Components.Players
 {
     public class PlayerConnector : SceneComponent
     {
         private int _maxPlayers;
         private List<int> _connectedPlayers;
+        private GameSystem _gameSystem;
 
         public PlayerConnector(int maxPlayers = 4)
         {
@@ -23,17 +24,14 @@ namespace FredflixAndChell.Shared.Scenes
         {
             base.onEnabled();
 
+            _gameSystem = scene.getEntityProcessor<GameSystem>();
+
             Core.schedule(1, true, CheckForConnectedPlayers);
             CheckForConnectedPlayers();
         }
 
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
-            //TODO: Testing
-            if(!_connectedPlayers.Contains(0))
-                SpawnPlayer(-1);
-
-
             for (var playerIndex = 0; playerIndex < _maxPlayers; playerIndex++)
             {
                 var gamePadState = GamePad.GetState(playerIndex);
@@ -43,16 +41,30 @@ namespace FredflixAndChell.Shared.Scenes
                     SpawnPlayer(playerIndex);
                 }
             }
+
+            if(!_connectedPlayers.Contains(-1))
+            {
+                SpawnPlayer(-1);
+            }
+
+            if (!_connectedPlayers.Contains(-2))
+            {
+                SpawnPlayer(-2);
+            }
+
             timer?.reset();
+            Console.WriteLine($"Players ingame: {_connectedPlayers.Count}");
         }
 
         private void SpawnPlayer(int playerIndex)
         {
-            var spawnX = 100 + playerIndex * 8;
+            var spawnX = 100 + playerIndex * 32;
             var spawnY = 100;
             var player = scene.createEntity($"player_{playerIndex}");
             player.addComponent(new Player(spawnX, spawnY, playerIndex));
             _connectedPlayers.Add(playerIndex);
+
+            Console.WriteLine($"Spawned {player.name}");
         }
 
         public override void update()

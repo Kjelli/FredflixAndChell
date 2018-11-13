@@ -11,7 +11,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
 
     public class PlayerBodySprite
     {
-        public enum BodyAnimations
+        public enum BodyAnimation
         {
             WalkingUnarmed,
             IdleUnarmed,

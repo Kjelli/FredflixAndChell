@@ -1,50 +1,68 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Components.PlayerComponents;
-using Nez;
-using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+﻿using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
-using Nez.Tweens;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.CollectiblePresets;
-using FredflixAndChell.Shared.Utilities.Serialization;
+using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Nez;
+using Nez.Tweens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using FredflixAndChell.Shared.Components.Cameras;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
+    public enum PlayerState
+    {
+        Normal, Dying, Dead
+    }
+
     public class Player : GameObject, ITriggerListener
     {
-        private const float ThrowSpeed = 1.0f;
+        private const float ThrowSpeed = 0.5f;
 
-        private int _health { get; set; }
+        private readonly int _controllerIndex;
+
+        private PlayerState _playerState;
 
         private Mover _mover;
         private PlayerRenderer _renderer;
+        private CameraTracker _cameraTracker;
         private PlayerController _controller;
-        private Collider _collider;
+        private Collider _proximityHitbox;
+        private Collider _playerHitbox;
 
         private Entity _gunEntity;
         private Gun _gun;
 
-        private int _controllerIndex;
+        private int _health;
         private float _speed = 50f;
-        public float FacingAngle { get; set; }
+        private float _accelerationMultiplier;
+        private float _stamina = 100;
+        private bool _shouldRegenStamina = false;
+        private readonly float _walkAcceleration = 0.05f;
+        private readonly float _sprintAcceleration = 0.10f;
+        static int itemId = 0;
 
-        public Vector2 Acceleration;
+        private List<Entity> _entitiesInProximity;
 
+        public PlayerState PlayerState => _playerState;
+        public int PlayerIndex => _controllerIndex;
+        public int Health => (int)_health;
+        public int Stamina => (int)_stamina;
+        public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
+        public Vector2 FacingAngle { get; set; }
 
-        private Vector2 previousValidRightStickInput { get; set; }
-
-        public Collider TouchingObject;
-
-        public Player(int x, int y, int controllerIndex = -1) : base(x, y)
+        public Player(int x, int y, int controllerIndex = 0) : base(x, y)
         {
             _controllerIndex = controllerIndex;
+            _entitiesInProximity = new List<Entity>();
         }
 
         public override void OnSpawn()
@@ -56,35 +74,39 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign movement component
             _mover = entity.addComponent(new Mover());
-            previousValidRightStickInput = new Vector2(0,0);
 
             // Assign gun component
             _gunEntity = entity.scene.createEntity("gun");
             EquipGun("M4");
 
             // Assign collider component
-            _collider = entity.addComponent(new CircleCollider(4f));
-            _collider.localOffset = new Vector2(0, 4);
-            Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
-            Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
-            Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Player);
+            _playerHitbox = entity.addComponent(new CircleCollider(4f));
+            _playerHitbox.localOffset = new Vector2(0, 4);
+            Flags.setFlagExclusive(ref _playerHitbox.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref _playerHitbox.collidesWithLayers, Layers.Player);
+            Flags.setFlagExclusive(ref _playerHitbox.physicsLayer, Layers.Player);
+
+            // Assign proximity interaction hitbox
+            _proximityHitbox = entity.addComponent(new CircleCollider(20f));
+            Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Items);
+            Flags.setFlagExclusive(ref _proximityHitbox.physicsLayer, 0);
+            _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
             _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
 
+            // Assign camera tracker component
+            _cameraTracker = entity.addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
+
             //TODO: Character based 
             _health = 100;
         }
-
 
         public override void update()
         {
             ReadInputs();
             Move();
             SetFacing();
-
-            var state = GamePad.GetState(0);
-            //Console.WriteLine("X: " + state.ThumbSticks.Right.X + " : " + state.ThumbSticks.Right.Y);
         }
 
         private void ReadInputs()
@@ -104,22 +126,49 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
+            ToggleSprint();
+            ToggleStaminaRegen();
+
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
+        }
 
-            previousValidRightStickInput = new Vector2(
-                _controller.XRightAxis == 0 ? previousValidRightStickInput.X : _controller.XRightAxis,
-                _controller.YRightAxis == 0 ? previousValidRightStickInput.Y : _controller.YRightAxis
-            );
+        private void ToggleStaminaRegen()
+        {
+            if (!_shouldRegenStamina)
+                return;
 
-            FacingAngle = (float)Math.Atan2(previousValidRightStickInput.Y, previousValidRightStickInput.X);
+            _stamina += 25 * Time.deltaTime;
 
+            if (_stamina >= 100)
+            {
+                _stamina = 100;
+                _shouldRegenStamina = false;
+            }
+        }
+
+        private void ToggleSprint()
+        {
+            if (_controller.SprintPressed && !_shouldRegenStamina)
+            {
+                _accelerationMultiplier = _sprintAcceleration;
+                _stamina -= 50 * Time.deltaTime;
+            }
+            else
+                _accelerationMultiplier = _walkAcceleration;
+
+            if (_stamina <= 0)
+            {
+                _stamina = 0;
+                _shouldRegenStamina = true;
+                _accelerationMultiplier = _walkAcceleration;
+            }
         }
 
         public void EquipGun(string name)
         {
             if (_gun != null)
             {
-                UnEquipGun();
+                DropGun();
             }
             _gun = _gunEntity.addComponent(new Gun(this, Guns.Get(name)));
             IsArmed = true;
@@ -134,8 +183,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
-            var nextGun = Guns.GetNextAfter(_gun.Parameters.Name);
-            EquipGun(nextGun.Name);
+            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
+            EquipGun(nextGun);
         }
 
         private void Move()
@@ -143,41 +192,49 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + 0.05f * Acceleration);
+            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-
+            if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
             var isColliding = _mover.move(Velocity, out CollisionResult collision);
 
             if (isColliding)
             {
-                // Handle collisions here
+                if (collision.collider.entity.tag == Tags.Player)
+                {
+                    var player = collision.collider.entity.getComponent<Player>();
+                    player.Acceleration = collision.minimumTranslationVector * 4;
+                }
             }
         }
-
-       
 
         private void FallIntoPit(Entity pitEntity)
         {
             DisablePlayer();
             var easeType = EaseType.CubicOut;
-            var duration = 2f;
+            var durationSeconds = 2f;
             var targetScale = 0.2f;
             var targetRotationDegrees = 180;
             var targetColor = new Color(0, 0, 0, 0.25f);
             var destination = pitEntity.localPosition;
 
-            entity.tweenRotationDegreesTo(targetRotationDegrees, duration)
+            entity.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            entity.tweenScaleTo(targetScale, duration)
+            entity.tweenScaleTo(targetScale, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            entity.tweenPositionTo(destination, duration)
+            entity.tweenPositionTo(destination, durationSeconds)
                 .setEaseType(easeType)
-                .setCompletionHandler(_ => entity.setEnabled(false))
+                .setCompletionHandler(_ => DeclareDead())
                 .start();
-            _renderer.TweenColor(targetColor, duration, easeType);
+            _renderer.TweenColor(targetColor, durationSeconds, easeType);
+        }
+
+        private void DeclareDead()
+        {
+            _playerState = PlayerState.Dead;
+            _cameraTracker.setEnabled(false);
         }
 
         public void DisablePlayer()
@@ -186,76 +243,102 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             DropGun();
             Velocity = Vector2.Zero;
             Acceleration = Vector2.Zero;
-            _mover.setEnabled(false);
-            _collider.setEnabled(false);
+            //_mover.setEnabled(false);
+            //_playerHitbox.unregisterColliderWithPhysicsSystem();
+            //_playerHitbox.collidesWithLayers = 0;
+            //_playerHitbox.setEnabled(false);
+            _proximityHitbox.unregisterColliderWithPhysicsSystem();
+            _proximityHitbox.setEnabled(false);
+            _proximityHitbox.collidesWithLayers = 0;
         }
-
 
         public void Attack()
         {
-            if(_gun != null)
+            if (_gun != null)
                 _gun.Fire();
         }
 
         public void Reload()
         {
 
-            if(_gun != null)
-            _gun.ReloadMagazine();
+            if (_gun != null)
+                _gun.ReloadMagazine();
         }
 
         public void Interact()
         {
-            if(TouchingObject != null)
+            if (_entitiesInProximity.Count == 0) return;
+
+            // Find closest entity based on distance between player and collectible
+            var closestEntity = _entitiesInProximity.Aggregate((curMin, x) =>
+            ((x.position - entity.position).Length() < (curMin.position - entity.position).Length() ? x : curMin));
+
+            var collectible = closestEntity.getComponent<Collectible>();
+            if (collectible == null || !collectible.CanBeCollected()) return;
+
+            if (collectible.Preset.Type == CollectibleType.Weapon)
             {
-                
-               var collectible= TouchingObject.entity.getComponent<Collectible>();
-               if(collectible.Preset.Type == CollectibleType.Weapon)
-               {
-                   EquipGun(collectible.Preset.Gun.Name);
-               }
-               collectible.entity.destroy();
+                EquipGun(collectible.Preset.Gun.Name);
+                collectible.OnPickup();
+                _entitiesInProximity.Remove(closestEntity);
             }
         }
-
         public void Damage(int damage)
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
-            if(_health < 0)
+            if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
+                _playerState = PlayerState.Dying;
+                DropDead();
                 DisablePlayer();
             }
         }
 
+        private void DropDead()
+        {
+            var easeType = EaseType.BounceOut;
+            var durationSeconds = 1.5f;
+            var targetRotationDegrees = 90;
+            var targetColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
+            entity.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
+                .setEaseType(easeType)
+                .setCompletionHandler(_ => DeclareDead())
+                .start();
+            _renderer.TweenColor(targetColor, durationSeconds, easeType);
+        }
+
+
         public void DropGun()
         {
-            if(_gun != null)
+            if (_gun != null)
             {
                 //Throw out a new gunz
-                var gunItem = entity.scene.createEntity("item");
+                Console.WriteLine($"Dropping {_gun.Parameters.Name}");
+                var gunItem = entity.scene.createEntity($"item_{++itemId}");
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
-                throwedItem.Velocity = new Vector2(Mathf.cos(FacingAngle) * ThrowSpeed, Mathf.sin(FacingAngle) * ThrowSpeed) + Velocity * 2f;
+                throwedItem.Velocity = new Vector2(
+                    FacingAngle.X * ThrowSpeed,
+                    FacingAngle.Y * ThrowSpeed)
+                    + Velocity * 2f;
                 UnEquipGun();
             }
         }
 
         public override void OnDespawn()
         {
-            _gun.Destroy();
+            _gun?.Destroy();
         }
 
         private void SetFacing()
         {
-            if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
+            if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
 
-            if(_gun != null && _gunEntity != null)
-            {
-                _gunEntity.rotation = FacingAngle;
-            }
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 10f);
 
-            if (FacingAngle > 0 && FacingAngle < Math.PI)
+            if (FacingAngle.Y > 0)
             {
                 VerticalFacing = (int)FacingCode.DOWN;
             }
@@ -264,7 +347,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 VerticalFacing = (int)FacingCode.UP;
             }
             //Prioritizing "horizontal" sprites
-            if (FacingAngle > -Math.PI / 2 && FacingAngle < Math.PI / 2)
+            if (FacingAngle.X > 0)
             {
                 _renderer.FlipX(false);
                 FlipGun = false;
@@ -280,22 +363,72 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void onTriggerEnter(Collider other, Collider local)
         {
-            
-            if(other.entity.tag == Tags.Pit)
+            if (local == _playerHitbox)
+            {
+                HitboxTriggerEnter(other, local);
+            }
+            else if (local == _proximityHitbox)
+            {
+                ProximityTriggerEnter(other, local);
+            }
+        }
+
+        private void ProximityTriggerEnter(Collider other, Collider local)
+        {
+            if (other == null || other.entity == null) return;
+            if (_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Entered proximity: ${other.entity}");
+
+            _entitiesInProximity.Add(other.entity);
+
+            // TODO change tag to include other interactables if relevant
+            if (Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+            {
+                var collectible = other.entity.getComponent<Collectible>();
+                if (collectible.CanBeCollected())
+                {
+                    collectible?.Highlight();
+                }
+            }
+        }
+
+        private void HitboxTriggerEnter(Collider other, Collider local)
+        {
+            if (other.entity.tag == Tags.Pit)
             {
                 FallIntoPit(other.entity);
-            }
-
-            if(other.entity.tag == Tags.Collectible)
-            {
-                TouchingObject = other;
-               
             }
         }
 
         public void onTriggerExit(Collider other, Collider local)
         {
-            //Console.WriteLine($"TriggerExit: {other}, {other.entity.tag}");
+            if (local == _playerHitbox)
+            {
+                HitboxTriggerExit(other, local);
+            }
+            else if (local == _proximityHitbox)
+            {
+                ProximityTriggerExit(other, local);
+            }
+        }
+
+        private void HitboxTriggerExit(Collider other, Collider local)
+        {
+        }
+
+        private void ProximityTriggerExit(Collider other, Collider local)
+        {
+            if (other == null || other.entity == null) return;
+            if (!_entitiesInProximity.Contains(other.entity)) return;
+
+            Console.WriteLine($"Left proximity: ${other.entity}");
+            _entitiesInProximity.Remove(other.entity);
+            if (other.entity != null && Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+            {
+                var collectible = other.entity.getComponent<Collectible>();
+                collectible?.Unhighlight();
+            }
         }
     }
 
@@ -305,6 +438,5 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         RIGHT = 2,
         DOWN = 3,
         LEFT = 4
-
     }
 }

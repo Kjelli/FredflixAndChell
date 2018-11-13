@@ -26,11 +26,6 @@
 #begin data/guns/PewPew.fml
 /copy:data/guns/PewPew.fml
 
-#begin data/particles/Fire.pex
-/importer:
-/processor:
-/build:data/particles/Fire.pex
-
 #begin effects/shader_flash.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -98,9 +93,14 @@
 /build:maps/spawner_tile.png
 
 #begin maps/winter_1.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
+/importer:
+/processor:
 /build:maps/winter_1.tmx
+
+#begin maps/winter_debug.tmx
+/importer:
+/processor:
+/build:maps/winter_debug.tmx
 
 #begin textures/bullets/fido.png
 /importer:TextureImporter
@@ -329,4 +329,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/players/tormod_head.png
+
+#begin textures/square.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/square.png
 

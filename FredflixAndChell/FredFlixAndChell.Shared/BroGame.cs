@@ -19,9 +19,6 @@ namespace FredflixAndChell.Shared
 {
     public class BroGame : Core
     {
-        public BroGame() : base()
-        {
-        }
         protected override void Initialize()
         {
             base.Initialize();

@@ -1,41 +1,54 @@
-﻿using Nez;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Nez;
+using Nez.Textures;
+using Nez.Tiled;
 using Nez.Sprites;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Assets;
-using Microsoft.Xna.Framework.Input;
-using FredflixAndChell.Shared.Utilities;
-using System;
+using FredflixAndChell.Components.Players;
 using static FredflixAndChell.Shared.Assets.Constants;
-using Nez.Textures;
-using Nez.Tiled;
-using Nez.DeferredLighting;
-using Nez.Shadows;
-using FredflixAndChell.Shared.Utilities.Graphics.Cameras;
-using System.Collections.Generic;
+using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.GameObjects.Players;
+
 using FredflixAndChell.Shared.Particles;
 
 namespace FredflixAndChell.Shared.Scenes
 {
     public class BroScene : Scene
     {
+        private ScreenSpaceRenderer _screenSpaceRenderer;
+
+        public CinematicLetterboxPostProcessor LetterBox { get; private set; }
+
+        public BroScene()
+        {
+        }
+
         public override void initialize()
         {
-            base.initialize();
+            Screen.isFullscreen = true;
+            AssetLoader.LoadBroScene(content);
 
-            AssetLoader.Load(content);
-
-            setDesignResolution(1280, 720, SceneResolutionPolicy.BestFit);
-            Screen.setSize(1280, 720);
-
-            SetupRenderering();
+            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
+            Screen.setSize(ScreenWidth, ScreenHeight);
+            
             SetupMap();
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new PlayerConnector());
+            addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
 
-            //Core.debugRenderEnabled = true;
+            // TODO turn back on for sweet details. Sweetails.
+            //addEntity(new DebugHud());
+
+            SetupRenderering();
+        }
+
+        public override void unload()
+        {
+            base.unload();
+            //AssetLoader.Dispose();
         }
 
         private void SetupMap()
@@ -51,7 +64,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             SetupMapObjects(mapObjects);
 
-
             var tiledMapDetailsComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap));
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
@@ -61,9 +73,11 @@ namespace FredflixAndChell.Shared.Scenes
 
             //CustomizeTiles(tiledMapComponent);
 
+            /* PARTICLE ENGINE - TBA
             var particlesEntity = createEntity("particles");
             particlesEntity.setPosition(new Vector2(100, 100));
             particlesEntity.addComponent(new ParticleEngine());
+            */
         }
 
         private void SetupMapObjects(TiledObjectGroup objectGroup)
@@ -133,9 +147,9 @@ namespace FredflixAndChell.Shared.Scenes
             camera.setMaximumZoom(6);
             camera.setZoom(4);
 
-            // Rendering all layers but lights
+            // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
-                Layers.Lights, Layers.Lights2));
+                Layers.Lights, Layers.Lights2, Layers.HUD));
 
             // Rendering lights
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
@@ -146,10 +160,14 @@ namespace FredflixAndChell.Shared.Scenes
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
 
-            var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            bloomPostProcessor.settings = BloomSettings.presetSettings[5];
+            // Render screenspace
+            _screenSpaceRenderer = new ScreenSpaceRenderer(100, Layers.HUD);
+            _screenSpaceRenderer.shouldDebugRender = false;
+            addRenderer(_screenSpaceRenderer);
 
-            var vignette = addPostProcessor(new VignettePostProcessor(4));
+            // Letterbox effect when a winner is determined
+            LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(4));
+
         }
     }
 }

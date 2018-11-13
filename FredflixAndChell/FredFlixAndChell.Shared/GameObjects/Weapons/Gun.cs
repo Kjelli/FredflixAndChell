@@ -53,35 +53,36 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
             _bulletCount = _params.BulletCount;
             _bulletSpread = _params.BulletSpread;
-         
+
         }
 
         public void Fire()
         {
-            if (!Reload.IsOnCooldown())
+            CheckAmmo();
+            if (Cooldown.IsReady() && Reload.IsReady() && _magazineAmmo >= 0)
             {
-                CheckAmmo();
-                if (Cooldown.IsReady() && Reload.IsReady() && _magazineAmmo >= 0)
+                //Functionality
+                Cooldown.Start();
+                var bulletSpawnX = (float)(entity.position.X 
+                    + Math.Cos(entity.localRotation) * _barrelOffset.X 
+                    + Math.Cos(entity.localRotation) * _barrelOffset.Y);
+                var bulletSpawnY = (float)(entity.position.Y 
+                    + Math.Sin(entity.localRotation) * _barrelOffset.Y 
+                    + Math.Sin(entity.localRotation) * _barrelOffset.X);
+                for (float i = 0; i < _bulletCount; i++)
                 {
-                    //Functionality
-                    Cooldown.Start();
-                    var bulletSpawnX = entity.position.X + (float)Math.Cos(_player.FacingAngle) * _barrelOffset.X + (float)Math.Cos(_player.FacingAngle) * _barrelOffset.Y;
-                    var bulletSpawnY = entity.position.Y + (float)Math.Sin(_player.FacingAngle) * _barrelOffset.Y + (float)Math.Sin(_player.FacingAngle) * _barrelOffset.X;
-                    for (float i = 0; i < _bulletCount; i++)
-                    {
-                        var bulletEntity = entity.scene.createEntity("bullet");
-                        bulletEntity.addComponent(
-                            new Bullet(_player,
-                                bulletSpawnX,
-                                bulletSpawnY,
-                                _player.FacingAngle + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
-                                _params.BulletParameters));
-                    }
-                    _magazineAmmo--;
-
-                    //Animation
-                    _renderer?.Fire();
+                    var bulletEntity = entity.scene.createEntity("bullet");
+                    bulletEntity.addComponent(
+                        new Bullet(_player,
+                            bulletSpawnX,
+                            bulletSpawnY,
+                            entity.localRotation + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
+                            _params.BulletParameters));
                 }
+                _magazineAmmo--;
+
+                //Animation
+                _renderer?.Fire();
             }
         }
 
@@ -121,22 +122,18 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
         }
 
-        public void SetRenderLayer(int renderLayer)
-        {
-            _renderer?.setRenderLayer(renderLayer);
-        }
-
         public override void update()
         {
             Cooldown.Update();
             Reload.Update();
-            
+
         }
 
         public void Destroy()
         {
-            entity.setEnabled(false);
-            entity.destroy();
+            entity?.removeAllComponents();
+            entity?.setEnabled(false);
+            entity?.destroy();
         }
 
 

@@ -6,7 +6,7 @@ BulletCount: 1
 BulletParameters:
   Bounce: false
   Damage: 5.0
-  Knockback: 3.0
+  Knockback: 0.05
   LifeSpanSeconds: -1.0
   RotateWithGun: false
   Scale: 0.150000006

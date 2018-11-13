@@ -29,6 +29,7 @@ namespace FredflixAndChell.Shared.GameObjects
         public abstract void update();
         public override void onAddedToEntity()
         {
+            entity.position = _spawnPosition;
             base.onAddedToEntity();
             if (!_hasSpawned)
             {
@@ -36,7 +37,6 @@ namespace FredflixAndChell.Shared.GameObjects
                 _hasSpawned = true;
             }
 
-            entity.position = _spawnPosition;
         }
 
         public override void onRemovedFromEntity()
