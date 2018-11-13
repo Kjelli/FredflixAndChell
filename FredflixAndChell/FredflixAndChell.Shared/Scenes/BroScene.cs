@@ -12,6 +12,7 @@ using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.GameObjects.Players;
 
 using FredflixAndChell.Shared.Particles;
+using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -102,6 +103,11 @@ namespace FredflixAndChell.Shared.Scenes
             {
                 var spawnerEntity = createEntity("spawner" + spawnObject.id);
                 spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
+            }
+
+            foreach (var spawnObject in objectGroup.objectsWithName("player_spawn"))
+            {
+                PlayerSpawner s = new PlayerSpawner("player_spawner" + spawnObject.id, spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2); 
             }
         }
 

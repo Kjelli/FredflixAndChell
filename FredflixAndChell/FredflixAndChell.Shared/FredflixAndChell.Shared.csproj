@@ -90,6 +90,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\Players\PlayerController.cs" />
     <Compile Include="Components\MouseFollow.cs" />
+    <Compile Include="Utilities\PlayerSpawner.cs" />
     <Compile Include="Utilities\Serialization\YamlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
