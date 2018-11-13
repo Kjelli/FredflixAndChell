@@ -54,7 +54,7 @@ namespace FredflixAndChell.Components.Players
 
             if (!_connectedPlayers.Contains(-2))
             {
-                SpawnPlayer(-2);
+                //SpawnPlayer(-2);
             }
 
             timer?.reset();
