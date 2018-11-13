@@ -336,7 +336,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
 
-            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 10f);
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 20f);
 
             if (FacingAngle.Y > 0)
             {
