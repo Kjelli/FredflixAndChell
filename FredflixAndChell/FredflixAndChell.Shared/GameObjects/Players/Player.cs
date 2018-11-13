@@ -50,14 +50,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public PlayerState PlayerState => _playerState;
         public int PlayerIndex => _controllerIndex;
-        public int Health => (int) _health;
+        public int Health => (int)_health;
         public int Stamina => (int)_stamina;
         public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
-        public float FacingAngle { get; set; }
+        public Vector2 FacingAngle { get; set; }
 
         public Player(int x, int y, int controllerIndex = 0) : base(x, y)
         {
@@ -130,11 +130,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ToggleStaminaRegen();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
-
-            if (!(_controller.XRightAxis == 0 && _controller.YRightAxis == 0))
-            {
-                FacingAngle = (float)Math.Atan2(_controller.YRightAxis, _controller.XRightAxis);
-            }
         }
 
         private void ToggleStaminaRegen()
@@ -144,8 +139,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             _stamina += 25 * Time.deltaTime;
 
-            if (_stamina > 99)
+            if (_stamina >= 100)
+            {
+                _stamina = 100;
                 _shouldRegenStamina = false;
+            }
         }
 
         private void ToggleSprint()
@@ -158,8 +156,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             else
                 _accelerationMultiplier = _walkAcceleration;
 
-            if (_stamina < 1)
+            if (_stamina <= 0)
             {
+                _stamina = 0;
                 _shouldRegenStamina = true;
                 _accelerationMultiplier = _walkAcceleration;
             }
@@ -196,7 +195,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-            if(Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
+            if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
             var isColliding = _mover.move(Velocity, out CollisionResult collision);
 
             if (isColliding)
@@ -321,8 +320,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
                 throwedItem.Velocity = new Vector2(
-                    Mathf.cos(FacingAngle) * ThrowSpeed,
-                    Mathf.sin(FacingAngle) * ThrowSpeed)
+                    FacingAngle.X * ThrowSpeed,
+                    FacingAngle.Y * ThrowSpeed)
                     + Velocity * 2f;
                 UnEquipGun();
             }
@@ -330,19 +329,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnDespawn()
         {
-            _gun.Destroy();
+            _gun?.Destroy();
         }
 
         private void SetFacing()
         {
-            if (_controller.YRightAxis == 0 && _controller.XRightAxis == 0) return;
+            if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
 
-            if (_gun != null && _gunEntity != null)
-            {
-                _gunEntity.rotation = FacingAngle;
-            }
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 10f);
 
-            if (FacingAngle > 0 && FacingAngle < Math.PI)
+            if (FacingAngle.Y > 0)
             {
                 VerticalFacing = (int)FacingCode.DOWN;
             }
@@ -351,7 +347,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 VerticalFacing = (int)FacingCode.UP;
             }
             //Prioritizing "horizontal" sprites
-            if (FacingAngle > -Math.PI / 2 && FacingAngle < Math.PI / 2)
+            if (FacingAngle.X > 0)
             {
                 _renderer.FlipX(false);
                 FlipGun = false;

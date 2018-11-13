@@ -53,15 +53,18 @@ namespace FredflixAndChell.Components.Players
             }
 
             timer?.reset();
+            Console.WriteLine($"Players ingame: {_connectedPlayers.Count}");
         }
 
         private void SpawnPlayer(int playerIndex)
         {
-            var spawnX = 100 + playerIndex * 8;
+            var spawnX = 100 + playerIndex * 32;
             var spawnY = 100;
             var player = scene.createEntity($"player_{playerIndex}");
             player.addComponent(new Player(spawnX, spawnY, playerIndex));
             _connectedPlayers.Add(playerIndex);
+
+            Console.WriteLine($"Spawned {player.name}");
         }
 
         public override void update()

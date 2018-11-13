@@ -129,8 +129,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public void UpdateRenderLayerDepth()
         {
-            _head.layerDepth = 1 - (entity.position.Y + (float)Math.Sin(_player.FacingAngle)) * Constants.RenderLayerDepthFactor;
-            _body.layerDepth = 1 - (entity.position.Y + (float)Math.Sin(_player.FacingAngle) + 0.001f) * Constants.RenderLayerDepthFactor;
+            _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
+            _body.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + 0.001f) * Constants.RenderLayerDepthFactor;
         }
 
         private void UpdateAnimation()

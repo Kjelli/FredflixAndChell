@@ -53,7 +53,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _sprite.renderLayer = Layers.Items;
             _sprite.material = new Material();
             
-            entity.scale = new Vector2(0.025f, 0.025f);
+            entity.scale = new Vector2(0.5f, 0.5f);
             _hoverTween = entity.tweenLocalScaleTo(0.5f, 0.5f)
                 .setEaseType(EaseType.ExpoOut)
                 .setCompletionHandler(_ => Hover(2f));
@@ -71,7 +71,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void SetupPickupHitbox()
         {
-            if (_collectibleState == CollectibleState.Unavailable) return;
+            if (entity == null 
+                || _collectibleState == CollectibleState.Unavailable) return;
 
             _collectibleState = CollectibleState.Available;
             entity.setTag(Tags.Collectible);

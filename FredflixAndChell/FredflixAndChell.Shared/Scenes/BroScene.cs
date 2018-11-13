@@ -17,30 +17,40 @@ using Nez.Console;
 
 namespace FredflixAndChell.Shared.Scenes
 {
-    public class BroScene : Scene, IFinalRenderDelegate
+    public class BroScene : Scene
     {
         private ScreenSpaceRenderer _screenSpaceRenderer;
 
+        public CinematicLetterboxPostProcessor LetterBox { get; private set; }
+
+        public BroScene()
+        {
+        }
+
         public override void initialize()
         {
-            base.initialize();
+            Screen.isFullscreen = true;
+            AssetLoader.LoadBroScene(content);
 
-            AssetLoader.Load(content);
-
-            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.BestFit);
+            setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
             Screen.setSize(ScreenWidth, ScreenHeight);
             
-            SetupRenderering();
             SetupMap();
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new PlayerConnector());
             addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
 
-            addEntity(new DebugHud());
-            var canvas = createEntity("ui").addComponent(new UICanvas());
-            canvas.isFullScreen = true;
-            canvas.renderLayer = Layers.HUD;
+            // TODO turn back on for sweet details. Sweetails.
+            //addEntity(new DebugHud());
+
+            SetupRenderering();
+        }
+
+        public override void unload()
+        {
+            base.unload();
+            //AssetLoader.Dispose();
         }
 
         private void SetupMap()
@@ -133,7 +143,7 @@ namespace FredflixAndChell.Shared.Scenes
 
             // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
-                Layers.Lights, Layers.Lights2));
+                Layers.Lights, Layers.Lights2, Layers.HUD));
 
             // Rendering lights
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
@@ -141,46 +151,17 @@ namespace FredflixAndChell.Shared.Scenes
             lightRenderer.renderTexture = new RenderTexture();
             lightRenderer.renderTargetClearColor = new Color(150, 150, 180, 255);
 
-
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
-
-            //var bloomPostProcessor = addPostProcessor(new BloomPostProcessor(3));
-            //bloomPostProcessor.settings = BloomSettings.presetSettings[5];
-
-            //var vignette = addPostProcessor(new VignettePostProcessor(4));
 
             // Render screenspace
             _screenSpaceRenderer = new ScreenSpaceRenderer(100, Layers.HUD);
             _screenSpaceRenderer.shouldDebugRender = false;
-            finalRenderDelegate = this;
+            addRenderer(_screenSpaceRenderer);
+
+            // Letterbox effect when a winner is determined
+            LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(4));
 
         }
-
-        #region IFinalRenderDelegate
-        public Scene scene { get; set; }
-        void IFinalRenderDelegate.onAddedToScene()
-        {
-        }
-
-        public void onSceneBackBufferSizeChanged(int newWidth, int newHeight)
-        {
-            _screenSpaceRenderer.onSceneBackBufferSizeChanged(newWidth, newHeight);
-        }
-        public void handleFinalRender(Color letterboxColor, Microsoft.Xna.Framework.Graphics.RenderTarget2D source, Rectangle finalRenderDestinationRect, Microsoft.Xna.Framework.Graphics.SamplerState samplerState)
-        {
-            Core.graphicsDevice.SetRenderTarget(null);
-            Core.graphicsDevice.Clear(letterboxColor);
-            Graphics.instance.batcher.begin(BlendState.Opaque, samplerState, DepthStencilState.None, RasterizerState.CullNone, null);
-            Graphics.instance.batcher.draw(source, finalRenderDestinationRect, Color.White);
-            Graphics.instance.batcher.end();
-
-            _screenSpaceRenderer.render(scene);
-        }
-
-        void IFinalRenderDelegate.unload()
-        {
-        }
-        #endregion
     }
 }

@@ -14,7 +14,13 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
-        public static void Load(ContentManager cm)
+        public static void LoadLoadingScene(ContentManager cm)
+        {
+            _content = cm;
+            LoadTexture("textures/effects/rainbow");
+        }
+
+        public static void LoadBroScene(ContentManager cm)
         {
             _content = cm;
 
@@ -25,7 +31,6 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/players/tormod_head");
             LoadTexture("textures/players/kjelli_body");
             LoadTexture("textures/players/kjelli_head");
-            LoadTexture("textures/effects/rainbow");
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
             LoadTexture("textures/effects/lightmask");
@@ -44,6 +49,19 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/firstlevel");
             LoadMap("maps/winter_1");
             LoadTexture("maps/spawner_tile");
+        }
+
+        public static void Dispose()
+        {
+            _content.Dispose();
+
+            foreach (var texture in _textures.Values) texture.Dispose();
+            _textures.Clear();
+            foreach (var effect in _effects.Values) effect.Dispose();
+            _effects.Clear();
+
+            _fonts.Clear();
+            _maps.Clear();
         }
 
         #region Loaders and Getters
@@ -74,7 +92,7 @@ namespace FredflixAndChell.Shared.Assets
             var tex = _content.Load<Texture2D>(name);
             name = name.Replace("textures/", "");
 
-            _textures.Add(name, tex);
+            _textures[name] = tex;
         }
 
         private static void LoadMap(string name)
@@ -82,7 +100,7 @@ namespace FredflixAndChell.Shared.Assets
             var map = _content.Load<TiledMap>(name);
             name = name.Replace("maps/", "");
 
-            _maps.Add(name, map);
+            _maps[name] = map;
         }
 
         private static void LoadEffect(string name)
@@ -90,7 +108,7 @@ namespace FredflixAndChell.Shared.Assets
             var shader = _content.Load<Effect>(name);
             name = name.Replace("effects/", "");
 
-            _effects.Add(name, shader);
+            _effects[name] = shader;
         }
 
         private static void LoadFont(string name)
@@ -98,7 +116,7 @@ namespace FredflixAndChell.Shared.Assets
             var font = _content.Load<SpriteFont>(name);
             name = name.Replace("fonts/", "");
 
-            _fonts.Add(name, font);
+            _fonts[name] = font;
         }
 
         #endregion

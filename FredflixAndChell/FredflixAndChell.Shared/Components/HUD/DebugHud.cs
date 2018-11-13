@@ -46,6 +46,8 @@ namespace FredflixAndChell.Shared.Components.HUD
                 text += $"    State: {player.PlayerState}\n";
             }
 
+            text += $"Game State: {_gameSystem.GameState}\n";
+
             _text.text = text;
         }
     }

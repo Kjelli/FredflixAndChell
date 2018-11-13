@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FredflixAndChell.Shared.GameObjects.Players;
+using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,14 @@ namespace FredflixAndChell.Shared.Components.Cameras
 {
     public class SmoothCamera : SceneComponent
     {
+        private bool _winMode = false;
+        private float _baseZoom = 10f;
+
         private Camera camera;
         private TiledMapComponent _map;
         private List<CameraTracker> _trackers;
+
+        public float BaseZoom { get => _baseZoom; set => _baseZoom = value; }
 
         public SmoothCamera()
         {
@@ -54,7 +61,9 @@ namespace FredflixAndChell.Shared.Components.Cameras
             bool anyToTrack = false;
             foreach(var tracker in _trackers)
             {
-                if (!tracker.enabled || !tracker.ShouldTrackEntity()) continue;
+                if (!tracker.enabled 
+                    || !tracker.ShouldTrackEntity()
+                    || (_winMode && tracker.entity.getComponent<Player>() == null)) continue;
                 left = Math.Min(tracker.Position.X - paddingX / 2, left);
                 right = Math.Max(tracker.Position.X + paddingX / 2, right);
                 top = Math.Min(tracker.Position.Y - paddingY / 2, top);
@@ -63,19 +72,23 @@ namespace FredflixAndChell.Shared.Components.Cameras
             }
             if (!anyToTrack) return;
 
-            var baseZoom = 10f;
-            var targetWidth = Math.Max(ScreenWidth, (right - left) * baseZoom);
-            var targetHeight = Math.Max(ScreenHeight, (bottom - top) * baseZoom);
-            var zoom = baseZoom * Math.Min(ScreenWidth / targetWidth, ScreenHeight / targetHeight);
+            var targetWidth = Math.Max(ScreenWidth, (right - left) * _baseZoom);
+            var targetHeight = Math.Max(ScreenHeight, (bottom - top) * _baseZoom);
+            var zoom = _baseZoom * Math.Min(ScreenWidth / targetWidth, ScreenHeight / targetHeight);
             var center = new Vector2(left + (right - left) / 2, top + (bottom - top) / 2);
 
-            camera.rawZoom = camera.rawZoom * 0.975f + 0.025f * zoom;
-            camera.position = camera.position * 0.925f + 0.075f * center;
+            camera.rawZoom = Lerps.lerpTowards(camera.rawZoom, zoom, 0.75f, Time.deltaTime * 10f);
+            camera.position = Lerps.lerpTowards(camera.position, center, 0.25f, Time.deltaTime * 10f);
 
             if (camera.bounds.left < 0) camera.position = new Vector2(camera.bounds.width / 2, camera.position.Y);
             if (camera.bounds.top < 0) camera.position = new Vector2(camera.position.X, camera.bounds.height / 2);
             if (camera.bounds.right > _map.bounds.right) camera.position = new Vector2(_map.bounds.right - camera.bounds.width / 2, camera.position.Y);
             if (camera.bounds.bottom > _map.bounds.bottom) camera.position = new Vector2(camera.position.X, _map.bounds.bottom - camera.bounds.height / 2);
+        }
+
+        public void SetWinMode(bool winMode)
+        {
+            _winMode = winMode;
         }
     }
 }

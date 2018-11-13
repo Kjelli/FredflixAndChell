@@ -11,6 +11,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
     public class CameraTracker : Component
     {
         private Func<bool> _shouldTrackEntity;
+
         public Func<bool> ShouldTrackEntity =>
             _shouldTrackEntity ?? (_shouldTrackEntity = Always);
 

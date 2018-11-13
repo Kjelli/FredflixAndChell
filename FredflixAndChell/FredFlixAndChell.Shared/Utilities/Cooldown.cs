@@ -10,11 +10,13 @@ namespace FredflixAndChell.Shared.Utilities
 {
     public class Cooldown
     {
-        public float _duration { get; set; }
-        private float _cooldownTimer { get; set; }
+        private bool _unscaled;
+        private float _duration;
+        private float _cooldownTimer;
 
-        public Cooldown(float duration)
+        public Cooldown(float duration, bool unscaled = false)
         {
+            _unscaled = unscaled;
             _duration = duration;
         }
 
@@ -22,8 +24,7 @@ namespace FredflixAndChell.Shared.Utilities
         {
             if(_cooldownTimer > 0)
             {
-                _cooldownTimer -= Time.deltaTime;
-                
+                _cooldownTimer -= _unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
             }
             else
             {
