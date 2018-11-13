@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Tweens;
 using System;
-using static FredflixAndChell.Shared.Assets.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using FredflixAndChell.Shared.Components.Cameras;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -40,6 +40,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private int _health;
         private float _speed = 50f;
         private float _accelerationMultiplier;
+        private float _stamina = 100;
+        private bool _shouldRegenStamina = false;
+        private readonly float _walkAcceleration = 0.05f;
+        private readonly float _sprintAcceleration = 0.10f;
+        static int itemId = 0;
 
         private List<Entity> _entitiesInProximity;
 
@@ -119,6 +124,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
             ToggleSprint();
+            ToggleStaminaRegen();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
 
@@ -128,12 +134,32 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
+        private void ToggleStaminaRegen()
+        {
+            if (!_shouldRegenStamina)
+                return;
+
+            _stamina += 25 * Time.deltaTime;
+
+            if (_stamina > 99)
+                _shouldRegenStamina = false;
+        }
+
         private void ToggleSprint()
         {
-            if (_controller.SprintPressed)
-                _accelerationMultiplier = 0.10f;
+            if (_controller.SprintPressed && !_shouldRegenStamina)
+            {
+                _accelerationMultiplier = _sprintAcceleration;
+                _stamina -= 50 * Time.deltaTime;
+            }
             else
-                _accelerationMultiplier = 0.05f;
+                _accelerationMultiplier = _walkAcceleration;
+
+            if (_stamina < 1)
+            {
+                _shouldRegenStamina = true;
+                _accelerationMultiplier = _walkAcceleration;
+            }
         }
 
         public void EquipGun(string name)
@@ -277,7 +303,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
         }
 
-        static int itemId = 0;
 
         public void DropGun()
         {
