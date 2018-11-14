@@ -1,20 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FredflixAndChell.Components.Players;
+using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Nez.Textures;
 using Nez.Tiled;
-using Nez.Sprites;
-using FredflixAndChell.Shared.GameObjects;
-using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Components.Players;
 using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.Components.Cameras;
-using FredflixAndChell.Shared.Systems;
-using FredflixAndChell.Shared.GameObjects.Players;
-
-using FredflixAndChell.Shared.Particles;
-using FredflixAndChell.Shared.Utilities;
-using System.Collections.Generic;
-using FredflixAndChell.Shared.Components.HUD;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -35,11 +31,11 @@ namespace FredflixAndChell.Shared.Scenes
             Screen.isFullscreen = false;
             AssetLoader.LoadBroScene(content);
             setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
-            
+
             SetupMap();
 
             addSceneComponent(new SmoothCamera());
-            addSceneComponent(new PlayerConnector(spawnLocations : PlayerSpawner));
+            addSceneComponent(new PlayerConnector(spawnLocations: PlayerSpawner));
             addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
 
             // TODO turn back on for sweet details. Sweetails.
@@ -57,7 +53,7 @@ namespace FredflixAndChell.Shared.Scenes
         private void SetupMap()
         {
             var tiledEntity = createEntity("tiled-map-entity");
-            var tiledmap = AssetLoader.GetMap("winter_1");
+            var tiledmap = AssetLoader.GetMap(MapHelper.CurrentMap);
 
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
             tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };

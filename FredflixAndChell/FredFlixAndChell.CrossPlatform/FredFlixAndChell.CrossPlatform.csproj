@@ -200,7 +200,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Nez-Samples\Nez\Nez.Portable\Nez.csproj">
+    <ProjectReference Include="..\Nez.Portable\Nez.csproj">
       <Project>{60b7197d-d0d5-405c-90a2-a56903e9b039}</Project>
       <Name>Nez</Name>
     </ProjectReference>

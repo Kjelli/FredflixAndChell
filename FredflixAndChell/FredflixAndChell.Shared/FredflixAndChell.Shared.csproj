@@ -73,6 +73,7 @@
     <Compile Include="GameObjects\Weapons\Sprites\GunSprite.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSpritePresets.cs" />
     <Compile Include="Scenes\LoadingScene.cs" />
+    <Compile Include="Scenes\LobbyScene.cs" />
     <Compile Include="Systems\GameSystem.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Components\Players\PlayerController.cs" />
     <Compile Include="Components\MouseFollow.cs" />
     <Compile Include="Components\Players\PlayerSpawner.cs" />
+    <Compile Include="Utilities\MapHelper.cs" />
     <Compile Include="Utilities\Serialization\YamlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +102,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Nez-Samples\Nez\Nez.Portable\Nez.csproj">
+    <ProjectReference Include="..\Nez.Portable\Nez.csproj">
       <Project>{60b7197d-d0d5-405c-90a2-a56903e9b039}</Project>
       <Name>Nez</Name>
     </ProjectReference>
