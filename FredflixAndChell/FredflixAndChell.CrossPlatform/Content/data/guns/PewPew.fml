@@ -30,6 +30,7 @@ MaxAmmo: 300
 Name: PewPew
 ReloadTime: 2.0
 RenderOffset: 7.0
+Rarity: Common
 Sprite:
   Fire:
     FPS: 30.0

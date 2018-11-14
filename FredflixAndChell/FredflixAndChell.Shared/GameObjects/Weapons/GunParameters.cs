@@ -27,5 +27,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public float BulletSpread { get; set; } = 0;
 
         public float DropChange { get; set; }
+        public Rarity Rarity { get; set; }
+
     }
 }

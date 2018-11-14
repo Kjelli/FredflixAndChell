@@ -57,7 +57,7 @@ namespace FredflixAndChell.Shared.Scenes
         private void SetupMap()
         {
             var tiledEntity = createEntity("tiled-map-entity");
-            var tiledmap = AssetLoader.GetMap("dungeon_1");
+            var tiledmap = AssetLoader.GetMap("winter_1");
 
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
             tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };

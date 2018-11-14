@@ -18,16 +18,19 @@ namespace FredflixAndChell.Shared.GameObjects
         private SpawnerState _spawnerState;
         public Collectible CurrentItem;
         private int _registerOffset { get; } = 20;
+        private float _spawnRate { get; set; }
 
         private Cooldown _spawnTimer { get; set; }
         private Cooldown _stayOpenTimer { get; set; }
+
+        private Cooldown _timeChecker { get; set; }
 
         private bool _unoccupied { get; set; } = true;
 
         private Sprite<Animations> _animation;
 
         private System.Random rng = new System.Random();
-        private List<CollectibleParameters> _collectibles;
+        
 
         public enum Animations
         {
@@ -35,14 +38,22 @@ namespace FredflixAndChell.Shared.GameObjects
             Open,
             Close
         }
-        public Spawner(int x, int y) : base(x, y)
+        public Spawner(int x, int y, float spawnRate = 0.3f,string onlySpawn = null) : base(x, y)
         {
             _animation = SetupAnimations();
 
-            _spawnTimer = new Cooldown(10f);
+            //Time from "announced spawn" to actual spawning (color, show rarity etc)
+            _spawnTimer = new Cooldown(4f);
+            //Animation
             _stayOpenTimer = new Cooldown(3.5f);
 
-            _collectibles = Collectibles.Collectibles.All();
+            _spawnRate = spawnRate;
+
+            //How often the spawner might spawn
+            //Spawn rate is percentage of that happending
+            //5 in spawnrate and 3 in timechecker, gives 5% chance every 3 second to spawn 
+            _timeChecker = new Cooldown(3f);
+
         }
 
         private Sprite<Animations> SetupAnimations()
@@ -125,37 +136,54 @@ namespace FredflixAndChell.Shared.GameObjects
             _unoccupied = false;
         }
 
+        public Rarity DrawRarity()
+        {
+            return Rarity.Common;
+            //TODO: DONT RETURN COMMON - return picked one brah
+
+            var roll = rng.Next(0,11);
+            if (roll == 11)
+                return Rarity.Legendary;
+            else if (roll >= 9)
+                return Rarity.Epic;
+            else if (roll >= 5)
+                return Rarity.Rare;
+        }
+
         public string GetRandomItem()
         {
-            ShuffleCollectibleList();
+            var items = Collectibles.Collectibles.All(DrawRarity());
+            ShuffleCollectibleList(items);
             double rand = rng.NextDouble();
-            foreach(var item in _collectibles)
+            foreach(var item in items)
             {
                 if(item.DropChance > rand)
                 {
                     return item.Name;
                 }
             }
-            return _collectibles[0].Gun.Name;
+            return items[0].Gun.Name;
         }
 
-        public void ShuffleCollectibleList()
+        public void ShuffleCollectibleList(List<CollectibleParameters> list)
         {
-            int n = _collectibles.Count;
+            int n = list.Count;
             while (n > 1)
             {
                 n--;
                 int k = rng.Next(n + 1);
-                var value = _collectibles[k];
-                _collectibles[k] = _collectibles[n];
-                _collectibles[n] = value;
+                var value = list[k];
+                list[k] = list[n];
+                list[n] = value;
             }
         }
 
 
+
+
         public bool ReadyToSpawn()
         {
-            if (_spawnTimer.IsReady())
+            if (_spawnTimer.IsReady() && _spawnerState == SpawnerState.Closed)
             {
                 if (CurrentItem == null)
                     return true;
@@ -170,17 +198,26 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             _spawnTimer.Update();
             _stayOpenTimer.Update();
+            _timeChecker.Update();
 
-            
-            
-            if (ReadyToSpawn() && _spawnerState == SpawnerState.Closed)
+            if (_timeChecker.IsReady() && ReadyToSpawn())
             {
-                _spawnerState = SpawnerState.Opening;
-                _animation.play(Animations.Open);
-                _stayOpenTimer.Start();
+                //Try to spawn
+                var roll = rng.NextDouble();
+                if(roll < _spawnRate)
+                {
+                    _spawnerState = SpawnerState.Opening;
+                    _animation.play(Animations.Open);
+                    _stayOpenTimer.Start();
 
-                SpawnItem();
+                    SpawnItem();
+                }
+                else
+                {
+                    _timeChecker.Start();
+                }
             }
+           
 
             if(_stayOpenTimer.IsReady() && _spawnerState == SpawnerState.Opening)
             {

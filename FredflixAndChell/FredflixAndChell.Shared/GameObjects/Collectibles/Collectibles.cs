@@ -24,6 +24,17 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             return _collectibles.Values.ToList();
         }
 
+        public static List<CollectibleParameters> All(Rarity rarity)
+        {
+            var list = All();
+            foreach(var item in list)
+            {
+                if (item.Rarity != rarity)
+                    list.Remove(item);
+            }
+            return list;
+        }
+
         public static CollectibleParameters Get(string name)
         {
             if (!_isInitialized)
@@ -32,6 +43,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
             return _collectibles[name];
         }
+
+        
 
         public static void LoadFromData()
         {
@@ -42,7 +55,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                     Name = gun.Name,
                     Gun = gun,
                     Type = CollectibleType.Weapon,
-                    DropChance = gun.DropChange
+                    DropChance = gun.DropChange,
+                    Rarity = gun.Rarity
                 });
             }
 

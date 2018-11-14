@@ -29,6 +29,7 @@ MagazineSize: 30
 MaxAmmo: 300
 Name: M4
 RenderOffset: 7.0
+Rarity: Common
 Sprite:
   Fire:
     FPS: 30.0
