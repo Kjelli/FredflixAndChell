@@ -25,7 +25,9 @@ namespace FredflixAndChell.Shared
 
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
+            Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
             scene = new BroScene();
+
         }
     }
 }

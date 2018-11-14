@@ -51,6 +51,23 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/debug.spritefont
 
+#begin maps/dungeon_1.tmx
+/importer:
+/processor:
+/build:maps/dungeon_1.tmx
+
+#begin maps/dungeon_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:maps/dungeon_tileset.png
+
 #begin maps/firstlevel.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

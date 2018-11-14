@@ -14,6 +14,7 @@ using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Utilities;
 using System.Collections.Generic;
+using FredflixAndChell.Shared.Components.HUD;
 
 namespace FredflixAndChell.Shared.Scenes
 {
@@ -33,9 +34,7 @@ namespace FredflixAndChell.Shared.Scenes
         {
             Screen.isFullscreen = false;
             AssetLoader.LoadBroScene(content);
-
             setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
-            Screen.setSize(ScreenWidth, ScreenHeight);
             
             SetupMap();
 
@@ -58,7 +57,7 @@ namespace FredflixAndChell.Shared.Scenes
         private void SetupMap()
         {
             var tiledEntity = createEntity("tiled-map-entity");
-            var tiledmap = AssetLoader.GetMap("winter_1");
+            var tiledmap = AssetLoader.GetMap("dungeon_1");
 
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
             tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };
@@ -160,12 +159,13 @@ namespace FredflixAndChell.Shared.Scenes
             // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
                 Layers.Lights, Layers.Lights2, Layers.HUD));
+            renderLayerExcludeRenderer.renderTargetClearColor = new Color(0, 0, 0);
 
             // Rendering lights
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
             lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(150, 150, 180, 255);
+            lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
 
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));

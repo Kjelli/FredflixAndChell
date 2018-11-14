@@ -48,6 +48,7 @@ namespace FredflixAndChell.Shared.Assets
 
             LoadMap("maps/firstlevel");
             LoadMap("maps/winter_1");
+            LoadMap("maps/dungeon_1");
             LoadTexture("maps/spawner_tile");
 
             
