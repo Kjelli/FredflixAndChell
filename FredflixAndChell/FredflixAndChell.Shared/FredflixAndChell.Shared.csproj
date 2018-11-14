@@ -92,6 +92,7 @@
     <Compile Include="Components\Players\PlayerController.cs" />
     <Compile Include="Components\MouseFollow.cs" />
     <Compile Include="Components\Players\PlayerSpawner.cs" />
+    <Compile Include="Utilities\MapHelper.cs" />
     <Compile Include="Utilities\Serialization\YamlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
