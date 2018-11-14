@@ -2,11 +2,6 @@
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Scenes
