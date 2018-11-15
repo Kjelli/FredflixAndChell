@@ -109,7 +109,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             var player = playerEntity.getComponent<Player>();
             if (player != null && player != _owner)
             {
-                player.Damage((int)_params.Damage);
+                player.Damage((int)_params.Damage, Velocity);
                 player.Velocity += Velocity * _params.Knockback * Time.deltaTime;
                 entity.destroy();
             }

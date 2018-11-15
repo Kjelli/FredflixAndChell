@@ -13,6 +13,8 @@ using FredflixAndChell.Shared.Components.Cameras;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Assets;
+using Microsoft.Xna.Framework.Graphics;
+using Nez.Sprites;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -116,6 +118,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Move();
             SetFacing();
             _particlesEntity.setPosition(entity.localPosition);
+        }
+
+        public void SpillBlood(int damage, Vector2 damageDirection)
+        {
+            for(int i = 0; i < damage/2; i++)
+            {
+                var bloodE = entity.scene.createEntity("Blood-Particle");
+                bloodE.addComponent(new Blood(entity.localPosition.X,entity.localPosition.Y, damageDirection));
+
+            }
         }
 
         private void ReadInputs()
@@ -292,13 +304,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _entitiesInProximity.Remove(closestEntity);
             }
         }
-        public void Damage(int damage)
+        public void Damage(int damage, Vector2 damageDirection)
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
 
-            _bloodParticles.Play(0.2f);
-
+            SpillBlood(damage, damageDirection);
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
                 _playerState = PlayerState.Dying;

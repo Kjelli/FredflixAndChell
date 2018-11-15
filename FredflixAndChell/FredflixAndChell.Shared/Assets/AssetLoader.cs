@@ -44,6 +44,9 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
 
+            LoadTexture("textures/particles/blood");
+
+
             LoadEffect("effects/shader_flash");
 
             LoadMap("maps/firstlevel");
