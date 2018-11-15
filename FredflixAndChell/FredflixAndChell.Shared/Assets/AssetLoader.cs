@@ -128,6 +128,6 @@ namespace FredflixAndChell.Shared.Assets
     }
     public static class ParticleDesigner
     {
-        public const string fire = @"data/particles/Fire";
+        public const string flame = @"textures/particles/Blue_Flame";
     }
 }

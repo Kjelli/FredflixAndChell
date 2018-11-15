@@ -3,6 +3,7 @@ using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
@@ -53,6 +54,8 @@ namespace FredflixAndChell.Shared.Scenes
         private void SetupMap()
         {
             var tiledEntity = createEntity("tiled-map-entity");
+            //var tiledEntity = createEntity("winter_1");
+
             var tiledmap = AssetLoader.GetMap(MapHelper.CurrentMap);
 
             var tiledMapComponent = tiledEntity.addComponent(new TiledMapComponent(tiledmap, "Collision"));
@@ -72,11 +75,7 @@ namespace FredflixAndChell.Shared.Scenes
 
             //CustomizeTiles(tiledMapComponent);
 
-            /* PARTICLE ENGINE - TBA
-            var particlesEntity = createEntity("particles");
-            particlesEntity.setPosition(new Vector2(100, 100));
-            particlesEntity.addComponent(new ParticleEngine());
-            */
+           
         }
 
         private void SetupMapObjects(TiledObjectGroup objectGroup)

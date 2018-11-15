@@ -287,17 +287,10 @@
 /processorParam:TextureFormat=Color
 /build:textures/guns/pewpew.png
 
-#begin textures/particles1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:textures/particles1.png
+#begin textures/particles/Blue_Flame.pex
+/importer:
+/processor:
+/build:textures/particles/Blue_Flame.pex
 
 #begin textures/players/kjelli_body.png
 /importer:TextureImporter
@@ -346,16 +339,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/players/tormod_head.png
-
-#begin textures/square.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:textures/square.png
 

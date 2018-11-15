@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FredflixAndChell.Shared.Components.Cameras;
 using static FredflixAndChell.Shared.Assets.Constants;
+using FredflixAndChell.Shared.Particles;
+using FredflixAndChell.Shared.Assets;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -47,6 +49,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         static int itemId = 0;
 
         private List<Entity> _entitiesInProximity;
+        private Entity _particlesEntity;
+        private ParticleEngine _bloodParticles;
 
         public PlayerState PlayerState => _playerState;
         public int PlayerIndex => _controllerIndex;
@@ -100,6 +104,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             //TODO: Character based 
             _health = 100;
+
+            //Particles
+            _particlesEntity = entity.scene.createEntity("particles");
+            _bloodParticles = _particlesEntity.addComponent(new ParticleEngine(ParticleDesigner.flame));
         }
 
         public override void update()
@@ -107,6 +115,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ReadInputs();
             Move();
             SetFacing();
+            _particlesEntity.setPosition(entity.localPosition);
         }
 
         private void ReadInputs()
@@ -287,6 +296,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
+
+            _bloodParticles.Play(0.2f);
+
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
                 _playerState = PlayerState.Dying;

@@ -9,15 +9,14 @@ using Nez.UI;
 using Nez;
 using Microsoft.Xna.Framework;
 using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.Particles
 {
-    public class ParticleEngine : Component, IUpdateable
+    public class ParticleEngine : Component, IUpdatable
     {
 
-        string[] _particleConfigs = new string[] {
-                ParticleDesigner.fire,
-        };
+        string[] _particleConfigs = new string[1];
 
         ParticleEmitter _particleEmitter;
 
@@ -26,21 +25,33 @@ namespace FredflixAndChell.Shared.Particles
         bool _isCollisionEnabled;
         bool _simulateInWorldSpace = true;
 
+        private float _duration;
+
         public bool Enabled => throw new NotImplementedException();
 
         public int UpdateOrder => throw new NotImplementedException();
 
-        bool IUpdateable.Enabled => throw new NotImplementedException();
 
-        int IUpdateable.UpdateOrder => throw new NotImplementedException();
+        public ParticleEngine(string config)
+        {
+            _particleConfigs[0] = config;
+        }
 
-       
+        public ParticleEngine(string[] config)
+        {
+            _particleConfigs = config;
+        }
 
         public override void onAddedToEntity()
         {
             loadParticleSystem();
-            _particleEmitter.play();
+            if (_particleEmitter.isPlaying)
+            {
+                _particleEmitter.pause();
+            }
         }
+
+
 
         void loadParticleSystem()
         {
@@ -51,42 +62,40 @@ namespace FredflixAndChell.Shared.Particles
             // load up the config then add a ParticleEmitter
             var particleSystemConfig = entity.scene.content.Load<ParticleEmitterConfig>(_particleConfigs[_currentParticleSystem]);
             _particleEmitter = entity.addComponent(new ParticleEmitter(particleSystemConfig));
+            _particleEmitter.pause();
 
             // set state based on the values of our CheckBoxes
             _particleEmitter.collisionConfig.enabled = _isCollisionEnabled;
             _particleEmitter.simulateInWorldSpace = _simulateInWorldSpace;
+
+            
         }
 
-
-        void IUpdateable.Update(GameTime gameTime)
+        public void Play()
         {
-            loadParticleSystem();
+            //0 = plays foreveah
+            Play(0);
         }
 
-        event EventHandler<EventArgs> IUpdateable.EnabledChanged
+        public void Play(float duration)
         {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
+            _particleEmitter.play();
+            _duration = duration;
         }
 
-        event EventHandler<EventArgs> IUpdateable.UpdateOrderChanged
+        public void Stop()
         {
-            add
-            {
-                throw new NotImplementedException();
-            }
+            _particleEmitter.pauseEmission();
+        }
 
-            remove
+        public void update()
+        {
+            
+            if (_duration != 0 && _particleEmitter.elapsedTime > _duration)
             {
-                throw new NotImplementedException();
+                Stop();
             }
+            
         }
     }
 }
