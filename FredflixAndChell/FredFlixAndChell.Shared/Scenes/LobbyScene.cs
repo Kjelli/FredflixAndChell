@@ -39,50 +39,56 @@ namespace FredflixAndChell.Shared.Scenes
         private void SetupSceneSelector()
         {
             _table = canvas.stage.addElement(new Table());
-
             _table.setFillParent(true).center();
 
             var label = new Label("Ultimate Brodown");
             _table.add(label);
 
             _table.row().setPadTop(10);
-            var button = _table.add(new TextButton("New Game", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
-
-            button.onClicked += ShowSelectMap;
+            var newGameButton = _table.add(new TextButton("New Game", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
+            newGameButton.onClicked += ShowSelectMap;
 
             _table.row().setPadTop(10);
-            button = _table.add(new TextButton("Exit", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
-            button.onClicked += b => Core.exit();
+            var exitButton = _table.add(new TextButton("Exit", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
+            exitButton.onClicked += b => Core.exit();
+
+            newGameButton.gamepadDownElement = exitButton;
+            exitButton.gamepadUpElement = newGameButton;
+
+            canvas.stage.setGamepadFocusElement(newGameButton);
         }
 
         private void ShowSelectMap(Button obj)
         {
             _table.clear();
             _table = canvas.stage.addElement(new Table());
-
             _table.setFillParent(true).center();
 
             var label = new Label("Select map");
             _table.add(label);
 
             _table.row().setPadTop(10);
-            var button = _table.add(new TextButton("Dungeon", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
-
-            button.onClicked += ShowSelectMap;
-
-            button.onClicked += btn =>
+            var dungeonButton = _table.add(new TextButton("Dungeon", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
+            dungeonButton.onClicked += btn =>
             {
                 MapHelper.CurrentMap = "dungeon_1";
                 Core.startSceneTransition(new FadeTransition(() => new BroScene()));
             };
 
             _table.row().setPadTop(10);
-            button = _table.add(new TextButton("Winter", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
-            button.onClicked += btn =>
+
+            // Mister Winterbottom!
+            var winterButton = _table.add(new TextButton("Winter", buttonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
+            winterButton.onClicked += btn =>
             {
                 MapHelper.CurrentMap = "winter_1";
                 Core.startSceneTransition(new FadeTransition(() => new BroScene()));
             };
+
+            dungeonButton.gamepadDownElement = winterButton;
+            winterButton.gamepadUpElement = dungeonButton;
+
+            canvas.stage.setGamepadFocusElement(dungeonButton);
         }
     }
 }
