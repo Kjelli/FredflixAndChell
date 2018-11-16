@@ -37,6 +37,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private PlayerController _controller;
         private Collider _proximityHitbox;
         private Collider _playerHitbox;
+        private BloodEngine _blood;
 
         private Entity _gunEntity;
         private Gun _gun;
@@ -49,7 +50,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private readonly float _walkAcceleration = 0.05f;
         private readonly float _sprintAcceleration = 0.10f;
         static int itemId = 0;
-        static int bloodId = 0;
+     
 
         private List<Entity> _entitiesInProximity;
         private Entity _particlesEntity;
@@ -109,8 +110,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _health = 100;
 
             //Particles
+            //TODO: Disse to linjene (eller komponetner) blir brukt, bare for stek
             _particlesEntity = entity.scene.createEntity("particles");
             _bloodParticles = _particlesEntity.addComponent(new ParticleEngine(ParticleDesigner.flame));
+
+            _blood = entity.addComponent(new BloodEngine());
         }
 
         public override void update()
@@ -120,34 +124,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetFacing();
             _particlesEntity.setPosition(entity.localPosition);
         }
-
-        public void SpillBlood(int damage, Vector2 damageDirection)
-        {
-            var particlesCount = Math.Floor((float)(damage));
-            System.Random rng = new System.Random();
-            for(int i = 0; i < damage; i++)
-            {
-                var blood = entity.scene.createEntity($"Blood-Particle{++bloodId}").addComponent(new Blood(transform.position.X, transform.position.Y));
-
-                float x = ((float)rng.Next(-50, 50)) / 100f;
-                float y = ((float)rng.Next(-50, 50)) / 100f;
-                var trueDirection = new Vector2(damageDirection.X + (float)(damageDirection.X * x), damageDirection.Y + (float)(damageDirection.Y * y));
-                var speedConstant = 0.015f;
-                
-                blood.Velocity = new Vector2(
-                      trueDirection.X * speedConstant,
-                      trueDirection.Y * speedConstant);
-            }
-
-          
-
-            //var gunItem = entity.scene.createEntity($"item_{++itemId}");
-            //var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
-            
-          
-                   
-
-        }
+     
 
         private void ReadInputs()
         {
@@ -328,8 +305,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
-
-            SpillBlood(damage, damageDirection);
+            _blood.Sprinkle(damage, damageDirection);
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
                 _playerState = PlayerState.Dying;
