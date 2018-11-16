@@ -5,7 +5,7 @@ BarrelOffset:
 BulletCount: 1
 BulletParameters:
   Bounce: false
-  Damage: 50.0
+  Damage: 8.0
   Knockback: 0
   LifeSpanSeconds: -1.0
   RotateWithGun: false

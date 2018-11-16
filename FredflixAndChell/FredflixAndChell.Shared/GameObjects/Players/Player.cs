@@ -49,6 +49,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private readonly float _walkAcceleration = 0.05f;
         private readonly float _sprintAcceleration = 0.10f;
         static int itemId = 0;
+        static int bloodId = 0;
 
         private List<Entity> _entitiesInProximity;
         private Entity _particlesEntity;
@@ -122,12 +123,30 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void SpillBlood(int damage, Vector2 damageDirection)
         {
-            for(int i = 0; i < damage/2; i++)
+            var particlesCount = Math.Floor((float)(damage));
+            System.Random rng = new System.Random();
+            for(int i = 0; i < damage; i++)
             {
-                var bloodE = entity.scene.createEntity("Blood-Particle");
-                bloodE.addComponent(new Blood(entity.localPosition.X,entity.localPosition.Y, damageDirection));
+                var blood = entity.scene.createEntity($"Blood-Particle{++bloodId}").addComponent(new Blood(transform.position.X, transform.position.Y));
 
+                float x = ((float)rng.Next(-50, 50)) / 100f;
+                float y = ((float)rng.Next(-50, 50)) / 100f;
+                var trueDirection = new Vector2(damageDirection.X + (float)(damageDirection.X * x), damageDirection.Y + (float)(damageDirection.Y * y));
+                var speedConstant = 0.005f;
+                
+                blood.Velocity = new Vector2(
+                      trueDirection.X * speedConstant,
+                      trueDirection.Y * speedConstant);
             }
+
+          
+
+            //var gunItem = entity.scene.createEntity($"item_{++itemId}");
+            //var throwedItem = gunItem.addComponent(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
+            
+          
+                   
+
         }
 
         private void ReadInputs()
@@ -217,7 +236,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
-            var isColliding = _mover.move(Velocity, out CollisionResult collision);
+            var isColliding = _mover.move(Velocity, out CollisionResult collision
+                );
 
             if (isColliding)
             {
