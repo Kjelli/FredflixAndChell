@@ -63,7 +63,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void Move()
         {
             if (Velocity.Length() == 0) return;
-            Velocity = (0.975f * Velocity + 0.54f * _acceleration);
+            Velocity = (0.878f * Velocity );
             var isColliding = _mover.move(Velocity, out CollisionResult result);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;

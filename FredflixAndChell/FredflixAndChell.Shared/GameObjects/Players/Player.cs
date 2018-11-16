@@ -132,7 +132,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 float x = ((float)rng.Next(-50, 50)) / 100f;
                 float y = ((float)rng.Next(-50, 50)) / 100f;
                 var trueDirection = new Vector2(damageDirection.X + (float)(damageDirection.X * x), damageDirection.Y + (float)(damageDirection.Y * y));
-                var speedConstant = 0.005f;
+                var speedConstant = 0.015f;
                 
                 blood.Velocity = new Vector2(
                       trueDirection.X * speedConstant,
