@@ -326,6 +326,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .setCompletionHandler(_ => DeclareDead())
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
+            _blood.Blast();
+            _blood.Leak();
         }
 
 

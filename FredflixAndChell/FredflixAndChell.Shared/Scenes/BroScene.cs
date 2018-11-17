@@ -29,7 +29,7 @@ namespace FredflixAndChell.Shared.Scenes
 
         public override void initialize()
         {
-            Screen.isFullscreen = false;
+            Screen.isFullscreen = true;
             AssetLoader.LoadBroScene(content);
             setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
 

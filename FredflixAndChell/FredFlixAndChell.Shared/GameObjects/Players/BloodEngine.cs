@@ -9,38 +9,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
+using rng = Nez.Random;
+
+
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
-    public class BloodEngine : Component
+    public class BloodEngine : Component, IUpdatable
     {
         public class BloodParticle : GameObject
         {
             private Mover _mover;
             private Sprite _sprite;
+            private bool _drawAbovePlayer;
 
 
-            public BloodParticle(float x, float y) : base(x, y) {}
+            public BloodParticle(float x, float y, bool drawAbovePlayer = true) : base(x, y) {
+                _drawAbovePlayer = drawAbovePlayer;
+            }
 
             public override void OnDespawn() { }
 
             public override void OnSpawn()
             {
-                System.Random rng = new System.Random();
 
                 _sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
-                _sprite.renderLayer = Layers.PlayerFrontest;
+                _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
                 _sprite.material = new Material();
                 _mover = entity.addComponent(new Mover());
 
                 //Scale
-                float random_scale = ((float)rng.Next(-20, 20) / 100);
+
+                float random_scale = ((float)rng.range(-20, 20) / 100);
                 entity.scale = new Vector2(0.5f + random_scale, 0.5f + random_scale);
 
                 //Rotation
-                _sprite.transform.rotation = random_scale;
+                _sprite.transform.rotation = rng.nextAngle();
 
-                Core.schedule(0.5f, _ => UpdateRenderLayerDepth());
+                if(_drawAbovePlayer) Core.schedule(0.5f, _ => UpdateRenderLayerDepth());
             }
 
             public override void update()
@@ -61,10 +67,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private int _bloodId = 0;
         private System.Random _rng;
+        private bool _leak = false;
+        private Cooldown _leakInterval;
+        private int _particlesPrLeakage;
 
         public BloodEngine()
         {
             _rng = new System.Random();
+            _leakInterval = new Cooldown(1f);
         }
 
         public void Sprinkle(int damage, Vector2 direction)
@@ -86,5 +96,33 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
+
+        public void Blast(int particles = 100, float power = 4.0f)
+        {
+            for(int i = 0; i < particles; i++)
+            {
+                var particle = entity.scene.createEntity($"Blood-Particle{++_bloodId}").addComponent(new BloodParticle(transform.position.X, transform.position.Y, false));
+                particle.Velocity = new Vector2(rng.minusOneToOne()* power, rng.minusOneToOne()* power);
+            }
+        }
+
+        public void Leak(int particlesPrLeakage = 20, float duration = 20f)
+        {
+            _leak = true;
+            _particlesPrLeakage = particlesPrLeakage;
+            _leakInterval.Start();
+            //Core.schedule(duration, _ => _leak = false);
+        }
+
+        public void update()
+        {
+            _leakInterval.Update();
+
+            if (_leak && _leakInterval.IsReady())
+            {
+                Blast(_particlesPrLeakage, 2.5f);
+                _leakInterval.Start();
+            }
+        }
     }
 }

@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace FredflixAndChell.Shared.Utilities
 {
-    public class Cooldown
+    public class Cooldown 
     {
         private bool _unscaled;
         private float _duration;
         private float _cooldownTimer;
+
+      
 
         public Cooldown(float duration, bool unscaled = false)
         {
@@ -20,17 +22,7 @@ namespace FredflixAndChell.Shared.Utilities
             _duration = duration;
         }
 
-        public void Update()
-        {
-            if(_cooldownTimer > 0)
-            {
-                _cooldownTimer -= _unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
-            }
-            else
-            {
-                _cooldownTimer = 0;
-            }
-        }
+    
 
         public void Start()
         {
@@ -52,6 +44,16 @@ namespace FredflixAndChell.Shared.Utilities
             _cooldownTimer = 0;
         }
 
-
+        public void Update()
+        {
+            if (_cooldownTimer > 0)
+            {
+                _cooldownTimer -= _unscaled ? Time.unscaledDeltaTime : Time.deltaTime;
+            }
+            else
+            {
+                _cooldownTimer = 0;
+            }
+        }
     }
 }
