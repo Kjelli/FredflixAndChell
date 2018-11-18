@@ -50,6 +50,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             bodyShadow.renderLayer = Layers.Shadow;
             bodyShadow.localOffset = new Vector2(1, 2);
 
+
             var headShadow = entity.addComponent(new SpriteMime(_head));
             headShadow.color = new Color(0, 0, 0, 80);
             headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);

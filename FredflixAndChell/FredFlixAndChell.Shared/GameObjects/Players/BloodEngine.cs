@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using System;
@@ -33,15 +34,24 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             public override void OnSpawn()
             {
 
-                _sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
+                var _pixel = new Texture2D(Core.graphicsDevice, 1, 1);
+
+                Color dasColor = rng.choose(Color.Red, Color.DarkRed);
+                
+
+                _pixel.SetData(new[] { dasColor });
+
+                //_sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
+                _sprite = entity.addComponent(new Sprite(_pixel));
                 _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
                 _sprite.material = new Material();
                 _mover = entity.addComponent(new Mover());
 
                 //Scale
 
+                //float random_scale = ((float)rng.range(-20, 20) / 100);
                 float random_scale = ((float)rng.range(-20, 20) / 100);
-                entity.scale = new Vector2(0.5f + random_scale, 0.5f + random_scale);
+                entity.scale = new Vector2(1.2f + random_scale, 1.2f + random_scale);
 
                 //Rotation
                 _sprite.transform.rotation = rng.nextAngle();
@@ -106,12 +116,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        public void Leak(int particlesPrLeakage = 20, float duration = 20f)
+        public void Leak(int particlesPrLeakage = 20, float duration = 10f)
         {
             _leak = true;
             _particlesPrLeakage = particlesPrLeakage;
             _leakInterval.Start();
-            //Core.schedule(duration, _ => _leak = false);
+            Core.schedule(duration, _ => _leak = false);
         }
 
         public void update()

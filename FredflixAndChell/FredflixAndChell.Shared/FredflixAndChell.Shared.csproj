@@ -54,6 +54,7 @@
     <Compile Include="Assets\Constants.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
+    <Compile Include="Components\Effects\Snowstorm.cs" />
     <Compile Include="Components\Guns\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
