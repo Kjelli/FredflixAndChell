@@ -9,3 +9,7 @@
 # .. but don't push them into holes
 
 ![plzdont](/FredflixAndChell/promo/awhedead.png)
+
+# Squad goals
+
+![squadgoals](/FredflixAndChell/promo/squad.PNG)
