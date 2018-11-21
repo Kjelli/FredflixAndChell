@@ -74,7 +74,7 @@ namespace FredflixAndChell.Shared.Scenes
 
             
             //CustomizeTiles(tiledMapComponent);
-            addSceneComponent(new Snowstorm(tiledmap.widthInPixels, tiledmap.heightInPixels));
+            //addSceneComponent(new Snowstorm(tiledmap.widthInPixels, tiledmap.heightInPixels));
            
         }
 

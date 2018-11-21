@@ -11,9 +11,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
         public string Source { get; set; }
         public PlayerHeadSprite Head { get; set; }
         public PlayerBodySprite Body { get; set; }
-
-        // Construction limited to namespace
-        internal PlayerSprite() { }
     }
 
 }

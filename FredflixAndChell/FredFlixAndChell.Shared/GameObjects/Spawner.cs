@@ -120,7 +120,7 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             if (other == null && local == null) return;
 
-            if(other.entity == CurrentItem.entity) {
+            if(other.entity == CurrentItem?.entity) {
                 CurrentItem.entity = null;
             }
         }

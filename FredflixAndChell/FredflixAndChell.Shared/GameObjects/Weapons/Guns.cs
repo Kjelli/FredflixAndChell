@@ -37,7 +37,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)
             {
-                var gun = YamlSerializer.Deserialize(gunFilename);
+                var gun = YamlSerializer.DeserializeGunParameters(gunFilename);
                 _guns[gun.Name] = gun;
             }
             _isInitialized = true;

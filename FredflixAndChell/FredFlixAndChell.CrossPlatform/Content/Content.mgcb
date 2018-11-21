@@ -17,6 +17,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin data/characters/Kjelli.fml
+/copy:data/characters/Kjelli.fml
+
+#begin data/characters/Tormod.fml
+/copy:data/characters/Tormod.fml
+
+#begin data/characters/Trump.fml
+/copy:data/characters/Trump.fml
+
 #begin data/guns/Fido.fml
 /copy:data/guns/Fido.fml
 

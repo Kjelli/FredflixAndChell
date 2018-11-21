@@ -23,8 +23,5 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
         public SpriteAnimationDescriptor IdleUnarmed { get; set; }
         public SpriteAnimationDescriptor Walking { get; set; }
         public SpriteAnimationDescriptor WalkingUnarmed { get; set; }
-
-        // Construction limited to namespace
-        internal PlayerBodySprite() { }
     }
 }

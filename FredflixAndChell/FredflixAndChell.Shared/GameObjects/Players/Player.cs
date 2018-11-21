@@ -14,6 +14,7 @@ using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Assets;
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Sprites;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -27,6 +28,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const float ThrowSpeed = 0.5f;
 
         private readonly int _controllerIndex;
+        private readonly CharacterParameters _params;
 
         private PlayerState _playerState;
 
@@ -41,7 +43,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Entity _gunEntity;
         private Gun _gun;
 
-        private int _health;
+        private float _health;
         private float _speed = 50f;
         private float _accelerationMultiplier;
         private float _stamina = 100;
@@ -69,13 +71,21 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool FlipGun { get; set; }
         public Vector2 FacingAngle { get; set; }
 
-        public Player(int x, int y, int controllerIndex = 0) : base(x, y)
+        public Player(CharacterParameters characterParameters, int x, int y, int controllerIndex = 0) : base(x, y)
         {
+            _params = characterParameters;
             _controllerIndex = controllerIndex;
             _entitiesInProximity = new List<Entity>();
         }
 
         public override void OnSpawn()
+        {
+            SetupComponents();
+            SetupParameters();
+        }
+
+
+        private void SetupComponents()
         {
             entity.setTag(Tags.Player);
 
@@ -103,13 +113,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
-            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Trump, _gun));
+            _renderer = entity.addComponent(new PlayerRenderer(_params.PlayerSprite, _gun));
 
             // Assign camera tracker component
             _cameraTracker = entity.addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
-
-            //TODO: Character based 
-            _health = 100;
 
             //Particles
             //TODO: Disse to linjene (eller komponetner) blir brukt, bare for stek
@@ -117,6 +124,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _bloodParticles = _particlesEntity.addComponent(new ParticleEngine(ParticleDesigner.flame));
 
             _blood = entity.addComponent(new BloodEngine());
+        }
+
+        private void SetupParameters()
+        {
+            _health = _params.MaxHealth;
+            _stamina = _params.MaxStamina;
+            _speed = _params.Speed;
         }
 
         public override void update()
@@ -144,6 +158,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Interact();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
+
             // TODO: Add some sort of "grace" time between clicks so that only a somewhat fast double-click
             // should trigger a dodge roll.
             if (_controller.SprintPressed)

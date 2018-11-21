@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
@@ -67,7 +68,7 @@ namespace FredflixAndChell.Components.Players
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
             var player = scene.createEntity($"player_{playerIndex}");
-            player.addComponent(new Player(spawnX, spawnY, playerIndex));
+            player.addComponent(new Player(Characters.All().randomItem(), spawnX, spawnY, playerIndex));
             _connectedPlayers.Add(playerIndex);
 
             Console.WriteLine($"Spawned {player.name}");

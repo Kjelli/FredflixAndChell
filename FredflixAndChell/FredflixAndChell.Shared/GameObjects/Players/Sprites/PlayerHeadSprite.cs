@@ -17,8 +17,5 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
 
         public SpriteAnimationDescriptor Front { get; set; }
         public SpriteAnimationDescriptor Back { get; set; }
-
-        // Construction limited to namespace
-        internal PlayerHeadSprite() { }
     }
 }

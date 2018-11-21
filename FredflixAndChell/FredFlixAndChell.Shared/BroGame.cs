@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Serialization;
 using Nez;
 
 namespace FredflixAndChell.Shared
@@ -14,9 +15,11 @@ namespace FredflixAndChell.Shared
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
-           
-            scene = new LobbyScene();
-            
+
+            //scene = new LobbyScene();
+
+            //YamlSerializer.SerializeAll();
+
             ContextHelper.CurrentMap = "winter_1";
             scene = new BroScene();
         }
