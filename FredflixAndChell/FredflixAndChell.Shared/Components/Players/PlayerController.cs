@@ -35,7 +35,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public bool InteractPressed => _interactButton?.isPressed ?? false;
         public bool DebugModePressed => _debugButton?.isPressed ?? false;
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? false;
-        public bool SprintPressed => _sprintButton?.isDown ?? false;
+        public bool SprintPressed => _sprintButton?.isPressed ?? false;
+        public bool SprintDown => _sprintButton?.isDown ?? false;
         public bool InputEnabled => _inputEnabled;
 
         public PlayerController(int controllerIndex)

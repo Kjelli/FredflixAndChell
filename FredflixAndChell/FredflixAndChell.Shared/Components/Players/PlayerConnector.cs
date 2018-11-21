@@ -1,11 +1,11 @@
-﻿using System;
-using Nez;
-using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using FredflixAndChell.Shared.GameObjects.Players;
+﻿using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Nez;
+using System;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Components.Players
 {
@@ -37,7 +37,7 @@ namespace FredflixAndChell.Components.Players
 
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
-            for (var playerIndex = 0; playerIndex < _maxPlayers; playerIndex++)
+            for (var playerIndex = 0; playerIndex < ContextHelper.NumPlayers - 1; playerIndex++)
             {
                 var gamePadState = GamePad.GetState(playerIndex);
 
@@ -47,14 +47,14 @@ namespace FredflixAndChell.Components.Players
                 }
             }
 
-            if(!_connectedPlayers.Contains(-1))
+            if (!_connectedPlayers.Contains(-1))
             {
                 SpawnPlayer(-1);
             }
 
             if (!_connectedPlayers.Contains(-2))
             {
-                //SpawnPlayer(-2);
+                SpawnPlayer(-2);
             }
 
             timer?.reset();

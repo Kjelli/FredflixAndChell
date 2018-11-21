@@ -21,6 +21,7 @@ namespace FredflixAndChell.Shared.Components.Guns
     {
         private Player _player;
         private Gun _gun;
+        private bool _isPlayerRunning;
 
         private float _renderOffset;
         Sprite<GunAnimations> _animation;
@@ -67,6 +68,10 @@ namespace FredflixAndChell.Shared.Components.Guns
             _animation.play(GunAnimations.Held_Idle);
         }
 
+        public void ToggleRunningDisplacement(bool isRunning)
+        {
+            _isPlayerRunning = isRunning;
+        }
 
         public void Fire()
         {
@@ -80,6 +85,15 @@ namespace FredflixAndChell.Shared.Components.Guns
             entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(entity.localRotation) * _renderOffset,
                 _player.entity.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
             entity.localRotation = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
+
+            if (_isPlayerRunning)
+            {
+                _animation.setLocalOffset(new Vector2(_animation.localOffset.X, (float) Math.Sin(Time.time * 25f) * 0.5f ));
+            }
+            else
+            {
+                _animation.setLocalOffset(new Vector2(0, 0));
+            }
 
             if (!_animation.isPlaying)
             {

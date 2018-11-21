@@ -1,4 +1,5 @@
 Ammo: 300
+Accuracy: 0.85
 BarrelOffset:
   X: 10.0
   Y: 0.0
@@ -22,7 +23,7 @@ BulletParameters:
         Y: 0.0
     Source: bullets/standard
 BulletSpread: 0.0
-DropChange: 0.8
+DropChance: 0.8
 FireRate: 0.0500000007
 MagazineAmmo: 30
 MagazineSize: 30

@@ -1,4 +1,5 @@
 Ammo: 300
+Accuracy: 1.0
 BarrelOffset:
   X: 7.0
   Y: 0.0
@@ -22,7 +23,7 @@ BulletParameters:
         Y: 0.0
     Source: bullets/shockwave_sm
 BulletSpread: 0.392699093
-DropChange: 0.4
+DropChance: 0.4
 FireRate: 0.300000012
 MagazineAmmo: 30
 MagazineSize: 30

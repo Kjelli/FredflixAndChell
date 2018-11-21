@@ -55,7 +55,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                     Name = gun.Name,
                     Gun = gun,
                     Type = CollectibleType.Weapon,
-                    DropChance = gun.DropChange,
+                    DropChance = gun.DropChance,
                     Rarity = gun.Rarity
                 });
             }

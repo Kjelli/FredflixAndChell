@@ -1,15 +1,14 @@
-﻿using FredflixAndChell.Shared.Components.PlayerComponents;
+﻿using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FredflixAndChell.Shared.Components.Cameras;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Assets;
@@ -55,6 +54,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private List<Entity> _entitiesInProximity;
         private Entity _particlesEntity;
         private ParticleEngine _bloodParticles;
+        private bool _isRolling;
+        private bool _isRollingRight;
+        private int _numSprintPressed = 0;
 
         public PlayerState PlayerState => _playerState;
         public int PlayerIndex => _controllerIndex;
@@ -101,7 +103,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
-            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
+            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Trump, _gun));
 
             // Assign camera tracker component
             _cameraTracker = entity.addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
@@ -142,11 +144,46 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Interact();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
+            // TODO: Add some sort of "grace" time between clicks so that only a somewhat fast double-click
+            // should trigger a dodge roll.
+            if (_controller.SprintPressed)
+                _numSprintPressed++;
 
             ToggleSprint();
             ToggleStaminaRegen();
+            ToggleDodgeRoll();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
+        }
+
+        private void ToggleDodgeRoll()
+        {
+            if (_shouldRegenStamina) return;
+            if (_numSprintPressed == 2 && _controller.SprintPressed)
+            {
+                _isRolling = true;
+                _isRollingRight = FacingAngle.X > 0 ? true : false;
+            }
+
+            if (_isRolling)
+            {
+                if (_isRollingRight)
+                {
+                    entity.localRotation += 4 * (float)Math.PI * Time.deltaTime;
+                }
+                else
+                {
+                    entity.localRotation -= 4 * (float)Math.PI * Time.deltaTime;
+                }
+            }
+
+            if ((_isRollingRight && entity.localRotation >= (2 * Math.PI)) || (!_isRollingRight && entity.localRotation <= (-2 * Math.PI)))
+            {
+                _isRolling = false;
+                entity.localRotation = 0;
+                _numSprintPressed = 0;
+                _stamina -= 50;
+            }
         }
 
         private void ToggleStaminaRegen()
@@ -165,18 +202,33 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleSprint()
         {
-            if (_controller.SprintPressed && !_shouldRegenStamina)
+            if (_controller.SprintDown && !_shouldRegenStamina)
             {
                 _accelerationMultiplier = _sprintAcceleration;
                 _stamina -= 50 * Time.deltaTime;
+                _gun.ToggleRunning(true);
             }
             else
+            {
                 _accelerationMultiplier = _walkAcceleration;
+                _gun.ToggleRunning(false);
+            }
 
             if (_stamina <= 0)
             {
                 _stamina = 0;
                 _shouldRegenStamina = true;
+                _accelerationMultiplier = _walkAcceleration;
+                _gun.ToggleRunning(false);
+            }
+
+            if (_controller.SprintDown) return;
+            if (_isRolling)
+            {
+                _accelerationMultiplier = _sprintAcceleration;
+            }
+            else
+            {
                 _accelerationMultiplier = _walkAcceleration;
             }
         }
@@ -380,6 +432,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 FlipGun = true;
                 HorizontalFacing = (int)FacingCode.LEFT;
             }
+
+            _renderer.UpdateRenderLayerDepth();
         }
 
         public void onTriggerEnter(Collider other, Collider local)

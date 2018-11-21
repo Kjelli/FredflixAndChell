@@ -20,6 +20,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private int _magazineSize;
         private int _bulletCount;
 
+        private float _accuracy;
         private float _bulletSpread;
 
         private Vector2 _barrelOffset;
@@ -43,6 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void SetupParameters()
         {
+            _accuracy = _params.Accuracy;
             _ammo = _params.Ammo;
             _maxAmmo = _params.MaxAmmo;
             _magazineAmmo = _params.MagazineAmmo;
@@ -76,7 +78,10 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                         new Bullet(_player,
                             bulletSpawnX,
                             bulletSpawnY,
-                            entity.localRotation + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
+                            entity.localRotation 
+                              + (1 - _accuracy) * Nez.Random.minusOneToOne() / 2
+                              + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
+                              + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
                             _params.BulletParameters));
                 }
                 _magazineAmmo--;
@@ -136,6 +141,9 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             entity?.destroy();
         }
 
-
+        public void ToggleRunning(bool isRunning)
+        {
+            _renderer?.ToggleRunningDisplacement(isRunning);
+        }
     }
 }
