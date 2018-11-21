@@ -36,7 +36,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
                 var _pixel = new Texture2D(Core.graphicsDevice, 1, 1);
 
-                Color dasColor = rng.choose(Color.Red, Color.DarkRed);
+                //Color dasColor = rng.choose(Color.Red, Color.DarkRed);
+                Color dasColor = new Color(170, 0, 0);
                 
 
                 _pixel.SetData(new[] { dasColor });
@@ -51,7 +52,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
                 //float random_scale = ((float)rng.range(-20, 20) / 100);
                 float random_scale = ((float)rng.range(-20, 20) / 100);
-                entity.scale = new Vector2(1.2f + random_scale, 1.2f + random_scale);
+                entity.scale = new Vector2(2f + random_scale, 2 + random_scale);
 
                 //Rotation
                 _sprite.transform.rotation = rng.nextAngle();
@@ -127,7 +128,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public void update()
         {
             _leakInterval.Update();
-
             if (_leak && _leakInterval.IsReady())
             {
                 Blast(_particlesPrLeakage, 2.5f);
