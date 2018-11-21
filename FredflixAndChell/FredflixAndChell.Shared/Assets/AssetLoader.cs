@@ -27,10 +27,13 @@ namespace FredflixAndChell.Shared.Assets
             // Load fonts to be used in the game
             LoadFont("fonts/debug");
 
+            LoadTexture("textures/players/trump_body");
+            LoadTexture("textures/players/trump_head");
             LoadTexture("textures/players/tormod_body");
             LoadTexture("textures/players/tormod_head");
             LoadTexture("textures/players/kjelli_body");
             LoadTexture("textures/players/kjelli_head");
+
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
             LoadTexture("textures/effects/lightmask");

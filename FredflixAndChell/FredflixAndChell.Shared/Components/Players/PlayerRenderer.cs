@@ -21,6 +21,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private Player _player;
         private Gun _gun;
         private PlayerSprite _playerSprite;
+        private float _facingDepthOffset;
 
         Sprite<BodyAnimation> _body;
         Sprite<HeadAnimation> _head;
@@ -68,6 +69,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             headSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
             headSilhouette.renderLayer = Layers.Foreground;
             headSilhouette.localOffset = new Vector2(0, 0);
+
+            UpdateRenderLayerDepth();
         }
 
         private void SetupPlayerSprites()
@@ -129,8 +132,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public void UpdateRenderLayerDepth()
         {
-            _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
-            _body.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + 0.001f) * Constants.RenderLayerDepthFactor;
+            _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            _body.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
         }
 
         private void UpdateAnimation()
@@ -161,10 +164,12 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             }
             else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
+                _facingDepthOffset = -20 * Constants.RenderLayerDepthFactor;
                 headAnimation = HeadAnimation.BackFacing;
             }
             else if (_player.VerticalFacing == (int)FacingCode.DOWN)
             {
+                _facingDepthOffset = 20 * Constants.RenderLayerDepthFactor;
                 headAnimation = HeadAnimation.FrontFacing;
             }
 

@@ -30,7 +30,6 @@ namespace FredflixAndChell.Shared.Systems
         private SmoothCamera _camera;
 
         private int _playersAlive;
-        private int _highestSeenNumberOfAlivePlayers;
         private Cooldown _transitionDelay;
 
         public Dictionary<int, Player> PlayerStandings => _playerStandings;
@@ -54,6 +53,7 @@ namespace FredflixAndChell.Shared.Systems
         {
             _playerStandings.Clear();
             _playersAlive = 0;
+
             foreach (var playerEntity in entities)
             {
                 var player = playerEntity.getComponent<Player>();
@@ -63,7 +63,7 @@ namespace FredflixAndChell.Shared.Systems
                     _playersAlive++;
                 }
             }
-            _highestSeenNumberOfAlivePlayers = Math.Max(_playersAlive, _highestSeenNumberOfAlivePlayers);
+
 
             switch (_gameState)
             {

@@ -95,7 +95,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _proximityHitbox.isTrigger = true;
 
             // Assign renderer component
-            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Kjelli, _gun));
+            _renderer = entity.addComponent(new PlayerRenderer(PlayerSpritePresets.Trump, _gun));
 
             // Assign camera tracker component
             _cameraTracker = entity.addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
@@ -189,15 +189,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 _accelerationMultiplier = _sprintAcceleration;
                 _stamina -= 50 * Time.deltaTime;
+                _gun.ToggleRunning(true);
             }
             else
+            {
                 _accelerationMultiplier = _walkAcceleration;
+                _gun.ToggleRunning(false);
+            }
 
             if (_stamina <= 0)
             {
                 _stamina = 0;
                 _shouldRegenStamina = true;
                 _accelerationMultiplier = _walkAcceleration;
+                _gun.ToggleRunning(false);
             }
 
             if (_controller.SprintDown) return;
@@ -406,6 +411,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 FlipGun = true;
                 HorizontalFacing = (int)FacingCode.LEFT;
             }
+
+            _renderer.UpdateRenderLayerDepth();
         }
 
         public void onTriggerEnter(Collider other, Collider local)
