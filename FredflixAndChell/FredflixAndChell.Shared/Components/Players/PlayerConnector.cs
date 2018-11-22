@@ -45,6 +45,7 @@ namespace FredflixAndChell.Components.Players
                 if (gamePadState.IsConnected && !_connectedPlayers.Contains(playerIndex))
                 {
                     SpawnPlayer(playerIndex);
+                    Console.WriteLine($"Connected player {playerIndex}. Players ingame: {_connectedPlayers.Count}");
                 }
             }
 
@@ -59,7 +60,6 @@ namespace FredflixAndChell.Components.Players
             }
 
             timer?.reset();
-            Console.WriteLine($"Players ingame: {_connectedPlayers.Count}");
         }
 
         private void SpawnPlayer(int playerIndex)

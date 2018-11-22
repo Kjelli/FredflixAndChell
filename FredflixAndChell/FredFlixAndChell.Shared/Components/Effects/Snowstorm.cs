@@ -10,58 +10,83 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 using rng = Nez.Random;
 
 namespace FredflixAndChell.Shared.Components.Effects
 {
-    public class Snowstorm : SceneComponent, IUpdatable
+    public class Snowstorm : ProcessingSystem
     {
-        private int _xSpawn;
-        private int _yMaxSpawn;
+        private bool _firstFrame = true;
+
         private int _flakeId = 0;
 
+        private Texture2D _snowTexture;
+        private Camera _camera;
 
-        public Snowstorm(int width, int height)
+        public Snowstorm()
         {
-            _xSpawn = width;
-            _yMaxSpawn = height;
+            _snowTexture = new Texture2D(Core.graphicsDevice, 1, 1);
+            _snowTexture.SetData(new[] { Color.LightBlue });
         }
 
-        public override void onEnabled()
+        public void SpawnInitialFlakes()
         {
-            base.onEnabled();
-            Core.schedule(0.05f, true, onTime : SpawnFlake);
+            for (var i = 0; i < 60; i++)
+            {
+                var y = _camera.bounds.top + rng.nextFloat(_camera.bounds.height);
+                var x = _camera.bounds.left + rng.nextFloat(_camera.bounds.width);
+                var snowflake = scene.createEntity($"Snowyboii{++_flakeId}");
+                snowflake.addComponent(new Snowflake(_snowTexture, x, y));
+            }
         }
 
-        public void SpawnFlake(ITimer timer = null)
+        public void SpawnFlake()
         {
-            var y = rng.nextInt(_yMaxSpawn);
-            scene.createEntity($"Snowyboii{++_flakeId}").addComponent(new Snowflake(_xSpawn, y));
+            var y = _camera.bounds.bottom - rng.nextFloat(_camera.bounds.height);
+            var x = _camera.bounds.right;
+            var snowflake = scene.createEntity($"Snowyboii{++_flakeId}");
+            snowflake.addComponent(new Snowflake(_snowTexture, x, y));
         }
 
-        public class Snowflake : GameObject{
+        public override void process()
+        {
+            if (_firstFrame)
+            {
+                _firstFrame = false;
+                _camera = scene.camera;
+                SpawnInitialFlakes();
+                return;
+            }
+            if (Time.frameCount % 4 == 0)
+            {
+                SpawnFlake();
+            }
+        }
 
-            private Texture2D _pixel;
+        public class Snowflake : Component, IUpdatable
+        {
+
+            private Vector2 _spawnPosition;
+            private Texture2D _snowTexture;
             private Sprite _sprite;
 
             private float _speed;
             private float _yOffset;
             private float _size;
 
-            public Snowflake(float x, float y) : base(x, y)
+            public Snowflake(Texture2D snowTexture, float x, float y)
             {
+                _spawnPosition = new Vector2(x, y);
+                _snowTexture = snowTexture;
             }
 
-            public override void OnDespawn(){}
-
-            public override void OnSpawn(){
-                _pixel = new Texture2D(Core.graphicsDevice, 1, 1);
-
-                _pixel.SetData(new[] { GetRandomSnowyColor() });
-
-                _sprite = entity.addComponent(new Sprite(_pixel));
+            public override void onAddedToEntity()
+            {
+                entity.position = _spawnPosition;
+                _sprite = entity.addComponent(new Sprite(_snowTexture));
                 _sprite.renderLayer = Layers.Weather;
 
                 _size = rng.range(5, 15) * 0.1f;
@@ -71,12 +96,12 @@ namespace FredflixAndChell.Shared.Components.Effects
                 _yOffset = (float)(rng.range(1, 5) * 0.01);
             }
 
-            public override void update()
+            public void update()
             {
-                float floatyboii_Y  = (float)(Math.Sin(entity.localPosition.X * _yOffset)) + entity.localPosition.Y;
-                
-                entity.localPosition = new Vector2(entity.localPosition.X - _speed , floatyboii_Y);
-             
+                float floatyboii_Y = (float)(Math.Sin(entity.localPosition.X * _yOffset)) + entity.localPosition.Y;
+
+                entity.localPosition = new Vector2(entity.localPosition.X - _speed, floatyboii_Y);
+
                 if (entity.position.X < 0)
                     entity.destroy();
             }
@@ -92,11 +117,7 @@ namespace FredflixAndChell.Shared.Components.Effects
                     default:
                         return Color.Snow;
                 }
-                 
             }
-
-           
-
         }
     }
 }

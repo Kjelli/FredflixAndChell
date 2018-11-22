@@ -17,12 +17,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin data/characters/Kjelli.fml
-/copy:data/characters/Kjelli.fml
-
-#begin data/characters/Tormod.fml
-/copy:data/characters/Tormod.fml
-
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
@@ -361,7 +355,7 @@
 /processorParam:TextureFormat=Color
 /build:textures/players/tormod_head.png
 
-#begin textures/players/trump_body.png
+#begin textures/players/trump/head.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -371,9 +365,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/trump_body.png
+/build:textures/players/trump/head.png
 
-#begin textures/players/trump_head.png
+#begin textures/players/trump/legs.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -383,5 +377,17 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/trump_head.png
+/build:textures/players/trump/legs.png
+
+#begin textures/players/trump/torso.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/trump/torso.png
 

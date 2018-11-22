@@ -7,166 +7,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
     [Obsolete]
     public static class PlayerSpritePresets
     {
-        public static readonly CharacterParameters Tormod = new CharacterParameters
-        {
-            PlayerSprite = new PlayerSprite
-            {
-                Source = "players/tormod",
-                Head = new PlayerHeadSprite
-                {
-                    Front = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[] { 0 },
-                        FPS = 1,
-                    },
-                    Back = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[] { 1 },
-                        FPS = 1,
-                    }
-                },
-                Body = new PlayerBodySprite
-                {
-                    IdleUnarmed = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        0 + 0 * 8,
-                        0 + 1 * 8,
-                        0 + 2 * 8,
-                        0 + 3 * 8
-                    },
-                        Loop = true,
-                        FPS = 7
-                    },
-                    Idle = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        2 + 0 * 8,
-                        2 + 1 * 8,
-                        2 + 2 * 8,
-                        2 + 3 * 8
-                    },
-                        Loop = true,
-                        FPS = 7
-                    },
-                    WalkingUnarmed = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        1 + 7 * 8,
-                        1 + 0 * 8,
-                        1 + 1 * 8,
-                        1 + 2 * 8,
-                        1 + 3 * 8,
-                        1 + 4 * 8,
-                        1 + 5 * 8,
-                        1 + 6 * 8
-                    },
-                        Loop = true,
-                        FPS = 15
-                    },
-                    Walking = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        3 + 7 * 8,
-                        3 + 0 * 8,
-                        3 + 1 * 8,
-                        3 + 2 * 8,
-                        3 + 3 * 8,
-                        3 + 4 * 8,
-                        3 + 5 * 8,
-                        3 + 6 * 8
-                    },
-                        Loop = true,
-                        FPS = 15
-                    }
-                }
-            },
-            CharacterName = "Tormod"
-        };
-        public static readonly CharacterParameters Kjelli = new CharacterParameters
-        {
-            PlayerSprite = new PlayerSprite
-            {
-                Source = "players/kjelli",
-                Head = new PlayerHeadSprite
-                {
-                    Front = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[] { 0 },
-                        FPS = 1,
-                    },
-                    Back = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[] { 1 },
-                        FPS = 1,
-                    }
-                },
-                Body = new PlayerBodySprite
-                {
-                    IdleUnarmed = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        0 + 0 * 8,
-                        0 + 1 * 8,
-                        0 + 2 * 8,
-                        0 + 3 * 8
-                    },
-                        Loop = true,
-                        FPS = 7
-                    },
-                    Idle = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        2 + 0 * 8,
-                        2 + 1 * 8,
-                        2 + 2 * 8,
-                        2 + 3 * 8
-                    },
-                        Loop = true,
-                        FPS = 7
-                    },
-                    WalkingUnarmed = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        1 + 7 * 8,
-                        1 + 0 * 8,
-                        1 + 1 * 8,
-                        1 + 2 * 8,
-                        1 + 3 * 8,
-                        1 + 4 * 8,
-                        1 + 5 * 8,
-                        1 + 6 * 8
-                    },
-                        Loop = true,
-                        FPS = 15
-                    },
-                    Walking = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        3 + 7 * 8,
-                        3 + 0 * 8,
-                        3 + 1 * 8,
-                        3 + 2 * 8,
-                        3 + 3 * 8,
-                        3 + 4 * 8,
-                        3 + 5 * 8,
-                        3 + 6 * 8
-                    },
-                        Loop = true,
-                        FPS = 15
-                    }
-                }
-            },
-            CharacterName = "Kjelli"
-        };
         public static readonly CharacterParameters Trump = new CharacterParameters
         {
             PlayerSprite = new PlayerSprite
@@ -192,61 +32,65 @@ namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
                         Loop = true
                     }
                 },
-                Body = new PlayerBodySprite
+                Torso = new PlayerTorsoSprite
                 {
-                    IdleUnarmed = new SpriteAnimationDescriptor
+                    FrontUnarmed = new SpriteAnimationDescriptor
                     {
-                        Frames = new int[]
+                        Frames = new int[] {
+                            0 + 0 * 2,
+                        },
+                        FPS = 0.5f,
+                        Loop = true
+                    },
+                    Front = new SpriteAnimationDescriptor
                     {
-                        0 + 0 * 8,
-                        0 + 1 * 8,
-                        0 + 2 * 8,
-                        0 + 3 * 8
+                        Frames = new int[] {
+                            1 + 0 * 2,
+                        },
+                        FPS = 0.5f,
+                        Loop = true
                     },
-                        Loop = true,
-                        FPS = 7
+                    BackUnarmed = new SpriteAnimationDescriptor
+                    {
+                        Frames = new int[] {
+                            0 + 1 * 2
+                        },
+                        FPS = 0.5f,
+                        Loop = true
                     },
+                    Back = new SpriteAnimationDescriptor
+                    {
+                        Frames = new int[] {
+                            1 + 1 * 2,
+                        },
+                        FPS = 0.5f,
+                        Loop = true
+                    }
+                },
+                Legs = new PlayerLegsSprite
+                {
                     Idle = new SpriteAnimationDescriptor
                     {
                         Frames = new int[]
                     {
-                        2 + 0 * 8,
-                        2 + 1 * 8,
-                        2 + 2 * 8,
-                        2 + 3 * 8
+                        0 + 0 * 8
                     },
                         Loop = true,
                         FPS = 7
                     },
-                    WalkingUnarmed = new SpriteAnimationDescriptor
-                    {
-                        Frames = new int[]
-                    {
-                        1 + 7 * 8,
-                        1 + 0 * 8,
-                        1 + 1 * 8,
-                        1 + 2 * 8,
-                        1 + 3 * 8,
-                        1 + 4 * 8,
-                        1 + 5 * 8,
-                        1 + 6 * 8
-                    },
-                        Loop = true,
-                        FPS = 15
-                    },
                     Walking = new SpriteAnimationDescriptor
                     {
                         Frames = new int[]
-                    {
-                        3 + 7 * 8,
-                        3 + 0 * 8,
-                        3 + 1 * 8,
-                        3 + 2 * 8,
-                        3 + 3 * 8,
-                        3 + 4 * 8,
-                        3 + 5 * 8,
-                        3 + 6 * 8
-                    },
+                        {
+                            1 + 7 * 2,
+                            1 + 0 * 2,
+                            1 + 1 * 2,
+                            1 + 2 * 2,
+                            1 + 3 * 2,
+                            1 + 4 * 2,
+                            1 + 5 * 2,
+                            1 + 6 * 2
+                        },
                         Loop = true,
                         FPS = 15
                     }

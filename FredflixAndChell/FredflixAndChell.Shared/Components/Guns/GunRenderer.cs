@@ -48,6 +48,7 @@ namespace FredflixAndChell.Shared.Components.Guns
         {
             base.onAddedToEntity();
             entity.setScale(0.6f);
+            setUpdateOrder(1);
 
             _animation = entity.addComponent(SetupAnimations(_gun.Parameters.Sprite));
             _animation.renderLayer = Layers.Player;

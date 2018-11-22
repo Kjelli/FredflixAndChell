@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
+using System;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -27,12 +28,7 @@ namespace FredflixAndChell.Shared.Assets
             // Load fonts to be used in the game
             LoadFont("fonts/debug");
 
-            LoadTexture("textures/players/trump_body");
-            LoadTexture("textures/players/trump_head");
-            LoadTexture("textures/players/tormod_body");
-            LoadTexture("textures/players/tormod_head");
-            LoadTexture("textures/players/kjelli_body");
-            LoadTexture("textures/players/kjelli_head");
+            LoadPlayerTexture("textures/players/trump");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
@@ -56,8 +52,13 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadTexture("maps/spawner_tile");
+        }
 
-            
+        private static void LoadPlayerTexture(string playerDirectory)
+        {
+            LoadTexture(playerDirectory + "/head");
+            LoadTexture(playerDirectory + "/torso");
+            LoadTexture(playerDirectory + "/legs");
         }
 
         public static void Dispose()

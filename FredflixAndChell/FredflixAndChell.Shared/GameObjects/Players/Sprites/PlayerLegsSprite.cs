@@ -7,21 +7,15 @@ using System.Threading.Tasks;
 
 namespace FredflixAndChell.Shared.GameObjects.Players.Sprites
 {
-
-
-    public class PlayerBodySprite
+    public class PlayerLegsSprite
     {
-        public enum BodyAnimation
+        public enum LegsAnimation
         {
-            WalkingUnarmed,
-            IdleUnarmed,
-            Walking,
-            Idle
+            Idle,
+            Walking
         }
 
         public SpriteAnimationDescriptor Idle { get; set; }
-        public SpriteAnimationDescriptor IdleUnarmed { get; set; }
         public SpriteAnimationDescriptor Walking { get; set; }
-        public SpriteAnimationDescriptor WalkingUnarmed { get; set; }
     }
 }

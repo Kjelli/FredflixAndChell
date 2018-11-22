@@ -33,7 +33,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static void LoadFromData()
         {
-            Console.WriteLine("=== LOADING FML FILES FOR GUNS ===");
+            Console.WriteLine("Loading .fml files for guns...");
             var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)
             {

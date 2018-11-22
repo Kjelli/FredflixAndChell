@@ -18,74 +18,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public class BloodEngine : Component, IUpdatable
     {
-        public class BloodParticle : GameObject
-        {
-            private Mover _mover;
-            private Sprite _sprite;
-            private bool _drawAbovePlayer;
-
-
-            public BloodParticle(float x, float y, bool drawAbovePlayer = true) : base(x, y) {
-                _drawAbovePlayer = drawAbovePlayer;
-            }
-
-            public override void OnDespawn() { }
-
-            public override void OnSpawn()
-            {
-
-                var _pixel = new Texture2D(Core.graphicsDevice, 1, 1);
-
-                //Color dasColor = rng.choose(Color.Red, Color.DarkRed);
-                Color dasColor = new Color(170, 0, 0);
-                
-
-                _pixel.SetData(new[] { dasColor });
-
-                //_sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
-                _sprite = entity.addComponent(new Sprite(_pixel));
-                _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
-                _sprite.material = new Material();
-                _mover = entity.addComponent(new Mover());
-
-                //Scale
-
-                //float random_scale = ((float)rng.range(-20, 20) / 100);
-                float random_scale = ((float)rng.range(-20, 20) / 100);
-                entity.scale = new Vector2(2f + random_scale, 2 + random_scale);
-
-                //Rotation
-                _sprite.transform.rotation = rng.nextAngle();
-
-                if(_drawAbovePlayer) Core.schedule(0.5f, _ => UpdateRenderLayerDepth());
-            }
-
-            public override void update()
-            {
-                if (Velocity.Length() == 0) return;
-                Velocity = (0.878f * Velocity);
-                var isColliding = _mover.move(Velocity, out CollisionResult result);
-
-                if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
-
-            }
-
-            private void UpdateRenderLayerDepth()
-            {
-                _sprite.renderLayer = Layers.MapObstacles;
-            }
-        }
+        private System.Random _rng;
+        private Cooldown _leakInterval;
+        private Texture2D _bloodTexture;
 
         private int _bloodId = 0;
-        private System.Random _rng;
         private bool _leak = false;
-        private Cooldown _leakInterval;
         private int _particlesPrLeakage;
 
         public BloodEngine()
         {
             _rng = new System.Random();
             _leakInterval = new Cooldown(1f);
+            _bloodTexture = new Texture2D(Core.graphicsDevice, 1, 1);
+            _bloodTexture.SetData(new[] { Color.DarkRed });
         }
 
         public void Sprinkle(int damage, Vector2 direction)
@@ -94,7 +40,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             for (int i = 0; i < damage; i++)
             {
-                var particle = entity.scene.createEntity($"Blood-Particle{++_bloodId}").addComponent(new BloodParticle(transform.position.X, transform.position.Y));
+                var particle = entity.scene.createEntity($"Blood-Particle{++_bloodId}").addComponent(new BloodParticle(_bloodTexture, transform.position.X, transform.position.Y));
 
                 float x = ((float)_rng.Next(-50, 50)) / 100f;
                 float y = ((float)_rng.Next(-50, 50)) / 100f;
@@ -112,7 +58,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             for(int i = 0; i < particles; i++)
             {
-                var particle = entity.scene.createEntity($"Blood-Particle{++_bloodId}").addComponent(new BloodParticle(transform.position.X, transform.position.Y, false));
+                var particle = entity.scene.createEntity($"Blood-Particle{++_bloodId}").addComponent(new BloodParticle(_bloodTexture, transform.position.X, transform.position.Y, false));
                 particle.Velocity = new Vector2(rng.minusOneToOne()* power, rng.minusOneToOne()* power);
             }
         }
@@ -134,5 +80,61 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _leakInterval.Start();
             }
         }
+
+        public class BloodParticle : GameObject
+        {
+            private Mover _mover;
+            private Texture2D _bloodTexture;
+            private Sprite _sprite;
+
+            private bool _drawAbovePlayer;
+
+            public BloodParticle(Texture2D bloodTexture, float x, float y, bool drawAbovePlayer = true) : base(x, y)
+            {
+                _drawAbovePlayer = drawAbovePlayer;
+                _bloodTexture = bloodTexture;
+            }
+
+            public override void OnDespawn() { }
+
+            public override void OnSpawn()
+            {
+                //_sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
+                _sprite = entity.addComponent(new Sprite(_bloodTexture));
+                _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
+                _sprite.material = new Material();
+                _mover = entity.addComponent(new Mover());
+
+                var bloodHitbox = entity.addComponent(new CircleCollider(0.1f));
+                Flags.setFlagExclusive(ref bloodHitbox.collidesWithLayers, Layers.MapObstacles);
+                bloodHitbox.physicsLayer = 0;
+                //Scale
+
+                //float random_scale = ((float)rng.range(-20, 20) / 100);
+                float random_scale = ((float)rng.range(-20, 20) / 100);
+                entity.scale = new Vector2(2f + random_scale, 2 + random_scale);
+
+                //Rotation
+                _sprite.transform.rotation = rng.nextAngle();
+
+                if (_drawAbovePlayer) Core.schedule(0.5f, _ => UpdateRenderLayerDepth());
+            }
+
+            public override void update()
+            {
+                if (Velocity.Length() == 0) return;
+                Velocity = (0.878f * Velocity);
+                var isColliding = _mover.move(Velocity, out CollisionResult result);
+                if (isColliding && result.collider?.entity?.tag == Tags.Pit) entity.destroy();
+
+                if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
+            }
+
+            private void UpdateRenderLayerDepth()
+            {
+                _sprite.renderLayer = Layers.MapObstacles;
+            }
+        }
+
     }
 }

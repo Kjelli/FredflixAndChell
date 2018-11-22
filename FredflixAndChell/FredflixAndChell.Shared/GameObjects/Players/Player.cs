@@ -82,6 +82,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             SetupComponents();
             SetupParameters();
+            entity.updateOrder = 0;
         }
 
 
@@ -280,8 +281,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
-            var isColliding = _mover.move(Velocity, out CollisionResult collision
-                );
+            var isColliding = _mover.move(Velocity, out CollisionResult collision);
 
             if (isColliding)
             {

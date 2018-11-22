@@ -18,7 +18,7 @@ namespace FredflixAndChell.Shared
 
             //scene = new LobbyScene();
 
-            //YamlSerializer.SerializeAll();
+            // YamlSerializer.SerializeAll();
 
             ContextHelper.CurrentMap = "winter_1";
             scene = new BroScene();

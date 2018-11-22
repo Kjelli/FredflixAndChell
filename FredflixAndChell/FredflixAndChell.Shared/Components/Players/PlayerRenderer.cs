@@ -9,10 +9,11 @@ using Nez.Sprites;
 using Nez.Textures;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerBodySprite;
+using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerTorsoSprite;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprite;
 using System;
 using Nez.Tweens;
+using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -23,8 +24,9 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private PlayerSprite _playerSprite;
         private float _facingDepthOffset;
 
-        Sprite<BodyAnimation> _body;
         Sprite<HeadAnimation> _head;
+        Sprite<TorsoAnimation> _torso;
+        Sprite<LegsAnimation> _legs;
 
         public PlayerRenderer(PlayerSprite playerSprite, Gun gun)
         {
@@ -45,11 +47,17 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             light.renderLayer = Layers.Lights;
 
             // Assign renderable shadow component
-            var bodyShadow = entity.addComponent(new SpriteMime(_body));
-            bodyShadow.color = new Color(0, 0, 0, 80);
-            bodyShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            bodyShadow.renderLayer = Layers.Shadow;
-            bodyShadow.localOffset = new Vector2(1, 2);
+            var torsoShadow = entity.addComponent(new SpriteMime(_torso));
+            torsoShadow.color = new Color(0, 0, 0, 80);
+            torsoShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            torsoShadow.renderLayer = Layers.Shadow;
+            torsoShadow.localOffset = new Vector2(1, 2);
+
+            var legsShadow = entity.addComponent(new SpriteMime(_legs));
+            legsShadow.color = new Color(0, 0, 0, 80);
+            legsShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            legsShadow.renderLayer = Layers.Shadow;
+            legsShadow.localOffset = new Vector2(1, 2);
 
 
             var headShadow = entity.addComponent(new SpriteMime(_head));
@@ -59,11 +67,17 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             headShadow.localOffset = new Vector2(1, 2);
 
             // Assign silhouette component when player is visually blocked
-            var bodySilhouette = entity.addComponent(new SpriteMime(_body));
-            bodySilhouette.color = new Color(0, 0, 0, 80);
-            bodySilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
-            bodySilhouette.renderLayer = Layers.Foreground;
-            bodySilhouette.localOffset = new Vector2(0, 0);
+            var torsoSilhouette = entity.addComponent(new SpriteMime(_torso));
+            torsoSilhouette.color = new Color(0, 0, 0, 80);
+            torsoSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            torsoSilhouette.renderLayer = Layers.Foreground;
+            torsoSilhouette.localOffset = new Vector2(0, 0);
+
+            var legsSilhouette = entity.addComponent(new SpriteMime(_legs));
+            legsSilhouette.color = new Color(0, 0, 0, 80);
+            legsSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            legsSilhouette.renderLayer = Layers.Foreground;
+            legsSilhouette.localOffset = new Vector2(0, 0);
 
             var headSilhouette = entity.addComponent(new SpriteMime(_head));
             headSilhouette.color = new Color(0, 0, 0, 80);
@@ -77,29 +91,55 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private void SetupPlayerSprites()
         {
             // Assign renderable (animation) component
-            var bodyAnimations = SetupBodyAnimations(_playerSprite.Body);
-            _body = entity.addComponent(bodyAnimations);
-            _body.renderLayer = Layers.Player;
-
             var headAnimations = SetupHeadAnimations(_playerSprite.Head);
             _head = entity.addComponent(headAnimations);
             _head.renderLayer = Layers.Player;
 
-            _body.play(BodyAnimation.Idle);
-            _head.play(HeadAnimation.FrontFacing);
-        }
-        private Sprite<BodyAnimation> SetupBodyAnimations(PlayerBodySprite bodySprite)
-        {
-            var animations = new Sprite<BodyAnimation>();
+            var torsoAnimations = SetupTorsoAnimations(_playerSprite.Torso);
+            _torso = entity.addComponent(torsoAnimations);
+            _torso.renderLayer = Layers.Player;
 
-            animations.addAnimation(BodyAnimation.Idle, 
-                bodySprite.Idle.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimation.IdleUnarmed, 
-                bodySprite.IdleUnarmed.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimation.Walking, 
-                bodySprite.Walking.ToSpriteAnimation(_playerSprite.Source + "_body"));
-            animations.addAnimation(BodyAnimation.WalkingUnarmed, 
-                bodySprite.WalkingUnarmed.ToSpriteAnimation(_playerSprite.Source + "_body"));
+            var legsAnimations = SetupLegsAnimations(_playerSprite.Legs);
+            _legs = entity.addComponent(legsAnimations);
+            _legs.renderLayer = Layers.Player;
+
+            _head.play(HeadAnimation.FrontFacing);
+            _torso.play(TorsoAnimation.Front);
+            _legs.play(LegsAnimation.Idle);
+        }
+
+        private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
+        {
+            var animations = new Sprite<HeadAnimation>();
+
+            animations.addAnimation(HeadAnimation.FrontFacing,
+                headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/head"));
+            animations.addAnimation(HeadAnimation.BackFacing,
+                headSprite.Back.ToSpriteAnimation(_playerSprite.Source + "/head"));
+
+            return animations;
+        }
+
+        private Sprite<TorsoAnimation> SetupTorsoAnimations(PlayerTorsoSprite torsoSprite)
+        {
+            var animations = new Sprite<TorsoAnimation>();
+
+            animations.addAnimation(TorsoAnimation.Front, 
+                torsoSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/torso"));
+            animations.addAnimation(TorsoAnimation.Back, 
+                torsoSprite.Back.ToSpriteAnimation(_playerSprite.Source + "/torso"));
+
+            return animations;
+        }
+
+        private Sprite<LegsAnimation> SetupLegsAnimations(PlayerLegsSprite legsSprite)
+        {
+            var animations = new Sprite<LegsAnimation>();
+
+            animations.addAnimation(LegsAnimation.Idle,
+                legsSprite.Idle.ToSpriteAnimation(_playerSprite.Source + "/legs"));
+            animations.addAnimation(LegsAnimation.Walking,
+                legsSprite.Walking.ToSpriteAnimation(_playerSprite.Source + "/legs"));
 
             return animations;
         }
@@ -109,22 +149,14 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _head.tweenColorTo(c, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            _body.tweenColorTo(c, durationSeconds)
+            _torso.tweenColorTo(c, durationSeconds)
+                .setEaseType(easeType)
+                .start();
+            _legs.tweenColorTo(c, durationSeconds)
                 .setEaseType(easeType)
                 .start();
         }
 
-        private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
-        {
-            var animations = new Sprite<HeadAnimation>();
-
-            animations.addAnimation(HeadAnimation.FrontFacing,
-                headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "_head"));
-            animations.addAnimation(HeadAnimation.BackFacing,
-                headSprite.Back.ToSpriteAnimation(_playerSprite.Source + "_head"));
-
-            return animations;
-        }
 
         public void update()
         {
@@ -134,7 +166,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public void UpdateRenderLayerDepth()
         {
             _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
-            _body.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            _torso.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            _legs.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
         }
 
         private void UpdateAnimation()
@@ -143,22 +176,12 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             bool armed = _player.IsArmed;
 
             // Select Animations (Idle initially)
-            BodyAnimation bodyAnimation = armed ? BodyAnimation.Idle : BodyAnimation.IdleUnarmed;
             HeadAnimation headAnimation = HeadAnimation.FrontFacing;
-
-            // Body
-            if(_player.PlayerState == PlayerState.Dead || _player.PlayerState == PlayerState.Dying)
-            {
-                bodyAnimation = BodyAnimation.IdleUnarmed;
-                _body.pause();
-            }
-            else if (_player.Acceleration.Length() > 0)
-            {
-                bodyAnimation = armed ? BodyAnimation.Walking : BodyAnimation.WalkingUnarmed;
-            }
+            TorsoAnimation torsoAnimation = TorsoAnimation.Front;
+            LegsAnimation legsAnimation = LegsAnimation.Idle;
 
             // Head
-            if(_player.PlayerState == PlayerState.Dead)
+            if (_player.PlayerState == PlayerState.Dead)
             {
                 headAnimation = _head.currentAnimation;
                 _head.pause();
@@ -174,24 +197,58 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 headAnimation = HeadAnimation.FrontFacing;
             }
 
-            // Play Animations
-
-            if (!_body.isAnimationPlaying(bodyAnimation))
+            // Torso
+            if (_player.PlayerState == PlayerState.Dead)
             {
-                _body.play(bodyAnimation);
+                torsoAnimation = _torso.currentAnimation;
+                _head.pause();
             }
+            else if (_player.VerticalFacing == (int)FacingCode.UP)
+            {
+                _facingDepthOffset = -20 * Constants.RenderLayerDepthFactor;
+                torsoAnimation = TorsoAnimation.Back;
+            }
+            else if (_player.VerticalFacing == (int)FacingCode.DOWN)
+            {
+                _facingDepthOffset = 20 * Constants.RenderLayerDepthFactor;
+                torsoAnimation = TorsoAnimation.Front;
+            }
+
+            // Legs
+            if (_player.PlayerState == PlayerState.Dead || _player.PlayerState == PlayerState.Dying)
+            {
+                legsAnimation = LegsAnimation.Idle;
+                _legs.pause();
+            }
+            else if (_player.Acceleration.Length() > 0)
+            {
+                legsAnimation = LegsAnimation.Walking;
+            }
+
+
+            // Play Animations
 
             if (!_head.isAnimationPlaying(headAnimation))
             {
                 _head.play(headAnimation);
             }
 
+            if (!_torso.isAnimationPlaying(torsoAnimation))
+            {
+                _torso.play(torsoAnimation);
+            }
+
+            if (!_legs.isAnimationPlaying(legsAnimation))
+            {
+                _legs.play(legsAnimation);
+            }
         }
 
         public void FlipX(bool isFlipped)
         {
-            if (_body != null) _body.flipX = isFlipped;
             if (_head != null) _head.flipX = isFlipped;
+            if (_torso != null) _torso.flipX = isFlipped;
+            if (_legs != null) _legs.flipX = isFlipped;
         }
     }
 }

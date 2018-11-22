@@ -40,6 +40,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Cooldown.Start();
             _renderer = entity.addComponent(new GunRenderer(this, _player));
+            entity.updateOrder = 1;
         }
 
         private void SetupParameters()
@@ -131,7 +132,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Cooldown.Update();
             Reload.Update();
-
         }
 
         public void Destroy()

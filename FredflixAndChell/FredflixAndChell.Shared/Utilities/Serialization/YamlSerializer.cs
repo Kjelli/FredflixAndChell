@@ -11,13 +11,12 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
     {
         private static readonly string Extension = "fml";
         private static readonly string BasePath = "Content/data/player";
-        
-        //public static void SerializeAll()
-        //{
-        //    SerializeGun(PlayerSpritePresets.Kjelli);
-        //    SerializeGun(PlayerSpritePresets.Tormod);
-        //    SerializeGun(PlayerSpritePresets.Trump);
-        //}
+
+        // Only to be called ad-hoc when serializing one or more presets
+        public static void SerializeAll()
+        {
+            SerializeCharacter(PlayerSpritePresets.Trump);
+        }
 
         public static GunParameters DeserializeGunParameters(string filename)
         {
@@ -35,8 +34,8 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             return characterParameters;
         }
 
-        /*
-        public static void SerializePlayer(CharacterParameters player)
+
+        public static void SerializeCharacter(CharacterParameters player)
         {
             var serializer = new Serializer();
             var yaml = serializer.Serialize(player, typeof(CharacterParameters));
@@ -48,6 +47,6 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             }
             File.WriteAllText(filename, yaml);
         }
-        */
+
     }
 }

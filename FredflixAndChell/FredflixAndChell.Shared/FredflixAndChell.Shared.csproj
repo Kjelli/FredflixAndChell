@@ -67,7 +67,8 @@
     <Compile Include="GameObjects\Players\BloodEngine.cs" />
     <Compile Include="GameObjects\Players\Characters\CharacterParameters.cs" />
     <Compile Include="GameObjects\Players\Characters\Characters.cs" />
-    <Compile Include="GameObjects\Players\Sprites\PlayerBodySprite.cs" />
+    <Compile Include="GameObjects\Players\Sprites\PlayerLegsSprite.cs" />
+    <Compile Include="GameObjects\Players\Sprites\PlayerTorsoSprite.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerHeadSprite.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerSprite.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerSpritePresets.cs" />
