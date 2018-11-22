@@ -13,6 +13,8 @@ using Nez;
 using Nez.Sprites;
 using Nez.Textures;
 using Nez.Tiled;
+using System;
+using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Scenes
@@ -74,8 +76,23 @@ namespace FredflixAndChell.Shared.Scenes
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
             //CustomizeTiles(tiledMapComponent);
-            addSceneComponent(new DungeonGloom());
-           
+
+            //Weather
+            ApplyWeather(tiledmap);
+
+        }
+
+        private void ApplyWeather(TiledMap tiledmap)
+        {
+            try
+            {
+                var weatherAttribute = tiledmap.properties["weather"];
+                if (weatherAttribute != null && weatherAttribute != "")
+                {
+                    addSceneComponent(GetWeatherEffect(weatherAttribute));
+                }
+            }
+            catch (KeyNotFoundException) { }
         }
 
         private void SetupMapObjects(TiledObjectGroup objectGroup)
@@ -172,7 +189,21 @@ namespace FredflixAndChell.Shared.Scenes
 
             // Letterbox effect when a winner is determined
             LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(4));
+            
+        }
 
+        public SceneComponent GetWeatherEffect(string name)
+        {
+            switch (name)
+            {
+                case "snowstorm":
+                    return new Snowstorm();
+                case "dungeongloom":
+                    return new DungeonGloom();
+                default:
+                    Console.WriteLine("Weather effect '" + name + "' not found");
+                    return null;
+            }
         }
     }
 }
