@@ -80,6 +80,7 @@ namespace FredflixAndChell.Shared.Scenes
             //Weather
             ApplyWeather(tiledmap);
 
+            //CreateHUD();
         }
 
         private void ApplyWeather(TiledMap tiledmap)
@@ -89,7 +90,7 @@ namespace FredflixAndChell.Shared.Scenes
                 var weatherAttribute = tiledmap.properties["weather"];
                 if (weatherAttribute != null && weatherAttribute != "")
                 {
-                    addSceneComponent(GetWeatherEffect(weatherAttribute));
+                    this.addSceneComponent(GetWeatherEffect(weatherAttribute));
                 }
             }
             catch (KeyNotFoundException) { }
@@ -204,6 +205,17 @@ namespace FredflixAndChell.Shared.Scenes
                     Console.WriteLine("Weather effect '" + name + "' not found");
                     return null;
             }
+        }
+
+        public void CreateHUD()
+        {
+            var uiCanvas = createEntity("le-hud").addComponent(new UICanvas());
+            uiCanvas.isFullScreen = true;
+            uiCanvas.renderLayer = Layers.HUD;
+
+            var p1_hud = uiCanvas.addComponent(new Sprite(AssetLoader.GetTexture("UI/HUD")));
+
+
         }
     }
 }

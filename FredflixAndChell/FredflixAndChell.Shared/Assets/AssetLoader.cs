@@ -43,6 +43,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
 
+            LoadTexture("textures/UI/HUD");
+
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
 

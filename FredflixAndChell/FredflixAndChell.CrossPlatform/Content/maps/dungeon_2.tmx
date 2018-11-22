@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="80" height="80" tilewidth="8" tileheight="8" infinite="0" nextlayerid="32" nextobjectid="117">
  <properties>
-  <property name="weather" value="dueongongloom"/>
+  <property name="weather" value="dungeongloom"/>
  </properties>
  <tileset firstgid="1" source="dungeon_tileset.tsx"/>
  <layer id="27" name="Floor" width="80" height="80">

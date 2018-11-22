@@ -31,24 +31,23 @@ namespace FredflixAndChell.Shared.Assets
 
         public class Layers
         {
-            public const int HUD = 999;
-
-            public const int Background = 16;
-            public const int MapBackground = 15;
-            public const int MapObstacles = 14;
-            public const int Items = 13;
-            public const int Shadow = 12;
-            public const int Bullet = 11;
-            public const int PlayerBehindest = 10;
-            public const int PlayerBehind = 9;
-            public const int Player = 8;
-            public const int PlayerFront = 7;
-            public const int PlayerFrontest = 6;
-            public const int MapForeground = 5;
-            public const int Lights = 4;
-            public const int Lights2 = 3;
-            public const int Foreground = 2;
-            public const int Weather = 1;
+            public const int Background = 17;
+            public const int MapBackground = 16;
+            public const int MapObstacles = 15;
+            public const int Items = 14;
+            public const int Shadow = 13;
+            public const int Bullet = 12;
+            public const int PlayerBehindest = 11;
+            public const int PlayerBehind = 10;
+            public const int Player = 9;
+            public const int PlayerFront = 8;
+            public const int PlayerFrontest = 7;
+            public const int MapForeground = 6;
+            public const int Lights = 5;
+            public const int Lights2 = 4;
+            public const int Foreground = 3;
+            public const int Weather = 2;
+            public const int HUD = 1;
         }
 
         public class Stencils
