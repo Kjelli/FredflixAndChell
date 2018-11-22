@@ -18,6 +18,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         public DebugHud() : base("debug_hud")
         {
             _text = new Text(new NezSpriteFont(Assets.AssetLoader.GetFont("debug")), "", Vector2.Zero, Color.White);
+
             _text.renderLayer = Constants.Layers.HUD;
             addComponent(_text);
             updateInterval = 15;

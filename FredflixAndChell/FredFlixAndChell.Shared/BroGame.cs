@@ -20,7 +20,7 @@ namespace FredflixAndChell.Shared
 
             // YamlSerializer.SerializeAll();
 
-            ContextHelper.CurrentMap = "dungeon_2";
+            ContextHelper.CurrentMap = "winter_1";
             scene = new BroScene();
         }
     }

@@ -3,16 +3,19 @@ using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.Components.Effects.Weather;
+using FredflixAndChell.Shared.Components.HUD;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Textures;
 using Nez.Tiled;
+using Nez.UI;
 using System;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
@@ -80,7 +83,8 @@ namespace FredflixAndChell.Shared.Scenes
             //Weather
             ApplyWeather(tiledmap);
 
-            //CreateHUD();
+            addEntity(new PlayerHUD());
+
         }
 
         private void ApplyWeather(TiledMap tiledmap)
@@ -207,15 +211,6 @@ namespace FredflixAndChell.Shared.Scenes
             }
         }
 
-        public void CreateHUD()
-        {
-            var uiCanvas = createEntity("le-hud").addComponent(new UICanvas());
-            uiCanvas.isFullScreen = true;
-            uiCanvas.renderLayer = Layers.HUD;
-
-            var p1_hud = uiCanvas.addComponent(new Sprite(AssetLoader.GetTexture("UI/HUD")));
-
-
-        }
+     
     }
 }
