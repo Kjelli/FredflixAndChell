@@ -112,7 +112,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
                 //float random_scale = ((float)rng.range(-20, 20) / 100);
                 float random_scale = ((float)rng.range(-20, 20) / 100);
-                entity.scale = new Vector2(2f + random_scale, 2 + random_scale);
+                entity.scale = new Vector2(1f + random_scale, 1f + random_scale);
 
                 //Rotation
                 _sprite.transform.rotation = rng.nextAngle();

@@ -59,6 +59,11 @@
 /processor:
 /build:maps/dungeon_1.tmx
 
+#begin maps/dungeon_2.tmx
+/importer:
+/processor:
+/build:maps/dungeon_2.tmx
+
 #begin maps/dungeon_tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -306,6 +311,18 @@
 /importer:
 /processor:
 /build:textures/particles/Blue_Flame.pex
+
+#begin textures/particles/crystal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/particles/crystal.png
 
 #begin textures/players/kjelli_body.png
 /importer:TextureImporter

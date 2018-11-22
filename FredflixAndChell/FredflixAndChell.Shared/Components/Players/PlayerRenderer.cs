@@ -124,10 +124,14 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         {
             var animations = new Sprite<TorsoAnimation>();
 
-            animations.addAnimation(TorsoAnimation.Front, 
+            animations.addAnimation(TorsoAnimation.Front,
                 torsoSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/torso"));
-            animations.addAnimation(TorsoAnimation.Back, 
+            animations.addAnimation(TorsoAnimation.Back,
                 torsoSprite.Back.ToSpriteAnimation(_playerSprite.Source + "/torso"));
+            animations.addAnimation(TorsoAnimation.FrontUnarmed,
+                torsoSprite.FrontUnarmed.ToSpriteAnimation(_playerSprite.Source + "/torso"));
+            animations.addAnimation(TorsoAnimation.BackUnarmed,
+                torsoSprite.BackUnarmed.ToSpriteAnimation(_playerSprite.Source + "/torso"));
 
             return animations;
         }
@@ -206,12 +210,12 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
                 _facingDepthOffset = -20 * Constants.RenderLayerDepthFactor;
-                torsoAnimation = TorsoAnimation.Back;
+                torsoAnimation = armed ? TorsoAnimation.Back : TorsoAnimation.BackUnarmed;
             }
             else if (_player.VerticalFacing == (int)FacingCode.DOWN)
             {
                 _facingDepthOffset = 20 * Constants.RenderLayerDepthFactor;
-                torsoAnimation = TorsoAnimation.Front;
+                torsoAnimation = armed ? TorsoAnimation.Front : TorsoAnimation.FrontUnarmed;
             }
 
             // Legs

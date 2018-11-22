@@ -222,12 +222,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 _accelerationMultiplier = _sprintAcceleration;
                 _stamina -= 50 * Time.deltaTime;
-                _gun.ToggleRunning(true);
+                _gun?.ToggleRunning(true);
             }
             else
             {
                 _accelerationMultiplier = _walkAcceleration;
-                _gun.ToggleRunning(false);
+                _gun?.ToggleRunning(false);
             }
 
             if (_stamina <= 0)
@@ -235,7 +235,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _stamina = 0;
                 _shouldRegenStamina = true;
                 _accelerationMultiplier = _walkAcceleration;
-                _gun.ToggleRunning(false);
+                _gun?.ToggleRunning(false);
             }
 
             if (_controller.SprintDown) return;
@@ -296,6 +296,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void FallIntoPit(Entity pitEntity)
         {
             DisablePlayer();
+            DisableHitbox();
             var easeType = EaseType.CubicOut;
             var durationSeconds = 2f;
             var targetScale = 0.2f;
@@ -314,6 +315,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .setCompletionHandler(_ => DeclareDead())
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
+        }
+
+        private void DisableHitbox()
+        {
+            _mover.setEnabled(false);
+            _playerHitbox.unregisterColliderWithPhysicsSystem();
+            _playerHitbox.collidesWithLayers = 0;
+            _playerHitbox.setEnabled(false);
         }
 
         private void DeclareDead()

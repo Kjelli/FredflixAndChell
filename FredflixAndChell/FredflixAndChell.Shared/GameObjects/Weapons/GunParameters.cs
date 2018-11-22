@@ -28,6 +28,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public float DropChance { get; set; }
         public Rarity Rarity { get; set; }
-        public float Accuracy { get; set; }
+        public float Accuracy { get; set; } = 0.8f;
     }
 }

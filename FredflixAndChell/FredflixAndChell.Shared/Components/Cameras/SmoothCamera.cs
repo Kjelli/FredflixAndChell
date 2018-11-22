@@ -56,7 +56,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
                 right = -10000, 
                 top = 10000, 
                 bottom = -10000;
-            float paddingX = 32, paddingY = 32;
+            float paddingX = 64, paddingY = 64;
 
             bool anyToTrack = false;
             foreach(var tracker in _trackers)

@@ -1,23 +1,14 @@
-﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.GameObjects;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
-using Nez.Pipeline.Content;
 using Nez.Sprites;
-using Nez.Tweens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 using rng = Nez.Random;
 
-namespace FredflixAndChell.Shared.Components.Effects
+namespace FredflixAndChell.Shared.Components.Effects.Weather
 {
-    public class Snowstorm : ProcessingSystem
+    public class Snowstorm : SceneComponent, IAtmosphere
     {
         private bool _firstFrame = true;
 
@@ -30,6 +21,11 @@ namespace FredflixAndChell.Shared.Components.Effects
         {
             _snowTexture = new Texture2D(Core.graphicsDevice, 1, 1);
             _snowTexture.SetData(new[] { Color.LightBlue });
+        }
+        private void Initialize()
+        {
+            _camera = scene.camera;
+            SpawnInitialFlakes();
         }
 
         public void SpawnInitialFlakes()
@@ -51,13 +47,12 @@ namespace FredflixAndChell.Shared.Components.Effects
             snowflake.addComponent(new Snowflake(_snowTexture, x, y));
         }
 
-        public override void process()
+        public override void update()
         {
             if (_firstFrame)
             {
                 _firstFrame = false;
-                _camera = scene.camera;
-                SpawnInitialFlakes();
+                Initialize();
                 return;
             }
             if (Time.frameCount % 4 == 0)

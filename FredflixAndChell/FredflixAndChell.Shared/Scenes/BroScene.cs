@@ -2,6 +2,7 @@
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects;
+using FredflixAndChell.Shared.Components.Effects.Weather;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Particles;
@@ -72,9 +73,8 @@ namespace FredflixAndChell.Shared.Scenes
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
             //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
 
-            
             //CustomizeTiles(tiledMapComponent);
-            addEntityProcessor(new Snowstorm());
+            addSceneComponent(new DungeonGloom());
            
         }
 
