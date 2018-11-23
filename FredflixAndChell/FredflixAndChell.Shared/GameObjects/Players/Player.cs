@@ -1,8 +1,10 @@
-﻿using FredflixAndChell.Shared.Components.Cameras;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
-using FredflixAndChell.Shared.GameObjects.Players.Sprites;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.Particles;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
@@ -10,17 +12,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.Particles;
-using FredflixAndChell.Shared.Assets;
-using Microsoft.Xna.Framework.Graphics;
-using Nez.Sprites;
-using FredflixAndChell.Shared.GameObjects.Players.Characters;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public enum PlayerState
     {
         Normal, Dying, Dead
+    }
+
+    public enum PlayerMobilityState
+    {
+        Walking, Running, Rolling
     }
 
     public class Player : GameObject, ITriggerListener
@@ -47,11 +49,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _speed = 50f;
         private float _accelerationMultiplier;
         private float _stamina = 100;
-        private bool _shouldRegenStamina = false;
+        private bool _isRegeneratingStamina = false;
         private readonly float _walkAcceleration = 0.05f;
         private readonly float _sprintAcceleration = 0.10f;
         static int itemId = 0;
-     
+
 
         private List<Entity> _entitiesInProximity;
         private Entity _particlesEntity;
@@ -59,6 +61,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isRolling;
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
+        private bool _isWithinDodgeRollGracePeriod;
+        private float _gracePeriod;
 
         public PlayerState PlayerState => _playerState;
         public int PlayerIndex => _controllerIndex;
@@ -84,7 +88,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters();
             entity.updateOrder = 0;
         }
-
 
         private void SetupComponents()
         {
@@ -141,7 +144,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetFacing();
             _particlesEntity.setPosition(entity.localPosition);
         }
-     
+
 
         private void ReadInputs()
         {
@@ -157,24 +160,56 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 SwitchWeapon();
             if (_controller.InteractPressed)
                 Interact();
+            if (_controller.SprintPressed)
+                ToggleDodgeRoll();
             if (_controller.DebugModePressed)
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
-            // TODO: Add some sort of "grace" time between clicks so that only a somewhat fast double-click
-            // should trigger a dodge roll.
-            if (_controller.SprintPressed)
-                _numSprintPressed++;
-
+            HandleDodgeRollGracePeriod();
             ToggleSprint();
-            ToggleStaminaRegen();
-            ToggleDodgeRoll();
+            ToggleStaminaRegeneration();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
         }
 
+        private void HandleDodgeRollGracePeriod()
+        {
+            if (_isWithinDodgeRollGracePeriod)
+            {
+                _gracePeriod += 1 * Time.deltaTime;
+            }
+            if (_gracePeriod > 1)
+            {
+                _gracePeriod = 0;
+                _numSprintPressed = 0;
+                _isWithinDodgeRollGracePeriod = false;
+            }
+        }
+
         private void ToggleDodgeRoll()
         {
-            if (_shouldRegenStamina) return;
+            if (_numSprintPressed == 0)
+            {
+                _numSprintPressed++;
+                _isWithinDodgeRollGracePeriod = true;
+            }
+
+            else if (_numSprintPressed == 1 && _gracePeriod < 1)
+            {
+                _numSprintPressed++;
+                PerformDodgeRoll();
+            }
+            else
+            {
+                _isWithinDodgeRollGracePeriod = false;
+                _numSprintPressed = 0;
+                _gracePeriod = 0;
+            }
+        }
+
+        private void PerformDodgeRoll()
+        {
+            if (_isRegeneratingStamina) return;
             if (_numSprintPressed == 2 && _controller.SprintPressed)
             {
                 _isRolling = true;
@@ -202,23 +237,22 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        private void ToggleStaminaRegen()
+        private void ToggleStaminaRegeneration()
         {
-            if (!_shouldRegenStamina)
+            if (!_isRegeneratingStamina)
                 return;
 
             _stamina += 25 * Time.deltaTime;
-
             if (_stamina >= 100)
             {
                 _stamina = 100;
-                _shouldRegenStamina = false;
+                _isRegeneratingStamina = false;
             }
         }
 
         private void ToggleSprint()
         {
-            if (_controller.SprintDown && !_shouldRegenStamina)
+            if (_controller.SprintDown && !_isRegeneratingStamina)
             {
                 _accelerationMultiplier = _sprintAcceleration;
                 _stamina -= 50 * Time.deltaTime;
@@ -233,7 +267,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_stamina <= 0)
             {
                 _stamina = 0;
-                _shouldRegenStamina = true;
+                _isRegeneratingStamina = true;
                 _accelerationMultiplier = _walkAcceleration;
                 _gun?.ToggleRunning(false);
             }
