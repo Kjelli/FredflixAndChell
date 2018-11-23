@@ -52,6 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Constants.cs" />
+    <Compile Include="Components\Bullets\Behaviours\MultiplyingBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\AcceleratingBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\BulletBehaviour.cs" />
+    <Compile Include="Components\Bullets\Behaviours\StandardBullet.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
     <Compile Include="Components\Effects\Weather\DungeonGloom.cs" />

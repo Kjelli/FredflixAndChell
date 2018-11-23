@@ -5,7 +5,6 @@ BarrelOffset:
   Y: 0.0
 BulletCount: 1
 BulletParameters:
-  Bounce: false
   Damage: 5.0
   Knockback: 0.05
   LifeSpanSeconds: -1.0

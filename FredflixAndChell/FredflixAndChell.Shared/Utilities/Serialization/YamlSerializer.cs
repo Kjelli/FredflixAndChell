@@ -1,4 +1,6 @@
-﻿using FredflixAndChell.Shared.GameObjects.Players;
+﻿using FredflixAndChell.Shared.Components.Bullets.Behaviours;
+using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -40,6 +42,24 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             var serializer = new Serializer();
             var yaml = serializer.Serialize(player, typeof(CharacterParameters));
             var filename = $"{BasePath}/{player.CharacterName}.{Extension}";
+
+            if (!Directory.Exists(BasePath))
+            {
+                Directory.CreateDirectory(BasePath);
+            }
+            File.WriteAllText(filename, yaml);
+        }
+
+        public static void Foo()
+        {
+            var serializer = new Serializer();
+            var yaml = serializer.Serialize(new GunParameters {
+                BulletParameters = new BulletParameters
+                {
+                    BulletBehaviour = nameof(StandardBullet)
+                }
+            }, typeof(GunParameters));
+            var filename = $"{BasePath}/test.fml";
 
             if (!Directory.Exists(BasePath))
             {

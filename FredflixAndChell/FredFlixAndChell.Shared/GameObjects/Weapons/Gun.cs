@@ -66,24 +66,20 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             {
                 //Functionality
                 Cooldown.Start();
-                var bulletSpawnX = (float)(entity.position.X 
-                    + Math.Cos(entity.localRotation) * _barrelOffset.X 
+                var x = (float)(entity.position.X
+                    + Math.Cos(entity.localRotation) * _barrelOffset.X
                     + Math.Cos(entity.localRotation) * _barrelOffset.Y);
-                var bulletSpawnY = (float)(entity.position.Y 
-                    + Math.Sin(entity.localRotation) * _barrelOffset.Y 
+                var y = (float)(entity.position.Y
+                    + Math.Sin(entity.localRotation) * _barrelOffset.Y
                     + Math.Sin(entity.localRotation) * _barrelOffset.X);
                 for (float i = 0; i < _bulletCount; i++)
                 {
-                    var bulletEntity = entity.scene.createEntity("bullet");
-                    bulletEntity.addComponent(
-                        new Bullet(_player,
-                            bulletSpawnX,
-                            bulletSpawnY,
-                            entity.localRotation 
-                              + (1 - _accuracy) * Nez.Random.minusOneToOne() / 2
-                              + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
-                              + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount),
-                            _params.BulletParameters));
+
+                    var direction = entity.localRotation + (1 - _accuracy) * Nez.Random.minusOneToOne() / 2
+                    + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
+                    + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount);
+
+                    Bullet.Create(_player, x, y, direction, _params.BulletParameters);
                 }
                 _magazineAmmo--;
 
