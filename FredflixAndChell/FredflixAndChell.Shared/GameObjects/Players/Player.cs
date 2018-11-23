@@ -189,6 +189,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleDodgeRoll()
         {
+            if (_isRolling) return;
             if (_numSprintPressed == 0)
             {
                 _numSprintPressed++;
