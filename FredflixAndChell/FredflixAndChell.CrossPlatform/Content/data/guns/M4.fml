@@ -5,13 +5,13 @@ BarrelOffset:
   Y: 0.0
 BulletCount: 1
 BulletParameters:
-  Bounce: false
+  BulletBehaviour: MultiplyingBullet
   Damage: 10.0
   Knockback: 0
   LifeSpanSeconds: -1.0
   RotateWithGun: false
   Scale: 0.150000006
-  Speed: 200.0
+  Speed: 80.0
   Sprite:
     Bullet:
       FPS: 1.0
