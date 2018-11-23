@@ -168,6 +168,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             HandleDodgeRollGracePeriod();
             ToggleSprint();
             ToggleStaminaRegeneration();
+            PerformDodgeRoll();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
         }
@@ -197,7 +198,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             else if (_numSprintPressed == 1 && _gracePeriod < 1)
             {
                 _numSprintPressed++;
-                PerformDodgeRoll();
             }
             else
             {
