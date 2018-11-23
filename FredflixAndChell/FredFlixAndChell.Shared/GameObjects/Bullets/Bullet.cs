@@ -5,6 +5,10 @@ using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.Components.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Components.Bullets.Behaviours;
+using FredflixAndChell.Shared.Utilities.Activator;
+using System.Reflection;
+using static FredflixAndChell.Shared.Utilities.Activator.ObjectActivatorHelper;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
@@ -12,6 +16,9 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
     public class Bullet : GameObject
     {
         private const string NamespacePrefix = "FredflixAndChell.Shared.Components.Bullets.Behaviours.";
+
+        private static Dictionary<string, ObjectActivator<BulletBehaviour>> _behaviourCache
+            = new Dictionary<string, ObjectActivator<BulletBehaviour>>();
 
         private BulletParameters _params;
         private BulletRenderer _renderer;
@@ -29,8 +36,21 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             _params = bulletParameters;
             _direction = direction;
 
-            var behaviourType = Type.GetType(NamespacePrefix + _params.BulletBehaviour);
-            _behaviour = (BulletBehaviour)Activator.CreateInstance(behaviourType, this);
+            _behaviour = ConstructBehaviour(_params.BulletBehaviour);
+
+        }
+
+        private BulletBehaviour ConstructBehaviour(string bulletBehaviour)
+        {
+            if (!_behaviourCache.ContainsKey(bulletBehaviour))
+            {
+                var behaviourType = Type.GetType(NamespacePrefix + _params.BulletBehaviour);
+                ConstructorInfo ctor = behaviourType.GetConstructors()[0];
+                ObjectActivator<BulletBehaviour> activator = GetActivator<BulletBehaviour>(ctor);
+                _behaviourCache.Add(bulletBehaviour, activator);
+            }
+            var instance = _behaviourCache[bulletBehaviour](this);
+            return instance;
         }
 
         public override void OnSpawn()

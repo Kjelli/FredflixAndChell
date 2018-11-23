@@ -89,6 +89,7 @@
     <Compile Include="Scenes\LobbyScene.cs" />
     <Compile Include="Systems\GameSystem.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />
+    <Compile Include="Utilities\Activator\ObjectActivatorHelper.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="BroGame.cs" />

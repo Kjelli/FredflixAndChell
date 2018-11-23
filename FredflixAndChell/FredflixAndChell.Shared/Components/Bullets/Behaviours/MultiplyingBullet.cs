@@ -13,11 +13,18 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
     {
         private const float MultiplyTime = 0.5f;
         private float _multiplyTimerSeconds = 0f;
+        private bool hasMultipliedPreviousFrame = false;
         public MultiplyingBullet(Bullet bullet) : base(bullet) {}
 
         public override void update()
         {
             base.update();
+            if (hasMultipliedPreviousFrame)
+            {
+                entity.destroy();
+                return;
+            }
+
             _multiplyTimerSeconds += Time.deltaTime;
             if(_multiplyTimerSeconds >= MultiplyTime)
             {
@@ -31,7 +38,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             var direction = (float)Math.Atan2(_bullet.Velocity.Y, _bullet.Velocity.X);
             Bullet.Create(_bullet.Owner, entity.position.X, entity.position.Y, direction + 0.1f, _bullet.Parameters);
             Bullet.Create(_bullet.Owner, entity.position.X, entity.position.Y, direction - 0.1f, _bullet.Parameters);
-            entity.destroy();
+            hasMultipliedPreviousFrame = true;
         }
     }
 }
