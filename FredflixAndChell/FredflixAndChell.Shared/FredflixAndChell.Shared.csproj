@@ -57,6 +57,7 @@
     <Compile Include="Components\Bullets\Behaviours\BulletBehaviour.cs" />
     <Compile Include="Components\Bullets\Behaviours\AndyBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\ReturningBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\RotatingReturningBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\StandardBullet.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
