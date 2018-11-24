@@ -28,6 +28,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadFont("fonts/debug");
 
             LoadPlayerTexture("textures/players/trump");
+            LoadPlayerTexture("textures/players/doge");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
