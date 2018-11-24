@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
-using System;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -38,10 +37,12 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
+            LoadTexture("textures/guns/fidgetspinner");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
+            LoadTexture("textures/bullets/fidgetspinner");
 
             LoadTexture("textures/UI/HUD");
 
@@ -134,7 +135,7 @@ namespace FredflixAndChell.Shared.Assets
 
         #endregion
 
-       
+
     }
     public static class ParticleDesigner
     {

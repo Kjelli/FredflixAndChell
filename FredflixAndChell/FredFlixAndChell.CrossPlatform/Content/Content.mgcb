@@ -20,6 +20,9 @@
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
+#begin data/guns/Fidgetspinner.fml
+/copy:data/guns/Fidgetspinner.fml
+
 #begin data/guns/Fido.fml
 /copy:data/guns/Fido.fml
 
@@ -55,13 +58,13 @@
 /build:fonts/debug.spritefont
 
 #begin maps/dungeon_1.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/dungeon_1.tmx
 
 #begin maps/dungeon_2.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/dungeon_2.tmx
 
 #begin maps/dungeon_tileset.png
@@ -118,14 +121,26 @@
 /build:maps/spawner_tile.png
 
 #begin maps/winter_1.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_1.tmx
 
 #begin maps/winter_debug.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_debug.tmx
+
+#begin textures/bullets/fidgetspinner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/fidgetspinner.png
 
 #begin textures/bullets/fido.png
 /importer:TextureImporter
@@ -259,6 +274,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/effects/rainbow.png
 
+#begin textures/guns/fidgetspinner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/fidgetspinner.png
+
 #begin textures/guns/fido.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -308,8 +335,8 @@
 /build:textures/particles/blood.png
 
 #begin textures/particles/Blue_Flame.pex
-/importer:
-/processor:
+/importer:ParticleDesignerImporter
+/processor:ParticleDesignerProcessor
 /build:textures/particles/Blue_Flame.pex
 
 #begin textures/particles/crystal.png
@@ -407,18 +434,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/players/trump/torso.png
-
-#begin textures/UI/HUD.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:textures/UI/HUD.png;textures/HUD.png
 
 #begin textures/UI/HUD.png
 /importer:TextureImporter

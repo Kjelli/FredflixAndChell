@@ -1,19 +1,16 @@
-﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.Cameras;
+﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Particles;
-using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
@@ -104,7 +101,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _mover = addComponent(new Mover());
 
             // Assign gun component
-            EquipGun("M4");
+            EquipGun("Fidgetspinner");
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -486,7 +483,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             _renderer.UpdateRenderLayerDepth();
         }
- }
+    }
 
     public enum FacingCode
     {
