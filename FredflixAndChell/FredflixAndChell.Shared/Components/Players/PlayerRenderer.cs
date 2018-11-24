@@ -36,7 +36,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public override void onAddedToEntity()
         {
-            _player = entity.getComponent<Player>();
+            _player = entity as Player;
 
             SetupPlayerSprites();
 

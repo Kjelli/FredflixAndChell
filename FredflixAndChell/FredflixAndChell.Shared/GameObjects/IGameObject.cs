@@ -8,7 +8,6 @@ namespace FredflixAndChell.Shared.GameObjects
 {
     public interface IGameObject
     {
-
         void OnSpawn();
         void OnDespawn();
 

@@ -16,7 +16,7 @@ namespace FredflixAndChell.Shared.Systems
         Starting, Started, Ending, Ended
     }
 
-    public class GameSystem : EntitySystem
+    public class GameSystem : SceneComponent
     {
         private const int MinNumberOfPlayersToPlay = 2;
         private const int MaxNumberOfPlayersForRestart = 1;
@@ -25,6 +25,7 @@ namespace FredflixAndChell.Shared.Systems
 
         private GameState _gameState;
 
+        private List<Player> _registeredPlayers;
         private Dictionary<int, Player> _playerStandings;
         private BroScene _broScene;
         private SmoothCamera _camera;
@@ -36,27 +37,31 @@ namespace FredflixAndChell.Shared.Systems
         public GameState GameState => _gameState;
 
 
-        public GameSystem(Matcher matcher) : base(matcher)
+        public GameSystem()
         {
+            _registeredPlayers = new List<Player>();
             _playerStandings = new Dictionary<int, Player>();
             _transitionDelay = new Cooldown(TransitionDelay, true);
         }
-
-        protected override void begin()
+        public override void onEnabled()
         {
-            base.begin();
             _broScene = scene as BroScene;
             _camera = scene.getSceneComponent<SmoothCamera>();
         }
 
-        protected override void process(List<Entity> entities)
+        public void RegisterPlayer(Player player)
+        {
+            _registeredPlayers.Add(player);
+        }
+
+        public override void update()
         {
             _playerStandings.Clear();
             _playersAlive = 0;
 
-            foreach (var playerEntity in entities)
+            foreach (var playerEntity in _registeredPlayers)
             {
-                var player = playerEntity.getComponent<Player>();
+                var player = playerEntity as Player;
                 _playerStandings[player.PlayerIndex] = player;
                 if (player.PlayerState != PlayerState.Dead)
                 {

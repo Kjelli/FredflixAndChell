@@ -55,9 +55,12 @@
     <Compile Include="Components\Bullets\Behaviours\MultiplyingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\AcceleratingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\BulletBehaviour.cs" />
+    <Compile Include="Components\Bullets\Behaviours\AndyBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\ReturningBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\StandardBullet.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
+    <Compile Include="Components\Collectibles\CollectibleCollisionHandler.cs" />
     <Compile Include="Components\Effects\Weather\DungeonGloom.cs" />
     <Compile Include="Components\Effects\Weather\IAtmosphere.cs" />
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
@@ -65,6 +68,7 @@
     <Compile Include="Components\HUD\DebugHud.cs" />
     <Compile Include="Components\HUD\HudPanel.cs" />
     <Compile Include="Components\HUD\PlayerHUD.cs" />
+    <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />
     <Compile Include="GameObjects\Bullets\BulletParameters.cs" />

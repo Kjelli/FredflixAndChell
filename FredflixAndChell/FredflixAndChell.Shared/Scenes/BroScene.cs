@@ -44,14 +44,12 @@ namespace FredflixAndChell.Shared.Scenes
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new PlayerConnector(spawnLocations: PlayerSpawner));
-            addEntityProcessor(new GameSystem(new Matcher().all(typeof(Player))));
+            addSceneComponent(new GameSystem());
 
             // TODO turn back on for sweet details. Sweetails.
-            //addEntity(new DebugHud());
-
+            addEntity(new DebugHud());
             SetupRenderering();
         }
-
         public override void unload()
         {
             base.unload();
@@ -94,7 +92,7 @@ namespace FredflixAndChell.Shared.Scenes
                 var weatherAttribute = tiledmap.properties["weather"];
                 if (weatherAttribute != null && weatherAttribute != "")
                 {
-                    this.addSceneComponent(GetWeatherEffect(weatherAttribute));
+                    addSceneComponent(GetWeatherEffect(weatherAttribute));
                 }
             }
             catch (KeyNotFoundException) { }
@@ -120,8 +118,7 @@ namespace FredflixAndChell.Shared.Scenes
 
             foreach (var spawnObject in objectGroup.objectsWithName("item_spawn"))
             {
-                var spawnerEntity = createEntity("spawner" + spawnObject.id);
-                spawnerEntity.addComponent(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
+                addEntity(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
             }
 
             PlayerSpawner = new PlayerSpawner();

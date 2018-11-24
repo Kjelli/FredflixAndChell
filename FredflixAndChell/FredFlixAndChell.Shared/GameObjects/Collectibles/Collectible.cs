@@ -7,6 +7,7 @@ using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Players;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
@@ -26,11 +27,13 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private Vector2 _acceleration;
         private Collider _pickupHitbox;
         private Collider _collisionHitbox;
+        private CollectibleCollisionHandler _collisionHandler;
 
         private bool _dropped;
         private bool _isHighlighted;
         private int _numberOfPlayersInProximity;
 
+        public CollectibleState CollectibleState => _collectibleState;
         public CollectibleParameters Preset { get; set; }
 
         public Collectible(float x, float y, string name, bool dropped) : base(x, y)
@@ -42,46 +45,52 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnDespawn()
         {
-            Console.WriteLine($"Despawned entity {entity}");
+            Console.WriteLine($"Despawned entity {this}");
         }
 
         public override void OnSpawn()
         {
+            SetupComponents();
+        }
+
+        private void SetupComponents()
+        {
+            _collisionHandler = addComponent(new CollectibleCollisionHandler());
             var gunSprite = Preset.Gun.Sprite;
 
-            _sprite = entity.addComponent(new Sprite(gunSprite.Icon.ToSpriteAnimation(gunSprite.Source).frames[0]));
+            _sprite = addComponent(new Sprite(gunSprite.Icon.ToSpriteAnimation(gunSprite.Source).frames[0]));
             _sprite.renderLayer = Layers.Items;
             _sprite.material = new Material();
-            
-            entity.scale = new Vector2(0.5f, 0.5f);
-            _hoverTween = entity.tweenLocalScaleTo(0.5f, 0.5f)
+
+            scale = new Vector2(0.5f, 0.5f);
+            _hoverTween = this.tweenLocalScaleTo(0.5f, 0.5f)
                 .setEaseType(EaseType.ExpoOut)
                 .setCompletionHandler(_ => Hover(2f));
             _hoverTween.start();
 
-            _mover = entity.addComponent(new Mover());
+            _mover = addComponent(new Mover());
 
             // Delay pickup (debug)
             Core.schedule(0.5f, _ => SetupPickupHitbox());
 
             //Collision
-            _collisionHitbox = entity.addComponent(new CircleCollider(4));
+            _collisionHitbox = addComponent(new CircleCollider(4));
             Flags.setFlagExclusive(ref _collisionHitbox.collidesWithLayers, Layers.MapObstacles);
         }
 
         private void SetupPickupHitbox()
         {
-            if (entity == null 
-                || _collectibleState == CollectibleState.Unavailable) return;
+            setTag(Tags.Collectible);
+
+            if ( _collectibleState == CollectibleState.Unavailable) return;
 
             _collectibleState = CollectibleState.Available;
-            entity.setTag(Tags.Collectible);
-            _pickupHitbox = entity.addComponent(new BoxCollider());
+            _pickupHitbox = addComponent(new BoxCollider());
             _pickupHitbox.isTrigger = true;
             Flags.setFlagExclusive(ref _pickupHitbox.physicsLayer, Layers.Items);
         }
 
-        private void FallIntoPit(Entity pitEntity)
+        public void FallIntoPit(Entity pitEntity)
         {
             Velocity = Vector2.Zero;
             _acceleration = Vector2.Zero;
@@ -108,14 +117,14 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
             _hoverTween?.stop(true);
 
-            entity.tweenPositionTo(destination, durationSeconds)
+            this.tweenPositionTo(destination, durationSeconds)
                 .setEaseType(easeType)
-                .setCompletionHandler(_ => entity.setEnabled(false))
+                .setCompletionHandler(_ => this.setEnabled(false))
                 .start();
-            entity.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
+            this.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
                 .setEaseType(easeType)
                 .start();
-            entity.tweenScaleTo(targetScale, durationSeconds)
+            this.tweenScaleTo(targetScale, durationSeconds)
                 .setEaseType(easeType)
                 .start();
             _sprite.tweenColorTo(targetColor, durationSeconds)
@@ -125,12 +134,11 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void Hover(float yOffset)
         {
-            if (entity == null 
-                || entity.transform == null
-                || !entity.enabled 
+            if (transform == null
+                || !enabled 
                 || _collectibleState != CollectibleState.Available) return;
             _hoverTween?.stop(true);
-            _hoverTween = entity.tweenLocalPositionTo(new Vector2(entity.transform.position.X, entity.transform.position.Y + yOffset), 1f)
+            _hoverTween = this.tweenLocalPositionTo(new Vector2(transform.position.X, transform.position.Y + yOffset), 1f)
            .setEaseType(EaseType.SineInOut)
            .setCompletionHandler(_ => Hover(-yOffset));
             _hoverTween.start();
@@ -167,7 +175,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
             else if (!CanBeCollected() || (_numberOfPlayersInProximity == 0 && _isHighlighted))
             {
-                Console.WriteLine($"Unhighlighting entity {entity.name}");
+                Console.WriteLine($"Unhighlighting entity {name}");
 
                 _isHighlighted = false;
 
@@ -175,7 +183,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
         }
 
-        public override void update()
+        public override void Update()
         {
             if (_isHighlighted)
             {
@@ -199,7 +207,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void UpdateRenderLayerDepth()
         {
-            _sprite.layerDepth = 1 - (entity.position.Y) * Constants.RenderLayerDepthFactor;
+            _sprite.layerDepth = 1 - (position.Y) * Constants.RenderLayerDepthFactor;
         }
 
         public bool CanBeCollected()
@@ -214,7 +222,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
-            entity.destroy();
+            destroy();
         }
 
         public void onTriggerEnter(Collider other, Collider local)

@@ -46,8 +46,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public override void onAddedToEntity()
         {
-            base.onAddedToEntity();
-            _player = entity.getComponent<Player>();
+            _player = entity as Player;
 
             // Virtual joysticks
             _leftStick = new VirtualJoystick(false);
@@ -63,7 +62,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             _sprintButton = new VirtualButton();
 
             // Virtual mouse joystick
-            _mouseJoystick = new VirtualMouseJoystick(_player.entity.position);
+            _mouseJoystick = new VirtualMouseJoystick(_player.position);
 
             // Keyboard player
             if (_controllerIndex < 0)
@@ -125,7 +124,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         {
             if (_controllerIndex == -1)
             {
-                _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(_player.entity.position);
+                _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(_player.position);
             }
         }
     }

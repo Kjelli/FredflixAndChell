@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
@@ -30,7 +31,7 @@ namespace FredflixAndChell.Components.Players
         {
             base.onEnabled();
 
-            _gameSystem = scene.getEntityProcessor<GameSystem>();
+            _gameSystem = scene.getSceneComponent<GameSystem>();
 
             Core.schedule(1, true, CheckForConnectedPlayers);
             CheckForConnectedPlayers();
@@ -54,10 +55,10 @@ namespace FredflixAndChell.Components.Players
                 SpawnPlayer(-1);
             }
 
-            if (!_connectedPlayers.Contains(-2))
-            {
-                SpawnPlayer(-2);
-            }
+            //if (!_connectedPlayers.Contains(-2))
+            //{
+            //    SpawnPlayer(-2);
+            //}
 
             timer?.reset();
         }
@@ -67,8 +68,8 @@ namespace FredflixAndChell.Components.Players
             Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
-            var player = scene.createEntity($"player_{playerIndex}");
-            player.addComponent(new Player(Characters.All().randomItem(), spawnX, spawnY, playerIndex));
+            var player = scene.addEntity(new Player(Characters.All().randomItem(), spawnX, spawnY, playerIndex));
+
             _connectedPlayers.Add(playerIndex);
 
             Console.WriteLine($"Spawned {player.name}");

@@ -27,7 +27,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         public override void onAddedToScene()
         {
             base.onAddedToScene();
-            _gameSystem = scene.getEntityProcessor<GameSystem>();
+            _gameSystem = scene.getSceneComponent<GameSystem>();
         }
 
         public override void update()

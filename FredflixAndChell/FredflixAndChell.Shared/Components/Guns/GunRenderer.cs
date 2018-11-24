@@ -83,8 +83,8 @@ namespace FredflixAndChell.Shared.Components.Guns
         {
             _animation.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
             _animation.flipY = _player.FlipGun;
-            entity.position = new Vector2(_player.entity.position.X + (float)Math.Cos(entity.localRotation) * _renderOffset,
-                _player.entity.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
+            entity.position = new Vector2(_player.position.X + (float)Math.Cos(entity.localRotation) * _renderOffset,
+                _player.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
             entity.localRotation = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
 
             if (_isPlayerRunning)

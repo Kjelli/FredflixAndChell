@@ -63,7 +63,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
             {
                 if (!tracker.enabled 
                     || !tracker.ShouldTrackEntity()
-                    || (_winMode && tracker.entity.getComponent<Player>() == null)) continue;
+                    || (_winMode && tracker.entity as Player == null)) continue;
                 left = Math.Min(tracker.Position.X - paddingX / 2, left);
                 right = Math.Max(tracker.Position.X + paddingX / 2, right);
                 top = Math.Min(tracker.Position.Y - paddingY / 2, top);

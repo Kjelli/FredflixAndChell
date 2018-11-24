@@ -26,6 +26,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         private Player _owner;
 
         private float _direction;
+        private bool _destroyed;
 
         public Player Owner => _owner;
         public BulletParameters Parameters => _params;
@@ -61,39 +62,40 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             if (_params.LifeSpanSeconds > 0)
             {
-                Core.schedule(_params.LifeSpanSeconds, _ => entity?.destroy());
+                Core.schedule(_params.LifeSpanSeconds, _ =>
+                {
+                    if (!_destroyed) destroy();
+                });
             }
 
             if (_params.RotateWithGun)
             {
-                entity.rotation = _direction;
+                rotation = _direction;
             }
 
-            entity.setScale(_params.Scale);
+            this.setScale(_params.Scale);
         }
 
         private void SetupComponents()
         {
-            entity.addComponent(_behaviour);
+            addComponent(_behaviour);
             _behaviour.OnFired();
-            _renderer = entity.addComponent(new BulletRenderer(_params.Sprite));
+            _renderer = addComponent(new BulletRenderer(_params.Sprite));
         }
 
         public override void OnDespawn()
         {
-            entity.setEnabled(false);
-            entity.destroy();
+            _destroyed = true;
         }
 
-        public override void update()
+        public override void Update()
         {
             _renderer.UpdateRenderLayerDepth();
         }
 
         public static void Create(Player owner, float x, float y, float direction, BulletParameters parameters)
         {
-            var bulletEntity = Core.scene.createEntity("bullet");
-            bulletEntity.addComponent(new Bullet(owner, x, y, direction, parameters));
+            var bulletEntity = Core.scene.addEntity(new Bullet(owner, x, y, direction, parameters));
         }
     }
 }

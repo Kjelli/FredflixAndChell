@@ -12,7 +12,7 @@ using Nez.Sprites;
 
 namespace FredflixAndChell.Shared.GameObjects
 {
-    public abstract class GameObject : Component, IGameObject, IUpdatable
+    public abstract class GameObject : Entity, IGameObject
     {
         private bool _hasSpawned;
         protected bool HasSpawned => _hasSpawned;
@@ -26,23 +26,28 @@ namespace FredflixAndChell.Shared.GameObjects
         }
         public abstract void OnDespawn();
         public abstract void OnSpawn();
-        public abstract void update();
-        public override void onAddedToEntity()
+        public abstract void Update();
+        public override void onAddedToScene()
         {
-            entity.position = _spawnPosition;
-            base.onAddedToEntity();
+            position = _spawnPosition;
             if (!_hasSpawned)
             {
                 OnSpawn();
                 _hasSpawned = true;
             }
-
         }
 
-        public override void onRemovedFromEntity()
+        public override void onRemovedFromScene()
         {
-            base.onRemovedFromEntity();
+            Console.WriteLine($"Removed {this} from scene");
+            base.onRemovedFromScene();
             OnDespawn();
+        }
+
+        public override void update()
+        {
+            base.update();
+            Update();
         }
     }
 }

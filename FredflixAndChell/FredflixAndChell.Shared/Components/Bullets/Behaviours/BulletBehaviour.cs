@@ -10,8 +10,8 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
     public abstract class BulletBehaviour : Component, IUpdatable
     {
         protected readonly Bullet _bullet;
-        private CircleCollider _collider;
-        private ProjectileMover _mover;
+        protected CircleCollider _collider;
+        protected ProjectileMover _mover;
 
         public BulletBehaviour(Bullet bullet)
         {
@@ -35,7 +35,8 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         }
 
-        public virtual void OnFired() {
+        public virtual void OnFired()
+        {
             // TO BE IMPLEMENTED
         }
 
@@ -45,10 +46,13 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         }
         public virtual void OnImpact(Player player)
         {
-            DamagePlayer(player);
+            if (player != null && player != _bullet.Owner)
+            {
+                DamagePlayer(player);
+            }
         }
 
-        public void Move()
+        public virtual void Move()
         {
             if (_bullet.Velocity.Length() == 0) return;
 
@@ -84,21 +88,19 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         private void HitPlayer(Entity playerEntity)
         {
-            var player = playerEntity.getComponent<Player>();
+            var player = playerEntity as Player;
             OnImpact(player);
         }
 
         protected void DamagePlayer(Player player)
         {
-            if (player != null && player != _bullet.Owner)
-            {
-                player.Damage((int)_bullet.Parameters.Damage, _bullet.Velocity);
-                player.Velocity += _bullet.Velocity * _bullet.Parameters.Knockback * Time.deltaTime;
-                _bullet.entity.destroy();
-            }
+            player.Damage((int)_bullet.Parameters.Damage, _bullet.Velocity);
+            player.Velocity += _bullet.Velocity * _bullet.Parameters.Knockback * Time.deltaTime;
+            _bullet.destroy();
         }
 
-        public virtual void update() {
+        public virtual void update()
+        {
             Move();
         }
     }

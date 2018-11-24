@@ -100,15 +100,15 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void OnSpawn()
         {
-            var sprite = entity.addComponent(_animation);
+            var sprite = addComponent(_animation);
             sprite.renderLayer = Layers.MapObstacles;
 
-            entity.addComponent(new CameraTracker(() => _spawnerState != SpawnerState.Closed));
+            addComponent(new CameraTracker(() => _spawnerState != SpawnerState.Closed));
 
             _animation.play(Animations.Idle);
             _spawnTimer.Start();
 
-            var hitbox = entity.addComponent(new CircleCollider(4f));
+            var hitbox = addComponent(new CircleCollider(4f));
 
             Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.Items);
             Flags.setFlagExclusive(ref hitbox.physicsLayer, 0);
@@ -120,8 +120,8 @@ namespace FredflixAndChell.Shared.GameObjects
         {
             if (other == null && local == null) return;
 
-            if(other.entity == CurrentItem?.entity) {
-                CurrentItem.entity = null;
+            if(other.entity == CurrentItem) {
+                CurrentItem = null;
             }
         }
 
@@ -129,9 +129,9 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public void SpawnItem()
         {
-            var entz = entity.scene.createEntity("collectible");
-            CurrentItem = new Collectible((int)entity.position.X, (int)entity.position.Y, GetRandomItem(), false);
-            var col = entz.addComponent(CurrentItem);
+            var entz = scene.createEntity("collectible");
+            CurrentItem = new Collectible((int)position.X, (int)position.Y, GetRandomItem(), false);
+            var col = scene.addEntity(CurrentItem);
             col.transform.setScale(0.3f);
             _unoccupied = false;
         }
@@ -188,13 +188,13 @@ namespace FredflixAndChell.Shared.GameObjects
                 if (CurrentItem == null)
                     return true;
                 else
-                    return CurrentItem.entity == null ? true : false;
+                    return CurrentItem == null ? true : false;
             }
             return false;
         }
 
 
-        public override void update()
+        public override void Update()
         {
             _spawnTimer.Update();
             _stayOpenTimer.Update();
