@@ -36,6 +36,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         public override void update()
         {
             base.update();
+            if (_owner.PlayerState == PlayerState.Dead) return;
             var directionToPlayer = Vector2.Normalize(_owner.position - _bullet.position);
             _bullet.Velocity = _bullet.Velocity * _acceleration + directionToPlayer * _returnSpeed * (1 - _acceleration);
             _acceleration = (float)Math.Max(_acceleration - _accelerationFactor * Time.deltaTime, 0);
