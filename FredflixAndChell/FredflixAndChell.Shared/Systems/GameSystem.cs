@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using Nez;
+﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Scenes;
-using System;
-using FredflixAndChell.Shared.Assets;
-using Microsoft.Xna.Framework;
-using Nez.Tweens;
 using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Components.Cameras;
+using Nez;
+using Nez.Tweens;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -52,6 +50,11 @@ namespace FredflixAndChell.Shared.Systems
         public void RegisterPlayer(Player player)
         {
             _registeredPlayers.Add(player);
+            var playerScore = ContextHelper.PlayerScores.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+            if (playerScore == null)
+            {
+                ContextHelper.PlayerScores.Add(new PlayerScore { PlayerIndex = player.PlayerIndex, Score = 0 });
+            }
         }
 
         public override void update()
@@ -69,19 +72,19 @@ namespace FredflixAndChell.Shared.Systems
                 }
             }
 
-
             switch (_gameState)
             {
                 case GameState.Starting:
                     if (_playersAlive >= MinNumberOfPlayersToPlay)
                     {
-                        StartGame();
+                        StartRound();
                     }
                     break;
                 case GameState.Started:
                     if (_playersAlive <= MaxNumberOfPlayersForRestart)
                     {
-                        EndGame();
+                        DetermineWinner();
+                        EndRound();
                     }
                     break;
                 case GameState.Ending:
@@ -91,29 +94,67 @@ namespace FredflixAndChell.Shared.Systems
                     _transitionDelay.Update();
                     if (_transitionDelay.IsReady())
                     {
-                        StartNextGame();
+                        PrepareForNewRound();
+                        if (WeHaveAWinner())
+                        {
+                            EndGame();
+                        }
+                        else
+                        {
+                            StartNextRound();
+                        }
                     }
                     break;
                 case GameState.Ended:
                     break;
             }
-
         }
 
-        private void StartGame()
+        private void EndGame()
+        {
+            ContextHelper.PlayerScores = null;
+            Core.scene = new LobbyScene();
+        }
+
+        private bool WeHaveAWinner()
+        {
+            // TODO: 3 is just a random number at this point. Set this somewhere else
+            // where we would define the game mode (stock lives, best of X, first to Y etc.)
+            return ContextHelper.PlayerScores.Any(x => x.Score == 3);
+        }
+
+        private void DetermineWinner()
+        {
+            foreach (var playerEntity in _registeredPlayers)
+            {
+                var player = playerEntity as Player;
+                _playerStandings[player.PlayerIndex] = player;
+                if (player.PlayerState == PlayerState.Normal)
+                {
+                    var playerScore = ContextHelper.PlayerScores.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+                    playerScore.Score++;
+                }
+            }
+        }
+
+        private void StartRound()
         {
             _gameState = GameState.Started;
         }
 
-        private void StartNextGame()
+        private void PrepareForNewRound()
         {
             _gameState = GameState.Ended;
             Time.timeScale = 1.0f;
             TweenManager.stopAllTweens();
+        }
+
+        private void StartNextRound()
+        {
             Core.startSceneTransition(new CrossFadeTransition(() => new BroScene()));
         }
 
-        private void EndGame()
+        private void EndRound()
         {
             Time.timeScale = 0.8f;
             _gameState = GameState.Ending;
@@ -122,5 +163,11 @@ namespace FredflixAndChell.Shared.Systems
             sepia.effect = new SepiaEffect();
             _camera.SetWinMode(true);
         }
+    }
+
+    public class PlayerScore
+    {
+        public int Score { get; set; }
+        public int PlayerIndex { get; set; }
     }
 }
