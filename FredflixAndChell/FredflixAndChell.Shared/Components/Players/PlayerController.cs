@@ -87,7 +87,6 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 }
                 _leftStick.addGamePadLeftStick(_controllerIndex);
                 _rightStick.addGamePadRightStick(_controllerIndex);
-
                 _fireButton.addGamePadButton(_controllerIndex, Buttons.RightTrigger);
                 _interactButton.addGamePadButton(_controllerIndex, Buttons.A);
                 _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.Y);

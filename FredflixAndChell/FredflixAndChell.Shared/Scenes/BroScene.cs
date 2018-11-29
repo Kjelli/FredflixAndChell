@@ -40,6 +40,7 @@ namespace FredflixAndChell.Shared.Scenes
             InitializePlayerScores();
 
             addSceneComponent(new SmoothCamera());
+            addSceneComponent(new HUD());
             addSceneComponent(new PlayerConnector(spawnLocations: PlayerSpawner));
             addSceneComponent(new GameSystem());
 
@@ -86,9 +87,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             //Weather
             ApplyWeather(tiledmap);
-
-            addEntity(new HUD());
-
         }
 
         private void ApplyWeather(TiledMap tiledmap)

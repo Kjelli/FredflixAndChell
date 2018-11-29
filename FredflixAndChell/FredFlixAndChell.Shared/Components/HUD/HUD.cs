@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -13,16 +14,29 @@ using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Components.HUD
 {
-    public class HUD : Entity
+    public class HUD : SceneComponent
     {
+        private const int HUDCenterX = Constants.ScreenWidth / 2;
+        private const int HUDY = Constants.ScreenHeight - 100;
+        private const int Spacing = 300;
+
         private List<PlayerPanelHUD> _playerHUDs = new List<PlayerPanelHUD>();
 
-        public HUD(int playerCount = 2)
+        public HUD()
+        {}
+
+        public void AddPlayers(List<Player> players)
         {
-            var hudCenterArea = Constants.ScreenWidth / 2;
-            for (int i = 0; i < playerCount; i++)
+            if(_playerHUDs.Count > 0)
             {
-                _playerHUDs.Add(new PlayerPanelHUD(hudCenterArea - (i * (i % 2 == 0 ? -1 : 1)) * 300, 800));
+                foreach(var playerHud in _playerHUDs)
+                {
+                    playerHud.destroy();
+                }
+            }
+            for (int i = 0; i < players.Count; i++)
+            {
+                _playerHUDs.Add(scene.addEntity(new PlayerPanelHUD(players[i], HUDCenterX - players.Count * Spacing / 2 + i * Spacing, HUDY)));
             }
         }
     }

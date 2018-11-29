@@ -25,9 +25,11 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private PlayerSprite _playerSprite;
         private float _facingDepthOffset;
 
-        Sprite<HeadAnimation> _head;
-        Sprite<TorsoAnimation> _torso;
-        Sprite<LegsAnimation> _legs;
+        private Sprite<HeadAnimation> _head;
+        private Sprite<TorsoAnimation> _torso;
+        private Sprite<LegsAnimation> _legs;
+
+        public Sprite<HeadAnimation> Head => _head;
 
         public PlayerRenderer(PlayerSprite playerSprite, Gun gun)
         {

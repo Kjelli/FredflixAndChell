@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Players;
+﻿using FredflixAndChell.Shared.Components.HUD;
+using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems;
@@ -8,14 +9,18 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FredflixAndChell.Components.Players
 {
     public class PlayerConnector : SceneComponent
     {
-        private int _maxPlayers;
-        private List<int> _connectedPlayers;
+        private List<Player> _connectedPlayers;
         private GameSystem _gameSystem;
+        private HUD _hud;
+
+        private int _maxPlayers;
+        private bool _playerSpawnedThisFrame;
 
         public PlayerSpawner _spawnLocations { get; set; }
 
@@ -23,7 +28,7 @@ namespace FredflixAndChell.Components.Players
         {
             Input.maxSupportedGamePads = maxPlayers;
             _maxPlayers = maxPlayers;
-            _connectedPlayers = new List<int>();
+            _connectedPlayers = new List<Player>();
             _spawnLocations = spawnLocations;
         }
 
@@ -32,6 +37,7 @@ namespace FredflixAndChell.Components.Players
             base.onEnabled();
 
             _gameSystem = scene.getSceneComponent<GameSystem>();
+            _hud = scene.getSceneComponent<HUD>();
 
             Core.schedule(1, true, CheckForConnectedPlayers);
             CheckForConnectedPlayers();
@@ -39,26 +45,33 @@ namespace FredflixAndChell.Components.Players
 
         private void CheckForConnectedPlayers(ITimer timer = null)
         {
+            _playerSpawnedThisFrame = false;
+
             for (var playerIndex = 0; playerIndex < ContextHelper.NumPlayers - 1; playerIndex++)
             {
                 var gamePadState = GamePad.GetState(playerIndex);
 
-                if (gamePadState.IsConnected && !_connectedPlayers.Contains(playerIndex))
+                if (gamePadState.IsConnected && !_connectedPlayers.Any(p => p.PlayerIndex == playerIndex))
                 {
                     SpawnPlayer(playerIndex);
                     Console.WriteLine($"Connected player {playerIndex}. Players ingame: {_connectedPlayers.Count}");
                 }
             }
 
-            if (!_connectedPlayers.Contains(-1))
+            if (!_connectedPlayers.Any(p => p.PlayerIndex == -1))
             {
                 SpawnPlayer(-1);
             }
 
-            //if (!_connectedPlayers.Contains(-2))
-            //{
-            //    SpawnPlayer(-2);
-            //}
+            if (!_connectedPlayers.Any(p => p.PlayerIndex == -2))
+            {
+                SpawnPlayer(-2);
+            }
+
+            if (_playerSpawnedThisFrame)
+            {
+                _hud.AddPlayers(_connectedPlayers);
+            }
 
             timer?.reset();
         }
@@ -70,8 +83,9 @@ namespace FredflixAndChell.Components.Players
             var spawnY = (int)spawnLocation.Y;
             var player = scene.addEntity(new Player(Characters.All().randomItem(), spawnX, spawnY, playerIndex));
 
-            _connectedPlayers.Add(playerIndex);
+            _connectedPlayers.Add(player);
 
+            _playerSpawnedThisFrame = true;
             Console.WriteLine($"Spawned {player.name}");
         }
 

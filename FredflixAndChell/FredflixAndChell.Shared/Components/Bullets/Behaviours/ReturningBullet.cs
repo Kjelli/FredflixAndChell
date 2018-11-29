@@ -27,6 +27,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         {
             if (player == _owner)
             {
+                DamagePlayer(player);
                 entity.destroy();
             }
             else

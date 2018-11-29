@@ -46,9 +46,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Gun _gun;
 
         private float _health;
+        private float _maxHealth;
+        private float _stamina;
+        private float _maxStamina;
         private float _speed = 50f;
         private float _accelerationMultiplier;
-        private float _stamina = 100;
         private bool _isRegeneratingStamina = false;
         private readonly float _walkAcceleration = 0.05f;
         private readonly float _sprintAcceleration = 0.10f;
@@ -63,15 +65,18 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _gracePeriod;
 
         public PlayerState PlayerState => _playerState;
+        public CharacterParameters Parameters => _params;
+        public Vector2 Acceleration { get; set; }
+        public Vector2 FacingAngle { get; set; }
         public int PlayerIndex => _controllerIndex;
         public int Health => (int)_health;
+        public int MaxHealth => (int)_maxHealth;
+        public float MaxStamina => (int)_maxStamina;
         public int Stamina => (int)_stamina;
-        public Vector2 Acceleration { get; set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
-        public Vector2 FacingAngle { get; set; }
 
         public Player(CharacterParameters characterParameters, int x, int y, int controllerIndex = 0) : base(x, y)
         {
@@ -134,7 +139,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupParameters()
         {
             _health = _params.MaxHealth;
+            _maxHealth = _params.MaxHealth;
             _stamina = _params.MaxStamina;
+            _maxStamina = _params.MaxStamina;
             _speed = _params.Speed;
         }
 
@@ -328,6 +335,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void FallIntoPit(Entity pitEntity)
         {
+            _health = 0;
             DisablePlayer();
             DisableHitbox();
             var easeType = EaseType.CubicOut;
@@ -455,6 +463,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetFacing()
         {
+            if (PlayerState != PlayerState.Normal) return;
+
             if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
 
             FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 20f);
