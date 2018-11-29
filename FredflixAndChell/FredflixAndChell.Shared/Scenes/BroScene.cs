@@ -185,7 +185,7 @@ namespace FredflixAndChell.Shared.Scenes
             var lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
             lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
+            lightRenderer.renderTargetClearColor = new Color(180, 180, 180, 255);
 
             // Postprocessor effects for lighting
             var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));

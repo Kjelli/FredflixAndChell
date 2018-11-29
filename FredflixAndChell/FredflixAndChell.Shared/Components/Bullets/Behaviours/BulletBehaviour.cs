@@ -49,6 +49,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             if (player != null && player != _bullet.Owner)
             {
                 DamagePlayer(player);
+                _bullet.destroy();
             }
         }
 
@@ -96,7 +97,6 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         {
             player.Damage((int)_bullet.Parameters.Damage, _bullet.Velocity);
             player.Velocity += _bullet.Velocity * _bullet.Parameters.Knockback * Time.deltaTime;
-            _bullet.destroy();
         }
 
         public virtual void update()
