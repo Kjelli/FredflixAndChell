@@ -133,7 +133,7 @@
     </None>
     <None Include="..\packages\MonoGame.Framework.DesktopGL.3.7.0.1708\build\native\MonoGame.Framework.dll.config">
       <Link>MonoGame.Framework.dll.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
     <None Include="Content\nez\effects\Bevels.mgfxo">
