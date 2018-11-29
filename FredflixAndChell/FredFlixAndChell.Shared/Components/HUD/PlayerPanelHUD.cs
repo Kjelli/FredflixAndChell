@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FredflixAndChell.Shared.Components.HUD
 {
-    public class HudPanel : Component
+    public class PlayerPanelHUD : Component
     {
         private Sprite _front;
         private Sprite _background;
@@ -17,7 +17,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         private Sprite _staminaBar;
 
 
-        public HudPanel()
+        public PlayerPanelHUD()
         {
             /*
 
@@ -29,7 +29,7 @@ namespace FredflixAndChell.Shared.Components.HUD
             hb.localOffset = pla.localOffset;
             hb.renderLayer = Layers.HUD;
 
-    */
+            */
         }
 
     }

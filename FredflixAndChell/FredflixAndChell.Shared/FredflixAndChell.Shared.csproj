@@ -67,8 +67,8 @@
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
     <Compile Include="Components\Guns\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
-    <Compile Include="Components\HUD\HudPanel.cs" />
-    <Compile Include="Components\HUD\PlayerHUD.cs" />
+    <Compile Include="Components\HUD\PlayerPanelHUD.cs" />
+    <Compile Include="Components\HUD\HUD.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />

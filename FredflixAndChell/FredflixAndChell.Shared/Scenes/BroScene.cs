@@ -81,7 +81,7 @@ namespace FredflixAndChell.Shared.Scenes
             //Weather
             ApplyWeather(tiledmap);
 
-            addEntity(new PlayerHUD());
+            addEntity(new HUD());
 
         }
 
