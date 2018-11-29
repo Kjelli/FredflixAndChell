@@ -14,6 +14,7 @@ using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprit
 using System;
 using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
+using FredflixAndChell.Shared.Components.Players;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
@@ -110,7 +111,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
         {
-            var animations = new Sprite<HeadAnimation>();
+            var animations = new Foo<HeadAnimation>();
 
             animations.addAnimation(HeadAnimation.FrontFacing,
                 headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/head"));

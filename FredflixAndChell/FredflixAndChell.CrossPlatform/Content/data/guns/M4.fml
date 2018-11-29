@@ -5,7 +5,7 @@ BarrelOffset:
   Y: 0.0
 BulletCount: 1
 BulletParameters:
-  BulletBehaviour: ReturningBullet
+  BulletBehaviour: StandardBullet
   Damage: 10.0
   Knockback: 0.25
   LifeSpanSeconds: -1.0
