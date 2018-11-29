@@ -111,7 +111,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
         {
-            var animations = new Foo<HeadAnimation>();
+            var animations = new Sprite<HeadAnimation>();
 
             animations.addAnimation(HeadAnimation.FrontFacing,
                 headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/head"));

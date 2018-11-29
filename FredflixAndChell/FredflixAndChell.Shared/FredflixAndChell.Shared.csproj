@@ -67,14 +67,8 @@
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
     <Compile Include="Components\Guns\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
-<<<<<<< HEAD
     <Compile Include="Components\HUD\PlayerPanelHUD.cs" />
     <Compile Include="Components\HUD\HUD.cs" />
-=======
-    <Compile Include="Components\HUD\HudPanel.cs" />
-    <Compile Include="Components\HUD\PlayerHUD.cs" />
-    <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
->>>>>>> 9e995c8cd1c549da9da4625577a3cd2877984cc8
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />
@@ -102,6 +96,7 @@
     <Compile Include="Utilities\Activator\ObjectActivatorHelper.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
+    <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
     <Compile Include="BroGame.cs" />
     <Compile Include="Scenes\BroScene.cs" />
     <Compile Include="Components\Cameras\SmoothCamera.cs" />
