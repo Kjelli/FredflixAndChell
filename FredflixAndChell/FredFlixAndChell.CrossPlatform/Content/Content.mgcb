@@ -29,6 +29,9 @@
 #begin data/guns/Fido.fml
 /copy:data/guns/Fido.fml
 
+#begin data/guns/Goggles.fml
+/copy:data/guns/Goggles.fml
+
 #begin data/guns/M4.fml
 /copy:data/guns/M4.fml
 
@@ -156,6 +159,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/fido.png
+
+#begin textures/bullets/laser.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/laser.png
 
 #begin textures/bullets/shockwave.png
 /importer:TextureImporter
@@ -300,6 +315,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/fido.png
+
+#begin textures/guns/goggles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/goggles.png
 
 #begin textures/guns/m4.png
 /importer:TextureImporter

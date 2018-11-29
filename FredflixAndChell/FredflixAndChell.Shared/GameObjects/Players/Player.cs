@@ -106,7 +106,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _mover = addComponent(new Mover());
 
             // Assign gun component
-            EquipGun("M4");
+            EquipGun("Goggles");
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));

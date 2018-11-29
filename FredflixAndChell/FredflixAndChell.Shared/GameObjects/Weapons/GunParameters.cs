@@ -17,6 +17,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public float RenderOffset { get; set; }
         public Vector2 BarrelOffset { get; set; }
+        public bool RotatesWithPlayer { get; set; } = true;
+        public bool AlwaysAbovePlayer { get; set; } = false;
+        public bool FlipXWithPlayer { get; set; } = false;
+        public bool FlipYWithPlayer { get; set; } = true;
+        public float Scale { get; set; } = 0.6f;
 
         public int Ammo { get; set; }
         public int MaxAmmo { get; set; }

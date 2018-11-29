@@ -36,7 +36,7 @@ namespace FredflixAndChell.Shared.Components.Guns
         private Sprite<GunAnimations> SetupAnimations(GunSprite sprite)
         {
             var animations = new Sprite<GunAnimations>();
-            
+
             animations.addAnimation(GunAnimations.Held_Fired, sprite.Fire.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Reload, sprite.Reload.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Held_Idle, sprite.Idle.ToSpriteAnimation(sprite.Source));
@@ -47,7 +47,7 @@ namespace FredflixAndChell.Shared.Components.Guns
         public override void onAddedToEntity()
         {
             base.onAddedToEntity();
-            entity.setScale(0.6f);
+            entity.setScale(_gun.Parameters.Scale);
             setUpdateOrder(1);
 
             _animation = entity.addComponent(SetupAnimations(_gun.Parameters.Sprite));
@@ -81,15 +81,29 @@ namespace FredflixAndChell.Shared.Components.Guns
 
         public void update()
         {
-            _animation.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
-            _animation.flipY = _player.FlipGun;
+            _animation.layerDepth =
+                _gun.Parameters.AlwaysAbovePlayer ? (_player.VerticalFacing == (int)FacingCode.UP ? 1 : 0 ) :
+                1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
+
+            if (_gun.Parameters.FlipYWithPlayer)
+            {
+                _animation.flipY = _player.FlipGun;
+
+            }
+            if (_gun.Parameters.FlipXWithPlayer)
+            {
+                _animation.flipX = _player.FlipGun;
+            }
             entity.position = new Vector2(_player.position.X + (float)Math.Cos(entity.localRotation) * _renderOffset,
                 _player.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
-            entity.localRotation = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
+            if (_gun.Parameters.RotatesWithPlayer)
+            {
+                entity.localRotation = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
+            }
 
             if (_isPlayerRunning)
             {
-                _animation.setLocalOffset(new Vector2(_animation.localOffset.X, (float) Math.Sin(Time.time * 25f) * 0.5f ));
+                _animation.setLocalOffset(new Vector2(_animation.localOffset.X, (float)Math.Sin(Time.time * 25f) * 0.5f));
             }
             else
             {

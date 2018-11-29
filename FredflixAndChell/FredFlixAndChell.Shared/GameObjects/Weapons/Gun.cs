@@ -66,6 +66,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             {
                 //Functionality
                 Cooldown.Start();
+                var dir = (float) Math.Atan2(_player.FacingAngle.Y,_player.FacingAngle.X);
                 var x = (float)(position.X
                     + Math.Cos(localRotation) * _barrelOffset.X
                     + Math.Cos(localRotation) * _barrelOffset.Y);
@@ -74,8 +75,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     + Math.Sin(localRotation) * _barrelOffset.X);
                 for (float i = 0; i < _bulletCount; i++)
                 {
-
-                    var direction = localRotation + (1 - _accuracy) * Nez.Random.minusOneToOne() / 2
+                    var direction = dir + (1 - _accuracy) * Nez.Random.minusOneToOne() / 2
                     + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
                     + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount);
 
