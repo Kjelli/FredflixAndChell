@@ -45,7 +45,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
             // Assign faint glow to player
             var light = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-            light.material = Material.blendLinearDodge();
+            light.material = Material.blendScreen();
             light.color = Color.White;
             light.renderLayer = Layers.Lights;
 

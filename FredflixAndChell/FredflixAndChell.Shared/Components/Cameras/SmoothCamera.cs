@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Players;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects.Players;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
@@ -29,7 +30,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
         {
             base.onEnabled();
             camera = scene.camera;
-            _map = scene.findEntity("tiled-map-entity").getComponent<TiledMapComponent>();
+            _map = scene.findEntity(TiledObjects.TiledMapEntity).getComponent<TiledMapComponent>();
         }
 
         public override void update()

@@ -117,7 +117,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             // Assign proximity interaction hitbox
             _proximityHitbox = addComponent(new CircleCollider(20f));
-            Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Items);
+            Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Interactables);
             Flags.setFlagExclusive(ref _proximityHitbox.physicsLayer, 0);
             _proximityHitbox.isTrigger = true;
 

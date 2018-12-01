@@ -34,10 +34,15 @@ namespace Nez.Tiled
 		internal bool requiresLargeTileCulling;
 		internal List<TiledAnimatedTile> _animatedTiles = new List<TiledAnimatedTile>();
 
-		#endregion
+        public object getObjectGroup(object objectGroup)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
 
-		public TiledMap(
+        public TiledMap(
 			int firstGid,
 			int width,
 			int height,

@@ -39,7 +39,6 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public override void onRemovedFromScene()
         {
-            Console.WriteLine($"Removed {this} from scene");
             base.onRemovedFromScene();
             OnDespawn();
         }

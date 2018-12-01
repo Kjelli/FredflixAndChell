@@ -69,6 +69,7 @@
     <Compile Include="Components\HUD\DebugHud.cs" />
     <Compile Include="Components\HUD\PlayerPanelHUD.cs" />
     <Compile Include="Components\HUD\HUD.cs" />
+    <Compile Include="Components\Interactables\InteractableComponent.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />
@@ -89,7 +90,13 @@
     <Compile Include="GameObjects\Weapons\GunParameters.cs" />
     <Compile Include="GameObjects\Weapons\Guns.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSprite.cs" />
-    <Compile Include="Scenes\LoadingScene.cs" />
+    <Compile Include="Maps\Events\InteractEventEmitter.cs" />
+    <Compile Include="Maps\Events\CollisionEventEmitter.cs" />
+    <Compile Include="Maps\Events\MapEvent.cs" />
+    <Compile Include="Maps\Events\MapEventEmitter.cs" />
+    <Compile Include="Maps\Events\MapEventListener.cs" />
+    <Compile Include="Maps\Events\TimedEventEmitter.cs" />
+    <Compile Include="Maps\Map.cs" />
     <Compile Include="Scenes\LobbyScene.cs" />
     <Compile Include="Systems\GameSystem.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />

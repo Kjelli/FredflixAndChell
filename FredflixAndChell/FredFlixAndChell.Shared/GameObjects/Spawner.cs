@@ -110,7 +110,7 @@ namespace FredflixAndChell.Shared.GameObjects
 
             var hitbox = addComponent(new CircleCollider(4f));
 
-            Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.Items);
+            Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.Interactables);
             Flags.setFlagExclusive(ref hitbox.physicsLayer, 0);
             hitbox.isTrigger = true;
 
@@ -129,7 +129,6 @@ namespace FredflixAndChell.Shared.GameObjects
 
         public void SpawnItem()
         {
-            var entz = scene.createEntity("collectible");
             CurrentItem = new Collectible((int)position.X, (int)position.Y, GetRandomItem(), false);
             var col = scene.addEntity(CurrentItem);
             col.transform.setScale(0.3f);

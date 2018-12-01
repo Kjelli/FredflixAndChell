@@ -12,11 +12,24 @@ namespace FredflixAndChell.Shared.Assets
         public const int ScreenHeight = 720;
         public const float RenderLayerDepthFactor = 1 / 10000f;
 
+
         public class Assets
         {
             public const string DataDirectory = "Content/data";
         }
-        public class TileProperties
+        public class TiledObjects
+        {
+            public const string TiledMapEntity = "TiledMapEntity";
+            public const string ObjectGroup = "Objects";
+
+            public const string Collision = "collision";
+            public const string PlayerSpawn = "player_spawn";
+            public const string ItemSpawn = "item_spawn";
+            public const string Pit = "pit";
+            public const string EventEmitter = "event_emitter";
+        }
+
+        public class TiledProperties
         {
             public const string BulletPassable = "bullet_passable";
             public const string EmitsLight = "emits_light";
@@ -27,6 +40,7 @@ namespace FredflixAndChell.Shared.Assets
             public const int Player = 1;
             public const int Pit = 2;
             public const int Collectible = 3;
+            public const int EventEmitter = 4;
         }
 
         public class Layers
@@ -34,7 +48,7 @@ namespace FredflixAndChell.Shared.Assets
             public const int Background = 17;
             public const int MapBackground = 16;
             public const int MapObstacles = 15;
-            public const int Items = 14;
+            public const int Interactables = 14;
             public const int Shadow = 13;
             public const int Bullet = 12;
             public const int PlayerBehindest = 11;

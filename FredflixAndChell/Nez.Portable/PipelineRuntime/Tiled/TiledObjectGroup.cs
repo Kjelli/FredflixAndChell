@@ -71,7 +71,6 @@ namespace Nez.Tiled
 			}
 			return list;
 		}
-
-	}
+    }
 }
 

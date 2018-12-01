@@ -55,6 +55,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/shader_flash");
 
             LoadMap("maps/firstlevel");
+            LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");

@@ -1,5 +1,7 @@
-﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+﻿using FredflixAndChell.Shared.Components.Interactables;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Maps.Events;
 using Nez;
 using System;
 using System.Collections.Generic;
@@ -47,15 +49,12 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other == null || other.entity == null) return;
             if (_entitiesInProximity.Contains(other.entity)) return;
 
-            Console.WriteLine($"Entered proximity: ${other.entity}");
-
-            _entitiesInProximity.Add(other.entity);
-
-            // TODO change tag to include other interactables if relevant
-            if (Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+            var interactable = other.entity.getComponent<InteractableComponent>();
+            if (interactable != null)
             {
-                var collectible = other.entity as Collectible;
-                if (collectible.CanBeCollected())
+                _entitiesInProximity.Add(other.entity);
+                Console.WriteLine($"Adding {other.entity.name} to proximity");
+                if (other.entity is Collectible collectible && collectible.CanBeCollected())
                 {
                     collectible?.Highlight();
                 }
@@ -67,6 +66,9 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other.entity.tag == Tags.Pit)
             {
                 (entity as Player).FallIntoPit(other.entity);
+            } else if(other.entity.tag == Tags.EventEmitter)
+            {
+                (other.entity as CollisionEventEmitter).EmitMapEvent();
             }
         }
 
@@ -91,11 +93,10 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other == null || other.entity == null) return;
             if (!_entitiesInProximity.Contains(other.entity)) return;
 
-            Console.WriteLine($"Left proximity: ${other.entity}");
             _entitiesInProximity.Remove(other.entity);
-            if (other.entity != null && Flags.isFlagSet(other.entity.tag, Tags.Collectible))
+
+            if (other.entity is Collectible collectible)
             {
-                var collectible = other.entity as Collectible;
                 collectible?.Unhighlight();
             }
         }
@@ -103,21 +104,17 @@ namespace FredflixAndChell.Shared.Components.Players
         public void InteractWithNearestEntity()
         {
             if (_entitiesInProximity.Count == 0) return;
-
+            Console.WriteLine(_entitiesInProximity.Count + " entities nearby");
             // Find closest entity based on distance between player and collectible
-            var closestEntity = _entitiesInProximity.Aggregate((curMin, x) =>
-            ((x.position - entity.position).Length() < (curMin.position - entity.position).Length() ? x : curMin));
+            var closestEntity = _entitiesInProximity.Aggregate((other1, other2) =>
+            ((other2.position - entity.position).Length() < (other1.position - entity.position).Length() ? other2 : other1));
 
-            if (closestEntity is Collectible collectible)
+            var interactable = closestEntity.getComponent<InteractableComponent>();
+            interactable.OnInteract(_player);
+
+            if(closestEntity is Collectible collectible)
             {
-                if (collectible == null || !collectible.CanBeCollected()) return;
-
-                if (collectible.Preset.Type == CollectibleType.Weapon)
-                {
-                    _player.EquipGun(collectible.Preset.Gun.Name);
-                    collectible.OnPickup();
-                    _entitiesInProximity.Remove(closestEntity);
-                }
+                _entitiesInProximity.Remove(closestEntity);
             }
         }
     }

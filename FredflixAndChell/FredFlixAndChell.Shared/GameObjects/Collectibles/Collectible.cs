@@ -8,6 +8,8 @@ using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.Components.Interactables;
+using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
@@ -59,7 +61,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             var gunSprite = Preset.Gun.Sprite;
 
             _sprite = addComponent(new Sprite(gunSprite.Icon.ToSpriteAnimation(gunSprite.Source).frames[0]));
-            _sprite.renderLayer = Layers.Items;
+            _sprite.renderLayer = Layers.Interactables;
             _sprite.material = new Material();
 
             scale = new Vector2(0.5f, 0.5f);
@@ -87,7 +89,12 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _collectibleState = CollectibleState.Available;
             _pickupHitbox = addComponent(new BoxCollider());
             _pickupHitbox.isTrigger = true;
-            Flags.setFlagExclusive(ref _pickupHitbox.physicsLayer, Layers.Items);
+            Flags.setFlagExclusive(ref _pickupHitbox.physicsLayer, Layers.Interactables);
+
+            var interactable = addComponent(new InteractableComponent
+            {
+                OnInteract = player => OnPickup(player)
+            });
         }
 
         public void FallIntoPit(Entity pitEntity)
@@ -215,10 +222,12 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             return _collectibleState == CollectibleState.Available;
         }
 
-        public void OnPickup()
+        public void OnPickup(Player player)
         {
             if (_collectibleState != CollectibleState.Available) return;
 
+            player.EquipGun(Preset.Gun.Name);
+             
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
