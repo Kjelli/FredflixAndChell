@@ -16,12 +16,12 @@ namespace FredflixAndChell.Shared
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
 
-            //scene = new LobbyScene();
+            scene = new LobbyScene();
 
             // YamlSerializer.SerializeAll();
 
             ContextHelper.CurrentMap = "dungeon_2";
-            scene = new BroScene();
+            //scene = new BroScene();
         }
     }
 }
