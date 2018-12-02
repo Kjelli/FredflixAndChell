@@ -63,9 +63,9 @@ namespace FredflixAndChell.Shared.Maps
             foreach (var lightSource in mapObjects.objectsWithName("light_source"))
             {
                 var entity = scene.createEntity("world-light", lightSource.position +  new Vector2(8,8));
-
+                entity.setScale(0.5f);
                 var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-                sprite.material = Material.blendScreen();
+                sprite.material = Material.blendLinearDodge();
                 sprite.color = ColorExt.hexToColor("#"+lightSource.properties["color"].Substring(2));
                 sprite.renderLayer = Layers.Lights;
 

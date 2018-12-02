@@ -58,7 +58,14 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             if (_bullet.Velocity.Length() == 0) return;
 
             var isColliding = _mover.move(_bullet.Velocity * Time.deltaTime);
-            if (isColliding && _collider.collidesWithAny(out CollisionResult collision))
+            if (isColliding) {
+                HandleCollisions();
+            }
+        }
+
+        protected void HandleCollisions()
+        {
+            if (_collider.collidesWithAny(out CollisionResult collision))
             {
                 var collidedWithEntity = collision.collider.entity;
                 if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))

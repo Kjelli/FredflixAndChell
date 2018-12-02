@@ -7,6 +7,7 @@ using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players;
 using Nez;
 using Microsoft.Xna.Framework;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 {
@@ -16,7 +17,11 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public override void Move()
         {
-            _mover.move(new Vector2(Nez.Random.minusOneToOne(), Nez.Random.minusOneToOne()));
+            var isColliding = _mover.move(new Vector2(Nez.Random.minusOneToOne(), Nez.Random.minusOneToOne()));
+            if (isColliding)
+            {
+                HandleCollisions();
+            }
         }
 
         public override void OnImpact(Player player)
