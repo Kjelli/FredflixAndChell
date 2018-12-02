@@ -195,54 +195,5 @@
     <property name="type" value="interact"/>
    </properties>
   </object>
-  <object id="71" name="light_source" x="88" y="160" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="72" name="light_source" x="64" y="160" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="73" name="light_source" x="120" y="152" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="74" name="light_source" x="176" y="104" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="75" name="light_source" x="208" y="136" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="76" name="light_source" x="112" y="120" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object id="77" name="light_source" x="104" y="72" width="16.25" height="16.25">
-   <properties>
-    <property name="color" type="color" value="#ffff0000"/>
-    <property name="toggle_key" value="i1"/>
-   </properties>
-   <ellipse/>
-  </object>
  </objectgroup>
 </map>

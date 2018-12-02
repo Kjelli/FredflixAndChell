@@ -91,7 +91,6 @@ namespace FredflixAndChell.Shared.Scenes
 
             // Letterbox effect when a winner is determined
             LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(3));
-            addPostProcessor(new ScanlinesPostProcessor(4));
         }
     }
 }
