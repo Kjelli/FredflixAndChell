@@ -28,8 +28,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     public class Player : GameObject
     {
         private const float ThrowSpeed = 0.5f;
-        private const float WalkAcceleration = 0.05f;
-        private const float SprintAcceleration = 0.10f;
+        private const float WalkAcceleration = 0.25f;
+        private const float SprintAcceleration = 0.30f;
         private const float BaseSlownessFactor = 20f;
 
         private readonly int _controllerIndex;
@@ -321,7 +321,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
+            Velocity = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -467,7 +467,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (PlayerState != PlayerState.Normal) return;
 
-            if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
+            if (_controller.XRightAxis == 0.0f && _controller.YRightAxis == 0.0f) return;
 
             FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * _slownessFactor);
 

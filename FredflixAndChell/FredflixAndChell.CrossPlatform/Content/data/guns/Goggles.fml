@@ -7,7 +7,7 @@ BulletCount: 1
 BulletParameters:
   BulletBehaviour: LaserBehaviour
   BulletType: Line
-  Damage: 0.5
+  Damage: 0.25
   Knockback: 2.0
   LifeSpanSeconds: 0.01
   RotateWithGun: true
@@ -26,9 +26,9 @@ BulletParameters:
 BulletSpread: 0.0
 DropChance: 0.8
 FireRate: 0.01
-MagazineAmmo: 30
-MagazineSize: 30
-MaxAmmo: 300000
+MagazineAmmo: 75
+MagazineSize: 75
+MaxAmmo: 750
 Name: Goggles
 ReloadTime: 2.0
 RenderOffset: 0.0

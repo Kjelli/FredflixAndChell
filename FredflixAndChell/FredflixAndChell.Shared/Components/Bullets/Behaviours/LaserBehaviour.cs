@@ -42,8 +42,9 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         }
         public override void OnFired()
         {
+            _bullet.Renderer.Sprite.renderLayer = Layers.Player;
             _bullet.Velocity = Vector2.Zero;
-            _bullet.Owner.SlownessFactor = 1f;
+            _bullet.Owner.SlownessFactor = 0.5f;
             _bullet.position = _bullet.Owner.position;
 
             var direction = _bullet.Owner.FacingAngle;
@@ -53,7 +54,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             RaycastHit[] hits = new RaycastHit[256];
 
             _collider.enabled = false;
-            var linecast = Physics.linecastAll(start + new Vector2(0, 3), end, hits, _bullet.Owner.PlayerIndex);
+            var linecast = Physics.linecastAll(start + new Vector2(0, 3), end, hits);
             _collider.enabled = true;
 
             var closestObstacleHit = new RaycastHit { fraction = 1.0f};

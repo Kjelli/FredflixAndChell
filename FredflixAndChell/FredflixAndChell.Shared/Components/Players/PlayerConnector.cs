@@ -63,18 +63,6 @@ namespace FredflixAndChell.Components.Players
                 SpawnPlayer(-1);
             }
 
-            if (!_connectedPlayers.Any(p => p.PlayerIndex == -2))
-            {
-                SpawnPlayer(-2);
-            }
-
-
-            if (!_connectedPlayers.Any(p => p.PlayerIndex == -3))
-            {
-                SpawnPlayer(-3);
-            }
-
-
             if (_playerSpawnedThisFrame)
             {
                 _hud.AddPlayers(_connectedPlayers);
