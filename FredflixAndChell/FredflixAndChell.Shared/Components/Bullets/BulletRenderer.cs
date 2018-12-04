@@ -1,6 +1,8 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
+using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
@@ -16,32 +18,41 @@ namespace FredflixAndChell.Shared.Components.Bullets
 {
     public class BulletRenderer : Component
     {
-        private BulletSprite _bulletSprite;
-        private Sprite<BulletAnimations> _sprite;
+        private Bullet _bullet;
+        private ScalableSprite<BulletAnimations> _sprite;
 
-        public BulletRenderer(BulletSprite sprite)
+        public ScalableSprite<BulletAnimations> Sprite => _sprite;
+
+        public BulletRenderer(Bullet bullet)
         {
-            _bulletSprite = sprite;
+            _bullet = bullet;
+            _sprite = bullet.addComponent(SetupAnimations(_bullet.Parameters.Sprite));
+
         }
         public override void onAddedToEntity()
         {
-            base.onAddedToEntity();
+            entity.updateOrder = 2;
+            
+            if (_bullet.Parameters.BulletType == BulletType.Entity)
+            {
+                SetupEntityBullet();
+            }
 
-            _sprite = entity.addComponent(SetupAnimations(_bulletSprite));
-            _sprite.renderLayer = Layers.Player;
+            _sprite.play(BulletAnimations.Bullet);
+        }
 
+        private void SetupEntityBullet()
+        {
             var shadow = entity.addComponent(new SpriteMime(_sprite));
             shadow.color = new Color(0, 0, 0, 80);
             shadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
             shadow.renderLayer = Layers.Shadow;
             shadow.localOffset = new Vector2(1, 2);
-
-            _sprite.play(BulletAnimations.Bullet);
         }
 
-        private Sprite<BulletAnimations> SetupAnimations(BulletSprite sprite)
+        private ScalableSprite<BulletAnimations> SetupAnimations(BulletSprite sprite)
         {
-            var animations = new Sprite<BulletAnimations>();
+            var animations = new ScalableSprite<BulletAnimations>();
 
             animations.addAnimation(BulletAnimations.Bullet, sprite.Bullet.ToSpriteAnimation(sprite.Source, 16, 16));
 
@@ -51,7 +62,16 @@ namespace FredflixAndChell.Shared.Components.Bullets
         public void UpdateRenderLayerDepth()
         {
             if (_sprite == null) return;
-            _sprite.layerDepth = 1 - (entity?.position.Y ?? 0) * Constants.RenderLayerDepthFactor;
+            if (_bullet.Parameters.BulletType == BulletType.Entity)
+            {
+                _sprite.layerDepth = 1 - (entity?.position.Y ?? 0) * Constants.RenderLayerDepthFactor;
+            }
+            else
+            {
+                _sprite.layerDepth = 1 - (_bullet.Owner.position.Y 
+                    + _bullet.Owner.VerticalFacing == (int)FacingCode.UP ? -200 
+                    : _bullet.Owner.VerticalFacing == (int) FacingCode.DOWN ? 200 : 0) * Constants.RenderLayerDepthFactor;
+            }
         }
     }
 }

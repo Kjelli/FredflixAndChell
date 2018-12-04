@@ -37,6 +37,12 @@ namespace FredflixAndChell.Shared.Components.Cameras
         {
             base.update();
             CenterCamera();
+            DebugZoom();
+        }
+
+        private void DebugZoom()
+        {
+            _baseZoom = Math.Max(Math.Min(10, _baseZoom + Input.mouseWheelDelta / 200.0f), 2.5f);
         }
 
         public void Register(CameraTracker cameraTracker)
@@ -71,12 +77,15 @@ namespace FredflixAndChell.Shared.Components.Cameras
                 bottom = Math.Max(tracker.Position.Y + paddingY / 2, bottom);
                 anyToTrack = true;
             }
-            if (!anyToTrack) return;
-
+            if (!anyToTrack)
+            {
+                return;
+            }
             var targetWidth = Math.Max(ScreenWidth, (right - left) * _baseZoom);
             var targetHeight = Math.Max(ScreenHeight, (bottom - top) * _baseZoom);
             var zoom = _baseZoom * Math.Min(ScreenWidth / targetWidth, ScreenHeight / targetHeight);
             var center = new Vector2(left + (right - left) / 2, top + (bottom - top) / 2);
+
 
             camera.rawZoom = Lerps.lerpTowards(camera.rawZoom, zoom, 0.75f, Time.deltaTime * 10f);
             camera.position = Lerps.lerpTowards(camera.position, center, 0.25f, Time.deltaTime * 10f);

@@ -40,6 +40,8 @@ namespace FredflixAndChell.Shared.Components.HUD
         private float _staminaBarScale = 1.0f;
         private float _staminaBarFadeScale = 1.0f;
 
+        private bool _firstFrame = true;
+
         public PlayerPanelHUD(Player player, int screenX, int screenY)
         {
             _player = player;
@@ -110,11 +112,16 @@ namespace FredflixAndChell.Shared.Components.HUD
         {
             base.update();
 
-            var head = _player.getComponent<PlayerRenderer>().Head;
-            if (head != null)
+            if (_firstFrame)
             {
-                _head.subtexture = head.subtexture;
-                _head.flipX = head.flipX;
+                _firstFrame = false;
+                var head = _player.getComponent<PlayerRenderer>().Head;
+
+                if (head != null)
+                {
+                    _head.subtexture = head.subtexture;
+                    _head.flipX = head.flipX;
+                }
             }
 
             _healthBarScale = Mathf.lerp(_healthBarScale, _player.Health * 1.0f / _player.MaxHealth, Time.deltaTime * ScalingSpeed);
