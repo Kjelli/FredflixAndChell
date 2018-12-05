@@ -35,6 +35,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private readonly CharacterParameters _params;
 
         private PlayerState _playerState;
+        private PlayerMobilityState _playerMobilityState;
 
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
@@ -56,7 +57,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isRegeneratingStamina = false;
 
         private List<Entity> _entitiesInProximity;
-        private bool _isRolling;
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
         private bool _isWithinDodgeRollGracePeriod;
@@ -106,6 +106,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     new DebugLine{ Text = () => $"Health: {Health}"},
                     new DebugLine{ Text = () => $"Stamina: {Stamina}"},
                     new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
+                    new DebugLine{ Text = () => $"Mobility state: {_playerMobilityState.ToString()}"},
                 }
             });
         }
@@ -149,6 +150,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             //_bloodParticles = _particlesEntity.addComponent(new ParticleEngine(ParticleDesigner.flame));
 
             _blood = addComponent(new BloodEngine());
+            SetWalkingState();
         }
 
         private void SetupParameters()
@@ -169,7 +171,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ReadInputs()
         {
-
             if (_controller == null || !_controller.InputEnabled) return;
 
             if (_controller.FirePressed)
@@ -190,9 +191,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
             HandleDodgeRollGracePeriod();
+            PerformDodgeRoll();
             ToggleSprint();
             ToggleStaminaRegeneration();
-            PerformDodgeRoll();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
         }
@@ -213,7 +214,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleDodgeRoll()
         {
-            if (_isRolling) return;
+            if (_playerMobilityState == PlayerMobilityState.Rolling) return;
             if (_numSprintPressed == 0)
             {
                 _numSprintPressed++;
@@ -234,14 +235,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void PerformDodgeRoll()
         {
-            if (_isRegeneratingStamina) return;
+            if (_stamina < 50) return;
             if (_numSprintPressed == 2 && _controller.SprintPressed)
             {
-                _isRolling = true;
+                SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
+                _numSprintPressed = 0;
             }
 
-            if (_isRolling)
+            if (_playerMobilityState == PlayerMobilityState.Rolling)
             {
                 if (_isRollingRight)
                 {
@@ -255,7 +257,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if ((_isRollingRight && localRotation >= (2 * Math.PI)) || (!_isRollingRight && localRotation <= (-2 * Math.PI)))
             {
-                _isRolling = false;
+                SetWalkingState();
                 localRotation = 0;
                 _numSprintPressed = 0;
                 _stamina -= 50;
@@ -268,44 +270,56 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 return;
 
             _stamina += 25 * Time.deltaTime;
-            if (_stamina >= 100)
+            if (_stamina >= _maxStamina)
             {
-                _stamina = 100;
+                _stamina = _maxStamina;
                 _isRegeneratingStamina = false;
             }
         }
 
         private void ToggleSprint()
         {
-            if (_controller.SprintDown && !_isRegeneratingStamina)
+            if (_playerMobilityState == PlayerMobilityState.Rolling) return;
+
+            if (_controller.SprintDown)
             {
-                _accelerationMultiplier = SprintAcceleration;
-                _stamina -= 50 * Time.deltaTime;
-                _gun?.ToggleRunning(true);
+                if (_stamina <= 0)
+                {
+                    SetWalkingState();
+                }
+                else
+                {
+                    SetRunningState();
+                    _stamina -= 50 * Time.deltaTime;
+                    _isRegeneratingStamina = false;
+                }
             }
             else
             {
-                _accelerationMultiplier = WalkAcceleration;
-                _gun?.ToggleRunning(false);
-            }
-
-            if (_stamina <= 0)
-            {
-                _stamina = 0;
+                if (_stamina >= 100) return;
                 _isRegeneratingStamina = true;
-                _accelerationMultiplier = WalkAcceleration;
-                _gun?.ToggleRunning(false);
+                SetWalkingState();
             }
+        }
 
-            if (_controller.SprintDown) return;
-            if (_isRolling)
-            {
-                _accelerationMultiplier = SprintAcceleration;
-            }
-            else
-            {
-                _accelerationMultiplier = WalkAcceleration;
-            }
+        private void SetRollingState()
+        {
+            _accelerationMultiplier = SprintAcceleration;
+            _playerMobilityState = PlayerMobilityState.Rolling;
+        }
+
+        private void SetWalkingState()
+        {
+            _accelerationMultiplier = WalkAcceleration;
+            _gun?.ToggleRunning(false);
+            _playerMobilityState = PlayerMobilityState.Walking;
+        }
+
+        private void SetRunningState()
+        {
+            _accelerationMultiplier = SprintAcceleration;
+            _gun?.ToggleRunning(true);
+            _playerMobilityState = PlayerMobilityState.Running;
         }
 
         public void EquipGun(string name)
