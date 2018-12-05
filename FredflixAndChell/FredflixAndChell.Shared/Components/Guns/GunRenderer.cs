@@ -83,7 +83,7 @@ namespace FredflixAndChell.Shared.Components.Guns
         {
             _animation.layerDepth =
                 _gun.Parameters.AlwaysAbovePlayer ? (_player.VerticalFacing == (int)FacingCode.UP ? 1 : 0 ) :
-                1 - (entity.position.Y + _player.FacingAngle.Y) * Constants.RenderLayerDepthFactor;
+                1 - (entity.position.Y +(_player.VerticalFacing == (int)FacingCode.UP ? -10 : 10)) * Constants.RenderLayerDepthFactor;
 
             if (_gun.Parameters.FlipYWithPlayer)
             {

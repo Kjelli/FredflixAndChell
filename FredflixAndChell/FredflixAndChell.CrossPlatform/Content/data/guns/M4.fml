@@ -1,7 +1,7 @@
 Ammo: 300
 Accuracy: 0.8
 BarrelOffset:
-  X: 10.0
+  X: 5.0
   Y: 0.0
 BulletCount: 1
 BulletParameters:
@@ -29,7 +29,7 @@ MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300
 Name: M4
-RenderOffset: 7.0
+RenderOffset: 3.0
 Rarity: Common
 Sprite:
   Fire:

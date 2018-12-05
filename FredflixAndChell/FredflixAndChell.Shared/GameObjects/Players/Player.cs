@@ -12,6 +12,7 @@ using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
+using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -29,7 +30,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     {
         private const float ThrowSpeed = 0.5f;
 
-        private readonly int _controllerIndex;
         private readonly CharacterParameters _params;
 
         private PlayerState _playerState;
@@ -56,8 +56,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private readonly float _sprintAcceleration = 0.10f;
 
         private List<Entity> _entitiesInProximity;
-        private Entity _particlesEntity;
-        private ParticleEngine _bloodParticles;
         private bool _isRolling;
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
@@ -68,7 +66,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public CharacterParameters Parameters => _params;
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
-        public int PlayerIndex => _controllerIndex;
+        public int PlayerIndex { get; set; }
         public int Health => (int)_health;
         public int MaxHealth => (int)_maxHealth;
         public float MaxStamina => (int)_maxStamina;
@@ -78,32 +76,48 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
 
-        public Player(CharacterParameters characterParameters, int x, int y, int controllerIndex = 0) : base(x, y)
+        public Player(CharacterParameters characterParameters, int x, int y, int playerIndex) : base(x, y)
         {
             _params = characterParameters;
-            _controllerIndex = controllerIndex;
             _entitiesInProximity = new List<Entity>();
-
-            name = $"Player " + controllerIndex;
+            PlayerIndex = playerIndex;
+            name = $"Player {PlayerIndex}";
         }
 
         public override void OnSpawn()
         {
             SetupComponents();
             SetupParameters();
+            SetupDebug();
             scene.getSceneComponent<GameSystem>().RegisterPlayer(this);
             updateOrder = 0;
+        }
+
+        private void SetupDebug()
+        {
+            var gameSystem = scene.getSceneComponent<GameSystem>();
+            gameSystem.DebugLines.Add(new DebugLine
+            {
+                Text = () => $"Player {PlayerIndex}",
+                SubLines = new List<DebugLine>
+                {
+                    new DebugLine{ Text = () => $"Health: {Health}"},
+                    new DebugLine{ Text = () => $"Stamina: {Stamina}"},
+                    new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
+                    new DebugLine{ Text = () => $"Drops gun: {_controller.DropGunPressed }" },
+                }
+            });
         }
 
         private void SetupComponents()
         {
             setTag(Tags.Player);
-
-            // Assign controller component
-            _controller = addComponent(new PlayerController(_controllerIndex));
-
+            
             // Assign movement component
             _mover = addComponent(new Mover());
+
+            // Assigned by player connector
+            _controller = getComponent<PlayerController>();
 
             // Assign gun component
             EquipGun("Goggles");
@@ -154,7 +168,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ReadInputs()
         {
-            if (!_controller.InputEnabled) return;
+            
+            if (_controller == null || !_controller.InputEnabled) return;
 
             if (_controller.FirePressed)
                 Attack();
@@ -412,7 +427,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Damage(int damage, Vector2 damageDirection)
         {
-            Console.WriteLine("Health player " + _controllerIndex + ": " + _health);
             _health -= damage;
             _blood.Sprinkle(damage, damageDirection);
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
@@ -465,7 +479,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (PlayerState != PlayerState.Normal) return;
 
-            if (_controller.XRightAxis == 0 && _controller.YRightAxis == 0) return;
+            if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
 
             FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 20f);
 

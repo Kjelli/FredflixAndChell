@@ -72,6 +72,7 @@
     <Compile Include="Components\HUD\HUD.cs" />
     <Compile Include="Components\Interactables\InteractableComponent.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
+    <Compile Include="Systems\ControllerSystem.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />
     <Compile Include="GameObjects\Bullets\BulletParameters.cs" />

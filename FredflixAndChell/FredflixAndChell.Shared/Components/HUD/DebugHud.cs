@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,14 +15,14 @@ namespace FredflixAndChell.Shared.Components.HUD
     public class DebugHud : Entity
     {
         private GameSystem _gameSystem;
-        private Text _text;
+        private Text _debugOutput;
         public DebugHud() : base("debug_hud")
         {
-            _text = new Text(new NezSpriteFont(Assets.AssetLoader.GetFont("debug")), "", Vector2.Zero, Color.White);
+            _debugOutput = new Text(new NezSpriteFont(Assets.AssetLoader.GetFont("debug")), "", Vector2.Zero, Color.White);
 
-            _text.renderLayer = Constants.Layers.HUD;
-            addComponent(_text);
-            updateInterval = 15;
+            _debugOutput.renderLayer = Constants.Layers.HUD;
+            addComponent(_debugOutput);
+            updateInterval = 5;
         }
 
         public override void onAddedToScene()
@@ -33,23 +34,33 @@ namespace FredflixAndChell.Shared.Components.HUD
         public override void update()
         {
             base.update();
-            var text = "";
-            text += $"Entities: {scene.entities.count}\n";
-            text += "Players: \n";
+            var count = _gameSystem.DebugLines.Count;
+            var stringBuilder = BuildDebugText(new StringBuilder(""), _gameSystem.DebugLines);
+            _debugOutput.text = stringBuilder.ToString();
+        }
 
-            foreach (var standing in _gameSystem.PlayerStandings)
+        private StringBuilder BuildDebugText(StringBuilder sb, List<DebugLine> debugLines, int tab = 0)
+        {
+            foreach(var line in debugLines)
             {
-                var player = standing.Value;
-                var playerNo = standing.Key;
-                text += $"  Player {playerNo}:\n";
-                text += $"    Health: {player.Health}\n";
-                text += $"    Stamina: {player.Stamina}\n";
-                text += $"    State: {player.PlayerState}\n";
+                var text = line.Text();
+                if (!string.IsNullOrWhiteSpace(text)){ 
+                    sb.Append(' ', tab);
+                    sb.AppendLine(text);
+                }
+
+                if (line.SubLines?.Count > 0)
+                {
+                    BuildDebugText(sb, line.SubLines, tab + 2);
+                }
             }
+            return sb;
+        }
 
-            text += $"Game State: {_gameSystem.GameState}\n";
-
-            _text.text = text;
+        public class DebugLine
+        {
+            public Func<string> Text { get; set; }
+            public List<DebugLine> SubLines {get; set;}
         }
     }
 }

@@ -43,11 +43,12 @@ namespace FredflixAndChell.Shared.Utilities
 
         public Vector2 DistributeSpawn()
         {
+            Random rnd = new Random();
             try
             {
                 if (_randomSpawns)
                 {
-                    Random rnd = new Random();
+                    
                     int index = rnd.Next(0, _spawnLocations.Count);
                     Vector2 s = new Vector2(_spawnLocations[index].X, _spawnLocations[index].Y);
                     _spawnLocations.Remove(_spawnLocations[index]);
@@ -62,7 +63,7 @@ namespace FredflixAndChell.Shared.Utilities
             }catch(Exception e)
             {
                 Console.WriteLine("ERROR: Could not distribute a spawn. Getting that standard shit. \n " + e);
-                return new Vector2(100, 100);
+                return new Vector2(100 + rnd.Next(-20,20), 100 + rnd.Next(-20,20));
             }
             
         }
