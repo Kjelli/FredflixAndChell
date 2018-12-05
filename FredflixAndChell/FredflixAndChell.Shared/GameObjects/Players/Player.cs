@@ -4,7 +4,6 @@ using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Systems;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -30,7 +29,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     {
         private const float ThrowSpeed = 0.5f;
         private const float WalkAcceleration = 0.25f;
-        private const float SprintAcceleration = 0.30f;
+        private const float SprintAcceleration = 0.40f;
         private const float BaseSlownessFactor = 20f;
 
         private readonly CharacterParameters _params;
@@ -114,7 +113,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupComponents()
         {
             setTag(Tags.Player);
-            
+
             // Assign movement component
             _mover = addComponent(new Mover());
 
@@ -170,7 +169,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ReadInputs()
         {
-            
+
             if (_controller == null || !_controller.InputEnabled) return;
 
             if (_controller.FirePressed)
