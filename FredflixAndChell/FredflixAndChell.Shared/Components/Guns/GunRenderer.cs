@@ -40,7 +40,6 @@ namespace FredflixAndChell.Shared.Components.Guns
             animations.addAnimation(GunAnimations.Held_Fired, sprite.Fire.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Reload, sprite.Reload.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Held_Idle, sprite.Idle.ToSpriteAnimation(sprite.Source));
-
             return animations;
         }
 

@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Constants.cs" />
+    <Compile Include="Components\Bullets\Behaviours\LaserBehaviour.cs" />
     <Compile Include="Components\Bullets\Behaviours\MultiplyingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\AcceleratingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\BulletBehaviour.cs" />

@@ -6,7 +6,7 @@ BarrelOffset:
 BulletCount: 5
 BulletParameters:
   Damage: 0.0
-  Knockback: 0.80
+  Knockback: 150.0
   LifeSpanSeconds: 0.5
   RotateWithGun: true
   Scale: 0.25

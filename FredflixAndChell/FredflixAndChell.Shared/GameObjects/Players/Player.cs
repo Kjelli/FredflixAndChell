@@ -29,6 +29,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     public class Player : GameObject
     {
         private const float ThrowSpeed = 0.5f;
+        private const float WalkAcceleration = 0.25f;
+        private const float SprintAcceleration = 0.30f;
+        private const float BaseSlownessFactor = 20f;
 
         private readonly CharacterParameters _params;
 
@@ -52,8 +55,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _speed = 50f;
         private float _accelerationMultiplier;
         private bool _isRegeneratingStamina = false;
-        private readonly float _walkAcceleration = 0.05f;
-        private readonly float _sprintAcceleration = 0.10f;
 
         private List<Entity> _entitiesInProximity;
         private bool _isRolling;
@@ -61,9 +62,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private int _numSprintPressed = 0;
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
+        private float _slownessFactor;
 
         public PlayerState PlayerState => _playerState;
         public CharacterParameters Parameters => _params;
+        public float SlownessFactor { get => _slownessFactor; set => _slownessFactor = value; }
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
         public int PlayerIndex { get; set; }
@@ -172,6 +175,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (_controller.FirePressed)
                 Attack();
+            if (!_controller.FirePressed)
+                SlownessFactor = BaseSlownessFactor;
             if (_controller.ReloadPressed)
                 Reload();
             if (_controller.DropGunPressed)
@@ -275,13 +280,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_controller.SprintDown && !_isRegeneratingStamina)
             {
-                _accelerationMultiplier = _sprintAcceleration;
+                _accelerationMultiplier = SprintAcceleration;
                 _stamina -= 50 * Time.deltaTime;
                 _gun?.ToggleRunning(true);
             }
             else
             {
-                _accelerationMultiplier = _walkAcceleration;
+                _accelerationMultiplier = WalkAcceleration;
                 _gun?.ToggleRunning(false);
             }
 
@@ -289,18 +294,18 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 _stamina = 0;
                 _isRegeneratingStamina = true;
-                _accelerationMultiplier = _walkAcceleration;
+                _accelerationMultiplier = WalkAcceleration;
                 _gun?.ToggleRunning(false);
             }
 
             if (_controller.SprintDown) return;
             if (_isRolling)
             {
-                _accelerationMultiplier = _sprintAcceleration;
+                _accelerationMultiplier = SprintAcceleration;
             }
             else
             {
-                _accelerationMultiplier = _walkAcceleration;
+                _accelerationMultiplier = WalkAcceleration;
             }
         }
 
@@ -332,7 +337,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
+            Velocity = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -409,7 +414,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Reload()
         {
-
             if (_gun != null)
                 _gun.ReloadMagazine();
         }
@@ -424,7 +428,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _playerCollisionHandler.InteractWithNearestEntity();
         }
 
-        public void Damage(int damage, Vector2 damageDirection)
+        public void Damage(float damage, Vector2 damageDirection)
         {
             _health -= damage;
             _blood.Sprinkle(damage, damageDirection);
@@ -479,7 +483,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
 
-            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 20f);
+
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * _slownessFactor);
 
             if (FacingAngle.Y > 0)
             {
