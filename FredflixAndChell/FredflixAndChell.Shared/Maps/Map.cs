@@ -77,7 +77,6 @@ namespace FredflixAndChell.Shared.Maps
                         EventTriggered = _ =>
                         {
                             entity.setEnabled(!entity.enabled);
-                            Console.WriteLine("Event emitted at " + _.EventKey);
                         }
                     });
                     MapEventListeners.Add(listener);

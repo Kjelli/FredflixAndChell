@@ -3,12 +3,12 @@ using FredflixAndChell.Shared.Utilities.Input;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using System;
+using static Nez.VirtualJoystick;
 
 namespace FredflixAndChell.Shared.Components.PlayerComponents
 {
     public class PlayerController : Component, IUpdatable
     {
-
         private VirtualJoystick _leftStick;
         private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
@@ -22,51 +22,51 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         private Player _player;
 
-        private int _controllerIndex;
+        private GamePadData _gp;
         private bool _inputEnabled = true;
 
-        public float XLeftAxis => _leftStick?.value.X ?? 0;
-        public float YLeftAxis => -1 * _leftStick?.value.Y ?? 0;
-        public float XRightAxis => _rightStick?.value.X ?? 0;
-        public float YRightAxis => -1 * _rightStick?.value.Y ?? 0;
-        public bool FirePressed => _fireButton?.isDown ?? false;
-        public bool ReloadPressed => _reloadButton?.isPressed ?? false;
-        public bool DropGunPressed => _dropGunButton?.isPressed ?? false;
-        public bool InteractPressed => _interactButton?.isPressed ?? false;
-        public bool DebugModePressed => _debugButton?.isPressed ?? false;
-        public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? false;
-        public bool SprintPressed => _sprintButton?.isPressed ?? false;
-        public bool SprintDown => _sprintButton?.isDown ?? false;
+        public float XLeftAxis => _leftStick?.value.X ?? _gp.getLeftStick().X;
+        public float YLeftAxis => -1 * _leftStick?.value.Y ?? -1 * _gp.getLeftStick().Y;
+        public float XRightAxis => _rightStick?.value.X ?? _gp.getRightStick().X;
+        public float YRightAxis => -1 * _rightStick?.value.Y ?? -1 * _gp.getRightStick().Y;
+        public bool FirePressed => _fireButton?.isDown ?? _gp.isButtonDown(Buttons.RightTrigger);
+        public bool ReloadPressed => _reloadButton?.isPressed ?? _gp.isButtonPressed(Buttons.X);
+        public bool DropGunPressed => _dropGunButton?.isPressed ?? _gp.isButtonPressed(Buttons.DPadUp);
+        public bool InteractPressed => _interactButton?.isPressed ?? _gp.isButtonPressed(Buttons.A);
+        public bool DebugModePressed => _debugButton?.isPressed ?? _gp.isButtonPressed(Buttons.Start);
+        public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? _gp.isButtonPressed(Buttons.Y);
+        public bool SprintPressed => _sprintButton?.isPressed ?? _gp.isButtonPressed(Buttons.B);
+        public bool SprintDown => _sprintButton?.isDown ?? _gp.isButtonDown(Buttons.B);
         public bool InputEnabled => _inputEnabled;
 
-        public PlayerController(int controllerIndex)
+        public PlayerController(GamePadData gamePadData)
         {
-            _controllerIndex = controllerIndex;
+            _gp = gamePadData;
         }
 
         public override void onAddedToEntity()
         {
             _player = entity as Player;
 
-            // Virtual joysticks
-            _leftStick = new VirtualJoystick(false);
-            _rightStick = new VirtualJoystick(true);
-
-            // Buttons
-            _fireButton = new VirtualButton();
-            _reloadButton = new VirtualButton();
-            _dropGunButton = new VirtualButton();
-            _debugButton = new VirtualButton();
-            _interactButton = new VirtualButton();
-            _switchWeaponButton = new VirtualButton();
-            _sprintButton = new VirtualButton();
-
-            // Virtual mouse joystick
-            _mouseJoystick = new VirtualMouseJoystick(_player.position);
-
             // Keyboard player
-            if (_controllerIndex < 0)
+            if (_gp == null)
             {
+                // Virtual mouse joystick
+                _mouseJoystick = new VirtualMouseJoystick(_player.position);
+
+                // Virtual joysticks
+                _leftStick = new VirtualJoystick(false);
+                _rightStick = new VirtualJoystick(true);
+
+                // Buttons
+                _fireButton = new VirtualButton();
+                _reloadButton = new VirtualButton();
+                _dropGunButton = new VirtualButton();
+                _debugButton = new VirtualButton();
+                _interactButton = new VirtualButton();
+                _switchWeaponButton = new VirtualButton();
+                _sprintButton = new VirtualButton();
+
                 _leftStick.addKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.A, Keys.D, Keys.S, Keys.W);
                 _rightStick.nodes.Add(_mouseJoystick);
                 _fireButton.addMouseLeftButton();
@@ -77,41 +77,6 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
                 _switchWeaponButton.addKeyboardKey(Keys.Q);
                 _sprintButton.addKeyboardKey(Keys.LeftShift);
             }
-            // Player with controller at index {_controllerIndex}
-            else if (GamePad.GetState(_controllerIndex).IsConnected)
-            {
-                var isControllerCompatible = VerifyControllerCompatible(_controllerIndex);
-                if (!isControllerCompatible)
-                {
-                    throw new Exception("Controller not compatible");
-                }
-                _leftStick.addGamePadLeftStick(_controllerIndex);
-                _rightStick.addGamePadRightStick(_controllerIndex);
-                _fireButton.addGamePadButton(_controllerIndex, Buttons.RightTrigger);
-                _interactButton.addGamePadButton(_controllerIndex, Buttons.A);
-                _switchWeaponButton.addGamePadButton(_controllerIndex, Buttons.Y);
-                _reloadButton.addGamePadButton(_controllerIndex, Buttons.X);
-                _debugButton.addGamePadButton(_controllerIndex, Buttons.Start);
-                _sprintButton.addGamePadButton(_controllerIndex, Buttons.B);
-            }
-            // Ghost player..?
-            else
-            {
-                throw new Exception("What");
-            }
-        }
-
-        private bool VerifyControllerCompatible(int controllerIndex)
-        {
-            var capabilities = GamePad.GetCapabilities(controllerIndex);
-            var isCompatible = capabilities.HasLeftXThumbStick
-                && capabilities.HasLeftYThumbStick
-                && capabilities.HasRightXThumbStick
-                && capabilities.HasRightYThumbStick
-                && capabilities.HasXButton
-                && capabilities.HasRightTrigger;
-
-            return isCompatible;
         }
 
         public void SetInputEnabled(bool enabled)
@@ -121,7 +86,7 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
 
         public void update()
         {
-            if (_controllerIndex == -1)
+            if (_gp == null)
             {
                 _mouseJoystick.ReferencePoint = entity.scene.camera.worldToScreenPoint(_player.position);
             }

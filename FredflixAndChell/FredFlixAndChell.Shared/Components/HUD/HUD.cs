@@ -25,7 +25,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         public HUD()
         {}
 
-        public void AddPlayers(List<Player> players)
+        public void BuildHudForAllPlayers(List<Player> players)
         {
             if(_playerHUDs.Count > 0)
             {

@@ -6,6 +6,7 @@ using Nez;
 using Nez.Tweens;
 using System.Collections.Generic;
 using System.Linq;
+using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -34,6 +35,7 @@ namespace FredflixAndChell.Shared.Systems
         public Dictionary<int, Player> PlayerStandings => _playerStandings;
         public GameState GameState => _gameState;
 
+        public List<DebugLine> DebugLines = new List<DebugLine>();
 
         public GameSystem()
         {

@@ -20,7 +20,6 @@ namespace FredflixAndChell.Shared.Components.Cameras
         public CameraTracker(Func<bool> shouldTrackEntityFunction)
         {
             _shouldTrackEntity = shouldTrackEntityFunction;
-            Console.WriteLine("Created cameratracker");
         }
 
         public override void onAddedToEntity()
@@ -28,7 +27,6 @@ namespace FredflixAndChell.Shared.Components.Cameras
             base.onAddedToEntity();
             var cam = entity.scene.getSceneComponent<SmoothCamera>();
             cam.Register(this);
-            Console.WriteLine("JA ANDY DET FUNKA");
         }
 
         public override void onRemovedFromEntity()

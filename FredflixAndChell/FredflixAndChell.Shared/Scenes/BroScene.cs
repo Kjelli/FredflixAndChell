@@ -3,6 +3,7 @@ using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects.Weather;
 using FredflixAndChell.Shared.Components.HUD;
+using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Systems;
@@ -41,8 +42,11 @@ namespace FredflixAndChell.Shared.Scenes
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new HUD());
-            addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
+            var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
+            connector.SpawnDebugPlayer();
             addSceneComponent(new GameSystem());
+            addSceneComponent(new ControllerSystem());
+
 
             // TODO turn back on for sweet details. Sweetails.
             addEntity(new DebugHud());
