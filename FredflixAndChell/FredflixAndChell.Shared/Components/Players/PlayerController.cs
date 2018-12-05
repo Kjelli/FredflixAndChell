@@ -47,7 +47,6 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public override void onAddedToEntity()
         {
             _player = entity as Player;
-            Console.WriteLine("Player entity: " + _player);
 
             // Keyboard player
             if (_gp == null)

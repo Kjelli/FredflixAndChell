@@ -104,7 +104,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     new DebugLine{ Text = () => $"Health: {Health}"},
                     new DebugLine{ Text = () => $"Stamina: {Stamina}"},
                     new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
-                    new DebugLine{ Text = () => $"Drops gun: {_controller.DropGunPressed }" },
                 }
             });
         }
@@ -459,7 +458,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_gun != null)
             {
                 //Throw out a new gunz
-                Console.WriteLine($"Dropping {_gun.Parameters.Name}");
                 var throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
 
                 throwedItem.Velocity = new Vector2(

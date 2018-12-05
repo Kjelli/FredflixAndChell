@@ -62,7 +62,7 @@ namespace FredflixAndChell.Shared.Utilities
                 }
             }catch(Exception e)
             {
-                Console.WriteLine("ERROR: Could not distribute a spawn. Getting that standard shit. \n " + e);
+                Console.Error.WriteLine("ERROR: Could not distribute a spawn. Getting that standard shit. \n " + e);
                 return new Vector2(100 + rnd.Next(-20,20), 100 + rnd.Next(-20,20));
             }
             

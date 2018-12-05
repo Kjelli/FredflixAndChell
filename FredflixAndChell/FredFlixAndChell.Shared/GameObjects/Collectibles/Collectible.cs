@@ -47,7 +47,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public override void OnDespawn()
         {
-            Console.WriteLine($"Despawned entity {this}");
         }
 
         public override void OnSpawn()
@@ -182,7 +181,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
             else if (!CanBeCollected() || (_numberOfPlayersInProximity == 0 && _isHighlighted))
             {
-                Console.WriteLine($"Unhighlighting entity {name}");
 
                 _isHighlighted = false;
 

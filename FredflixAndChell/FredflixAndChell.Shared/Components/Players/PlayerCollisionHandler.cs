@@ -53,7 +53,6 @@ namespace FredflixAndChell.Shared.Components.Players
             if (interactable != null)
             {
                 _entitiesInProximity.Add(other.entity);
-                Console.WriteLine($"Adding {other.entity.name} to proximity");
                 if (other.entity is Collectible collectible && collectible.CanBeCollected())
                 {
                     collectible?.Highlight();
@@ -104,7 +103,6 @@ namespace FredflixAndChell.Shared.Components.Players
         public void InteractWithNearestEntity()
         {
             if (_entitiesInProximity.Count == 0) return;
-            Console.WriteLine(_entitiesInProximity.Count + " entities nearby");
             // Find closest entity based on distance between player and collectible
             var closestEntity = _entitiesInProximity.Aggregate((other1, other2) =>
             ((other2.position - entity.position).Length() < (other1.position - entity.position).Length() ? other2 : other1));
