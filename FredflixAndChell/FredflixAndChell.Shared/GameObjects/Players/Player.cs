@@ -241,6 +241,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
                 _numSprintPressed = 0;
+                _stamina -= 50;
             }
 
             if (_playerMobilityState == PlayerMobilityState.Rolling)
@@ -260,7 +261,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 SetWalkingState();
                 localRotation = 0;
                 _numSprintPressed = 0;
-                _stamina -= 50;
             }
         }
 
