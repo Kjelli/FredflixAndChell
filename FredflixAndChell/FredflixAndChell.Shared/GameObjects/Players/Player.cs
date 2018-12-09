@@ -59,6 +59,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
         private float _slownessFactor;
+        private Vector2 _initialRollingDirection;
 
         public PlayerMobilityState PlayerMobilityState { get; set; }
         public PlayerState PlayerState { get; set; }
@@ -194,7 +195,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ToggleStaminaRegeneration();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
-            Console.WriteLine(Acceleration);
         }
 
         private void HandleDodgeRollGracePeriod()
@@ -240,10 +240,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
                 _numSprintPressed = 0;
                 _stamina -= DodgeRollStaminaCost;
+
+                _initialRollingDirection = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
             }
 
             if (PlayerMobilityState == PlayerMobilityState.Rolling)
             {
+                _mover.move(_initialRollingDirection, out CollisionResult collision);
+
                 if (_isRollingRight)
                 {
                     localRotation += 4 * (float)Math.PI * Time.deltaTime;
@@ -345,6 +349,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void Move()
         {
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
