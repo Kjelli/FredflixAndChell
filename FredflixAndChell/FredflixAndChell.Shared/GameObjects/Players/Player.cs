@@ -31,6 +31,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const float WalkAcceleration = 0.25f;
         private const float SprintAcceleration = 0.40f;
         private const float BaseSlownessFactor = 20f;
+        private const int DodgeRollStaminaCost = 50;
 
         private readonly CharacterParameters _params;
 
@@ -235,13 +236,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void PerformDodgeRoll()
         {
-            if (_stamina < 50) return;
-            if (_numSprintPressed == 2 && _controller.SprintPressed)
+            if (_numSprintPressed == 2 && _controller.SprintPressed && _stamina > DodgeRollStaminaCost)
             {
                 SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
                 _numSprintPressed = 0;
-                _stamina -= 50;
+                _stamina -= DodgeRollStaminaCost;
             }
 
             if (_playerMobilityState == PlayerMobilityState.Rolling)
