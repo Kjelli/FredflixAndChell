@@ -34,10 +34,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const int DodgeRollStaminaCost = 50;
 
         private readonly CharacterParameters _params;
-
-        private PlayerState _playerState;
-        private PlayerMobilityState _playerMobilityState;
-
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -64,7 +60,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _gracePeriod;
         private float _slownessFactor;
 
-        public PlayerState PlayerState => _playerState;
+        public PlayerMobilityState PlayerMobilityState { get; set; }
+        public PlayerState PlayerState { get; set; }
         public CharacterParameters Parameters => _params;
         public float SlownessFactor { get => _slownessFactor; set => _slownessFactor = value; }
         public Vector2 Acceleration { get; set; }
@@ -107,7 +104,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     new DebugLine{ Text = () => $"Health: {Health}"},
                     new DebugLine{ Text = () => $"Stamina: {Stamina}"},
                     new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
-                    new DebugLine{ Text = () => $"Mobility state: {_playerMobilityState.ToString()}"},
+                    new DebugLine{ Text = () => $"Mobility state: {PlayerMobilityState.ToString()}"},
                 }
             });
         }
@@ -144,7 +141,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _renderer = addComponent(new PlayerRenderer(_params.PlayerSprite, _gun));
 
             // Assign camera tracker component
-            _cameraTracker = addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
+            _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead));
 
             //Particles
             //TODO: Disse to linjene (eller komponetner) blir brukt, bare for stek
@@ -215,7 +212,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleDodgeRoll()
         {
-            if (_playerMobilityState == PlayerMobilityState.Rolling) return;
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
             if (_numSprintPressed == 0)
             {
                 _numSprintPressed++;
@@ -244,7 +241,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _stamina -= DodgeRollStaminaCost;
             }
 
-            if (_playerMobilityState == PlayerMobilityState.Rolling)
+            if (PlayerMobilityState == PlayerMobilityState.Rolling)
             {
                 if (_isRollingRight)
                 {
@@ -279,7 +276,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleSprint()
         {
-            if (_playerMobilityState == PlayerMobilityState.Rolling) return;
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
 
             if (_controller.SprintDown)
             {
@@ -305,21 +302,21 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetRollingState()
         {
             _accelerationMultiplier = SprintAcceleration;
-            _playerMobilityState = PlayerMobilityState.Rolling;
+            PlayerMobilityState = PlayerMobilityState.Rolling;
         }
 
         private void SetWalkingState()
         {
             _accelerationMultiplier = WalkAcceleration;
             _gun?.ToggleRunning(false);
-            _playerMobilityState = PlayerMobilityState.Walking;
+            PlayerMobilityState = PlayerMobilityState.Walking;
         }
 
         private void SetRunningState()
         {
             _accelerationMultiplier = SprintAcceleration;
             _gun?.ToggleRunning(true);
-            _playerMobilityState = PlayerMobilityState.Running;
+            PlayerMobilityState = PlayerMobilityState.Running;
         }
 
         public void EquipGun(string name)
@@ -400,7 +397,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void DeclareDead()
         {
-            _playerState = PlayerState.Dead;
+            PlayerState = PlayerState.Dead;
             _cameraTracker.setEnabled(false);
         }
 
@@ -445,9 +442,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             _health -= damage;
             _blood.Sprinkle(damage, damageDirection);
-            if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
+            if (_health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
-                _playerState = PlayerState.Dying;
+                PlayerState = PlayerState.Dying;
                 DropDead();
                 DisablePlayer();
             }

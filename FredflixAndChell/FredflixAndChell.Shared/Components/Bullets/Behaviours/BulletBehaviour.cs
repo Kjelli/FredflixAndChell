@@ -35,7 +35,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         private void SetupLineBullet()
         {
-           // TODO
+            // TODO
         }
 
         private void SetupEntityBullet()
@@ -58,7 +58,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public virtual void OnFired()
         {
-            
+
         }
 
         public virtual void OnNonPlayerImpact(CollisionResult collision)
@@ -76,7 +76,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public virtual void Move()
         {
-            if (_bullet.Velocity.Length() == 0 ) return;
+            if (_bullet.Velocity.Length() == 0) return;
 
             var isColliding = _mover.move(_bullet.Velocity * Time.deltaTime);
             if (isColliding)
@@ -119,13 +119,15 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         private void HitPlayer(Entity playerEntity)
         {
             var player = playerEntity as Player;
+            if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
+
             OnImpact(player);
         }
 
         protected void DamagePlayer(Player player)
         {
             player.Damage(_bullet.Parameters.Damage, _bullet.Velocity);
-            player.Velocity += new Vector2((float) Math.Cos(_bullet.Direction),(float) Math.Sin(_bullet.Direction)) * _bullet.Parameters.Knockback * Time.deltaTime;
+            player.Velocity += new Vector2((float)Math.Cos(_bullet.Direction), (float)Math.Sin(_bullet.Direction)) * _bullet.Parameters.Knockback * Time.deltaTime;
         }
 
         public virtual void update()
