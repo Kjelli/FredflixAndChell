@@ -194,6 +194,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ToggleStaminaRegeneration();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
+            Console.WriteLine(Acceleration);
         }
 
         private void HandleDodgeRollGracePeriod()
@@ -233,7 +234,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void PerformDodgeRoll()
         {
-            if (_numSprintPressed == 2 && _controller.SprintPressed && _stamina > DodgeRollStaminaCost)
+            if (_numSprintPressed == 2 && _controller.SprintPressed && _stamina > DodgeRollStaminaCost && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
                 SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
