@@ -286,7 +286,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
 
-            if (_controller.SprintDown)
+            if (_controller.SprintDown && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
                 if (_stamina <= 0)
                 {
