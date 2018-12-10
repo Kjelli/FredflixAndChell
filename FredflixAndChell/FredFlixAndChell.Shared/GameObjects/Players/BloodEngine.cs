@@ -34,17 +34,17 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _bloodTexture.SetData(new[] { Color.DarkRed });
         }
 
-        public void Sprinkle(int damage, Vector2 direction)
+        public void Sprinkle(float damage, Vector2 direction)
         {
-            var particlesCount = Math.Floor((float)(damage));
+            var particlesCount = Math.Max(Math.Ceiling(damage), 1);
 
-            for (int i = 0; i < damage; i++)
+            for (int i = 0; i < particlesCount; i++)
             {
                 var particle = entity.scene.addEntity(new BloodParticle(_bloodTexture, transform.position.X, transform.position.Y));
 
-                float x = ((float)_rng.Next(-50, 50)) / 100f;
-                float y = ((float)_rng.Next(-50, 50)) / 100f;
-                var trueDirection = new Vector2(direction.X + (float)(direction.X * x), direction.Y + (float)(direction.Y * y));
+                float x = _rng.Next(-50, 50) / 100f;
+                float y = _rng.Next(-50, 50) / 100f;
+                var trueDirection = new Vector2(direction.X + (direction.X * x), direction.Y + (direction.Y * y));
                 var speedConstant = 0.015f;
 
                 particle.Velocity = new Vector2(

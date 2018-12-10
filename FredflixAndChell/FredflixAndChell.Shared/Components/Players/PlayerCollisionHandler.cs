@@ -64,8 +64,13 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             if (other.entity.tag == Tags.Pit)
             {
-                (entity as Player).FallIntoPit(other.entity);
-            } else if(other.entity.tag == Tags.EventEmitter)
+                var player = entity as Player;
+                if (player.PlayerMobilityState != PlayerMobilityState.Rolling)
+                {
+                    player.FallIntoPit(other.entity);
+                }
+            }
+            else if (other.entity.tag == Tags.EventEmitter)
             {
                 (other.entity as CollisionEventEmitter).EmitMapEvent();
             }
@@ -110,7 +115,7 @@ namespace FredflixAndChell.Shared.Components.Players
             var interactable = closestEntity.getComponent<InteractableComponent>();
             interactable.OnInteract(_player);
 
-            if(closestEntity is Collectible collectible)
+            if (closestEntity is Collectible collectible)
             {
                 _entitiesInProximity.Remove(closestEntity);
             }

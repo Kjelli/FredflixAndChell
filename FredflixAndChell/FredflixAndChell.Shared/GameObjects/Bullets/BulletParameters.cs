@@ -5,8 +5,11 @@ using System;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
+    public enum BulletType { Entity, Line }
+
     public class BulletParameters
     {
+        public BulletType BulletType { get; set; } = BulletType.Entity;
         public BulletSprite Sprite { get; set; }
         public string BulletBehaviour { get; set; } = nameof(StandardBullet);
         public float Scale { get; set; } = 0.25f;

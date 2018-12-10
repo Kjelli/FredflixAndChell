@@ -5,7 +5,6 @@ using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
@@ -31,11 +30,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
     public class Player : GameObject
     {
         private const float ThrowSpeed = 0.5f;
+        private const float WalkAcceleration = 0.25f;
+        private const float SprintAcceleration = 0.40f;
+        private const float BaseSlownessFactor = 20f;
+        private const int DodgeRollStaminaCost = 50;
 
         private readonly CharacterParameters _params;
-
-        private PlayerState _playerState;
-
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -55,18 +55,19 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _speed = 50f;
         private float _accelerationMultiplier;
         private bool _isRegeneratingStamina = false;
-        private readonly float _walkAcceleration = 0.05f;
-        private readonly float _sprintAcceleration = 0.10f;
 
         private List<Entity> _entitiesInProximity;
-        private bool _isRolling;
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
+        private float _slownessFactor;
+        private Vector2 _initialRollingDirection;
 
-        public PlayerState PlayerState => _playerState;
+        public PlayerMobilityState PlayerMobilityState { get; set; }
+        public PlayerState PlayerState { get; set; }
         public CharacterParameters Parameters => _params;
+        public float SlownessFactor { get => _slownessFactor; set => _slownessFactor = value; }
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
         public int PlayerIndex { get; set; }
@@ -107,6 +108,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     new DebugLine{ Text = () => $"Health: {Health}"},
                     new DebugLine{ Text = () => $"Stamina: {Stamina}"},
                     new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
+                    new DebugLine{ Text = () => $"Mobility state: {PlayerMobilityState.ToString()}"},
                 }
             });
         }
@@ -114,7 +116,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupComponents()
         {
             setTag(Tags.Player);
-            
+
             // Assign movement component
             _mover = addComponent(new Mover());
 
@@ -143,12 +145,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _renderer = addComponent(new PlayerRenderer(_params.PlayerSprite, _gun));
 
             // Assign camera tracker component
-            _cameraTracker = addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
+            _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead));
 
             // Blood
             _blood = addComponent(new BloodEngine());
 
             _gameSystem = scene.getSceneComponent<GameSystem>();
+            SetWalkingState();
         }
 
         private void SetupParameters()
@@ -169,11 +172,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ReadInputs()
         {
-            
             if (_controller == null || !_controller.InputEnabled) return;
 
             if (_controller.FirePressed)
                 Attack();
+            if (!_controller.FirePressed)
+                SlownessFactor = BaseSlownessFactor;
             if (_controller.ReloadPressed)
                 Reload();
             if (_controller.DropGunPressed)
@@ -188,9 +192,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
 
             HandleDodgeRollGracePeriod();
+            PerformDodgeRoll();
             ToggleSprint();
             ToggleStaminaRegeneration();
-            PerformDodgeRoll();
 
             Acceleration = new Vector2(_controller.XLeftAxis, _controller.YLeftAxis);
         }
@@ -211,7 +215,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleDodgeRoll()
         {
-            if (_isRolling) return;
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
             if (_numSprintPressed == 0)
             {
                 _numSprintPressed++;
@@ -232,15 +236,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void PerformDodgeRoll()
         {
-            if (_isRegeneratingStamina) return;
-            if (_numSprintPressed == 2 && _controller.SprintPressed)
+            if (_numSprintPressed == 2 && _controller.SprintPressed && _stamina > DodgeRollStaminaCost && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
-                _isRolling = true;
+                SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
+                _numSprintPressed = 0;
+                _stamina -= DodgeRollStaminaCost;
+
+                _initialRollingDirection = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
             }
 
-            if (_isRolling)
+            if (PlayerMobilityState == PlayerMobilityState.Rolling)
             {
+                _mover.move(_initialRollingDirection, out CollisionResult collision);
+
                 if (_isRollingRight)
                 {
                     localRotation += 4 * (float)Math.PI * Time.deltaTime;
@@ -253,10 +262,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if ((_isRollingRight && localRotation >= (2 * Math.PI)) || (!_isRollingRight && localRotation <= (-2 * Math.PI)))
             {
-                _isRolling = false;
+                SetWalkingState();
                 localRotation = 0;
                 _numSprintPressed = 0;
-                _stamina -= 50;
             }
         }
 
@@ -266,44 +274,56 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 return;
 
             _stamina += 25 * Time.deltaTime;
-            if (_stamina >= 100)
+            if (_stamina >= _maxStamina)
             {
-                _stamina = 100;
+                _stamina = _maxStamina;
                 _isRegeneratingStamina = false;
             }
         }
 
         private void ToggleSprint()
         {
-            if (_controller.SprintDown && !_isRegeneratingStamina)
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
+
+            if (_controller.SprintDown)
             {
-                _accelerationMultiplier = _sprintAcceleration;
-                _stamina -= 50 * Time.deltaTime;
-                _gun?.ToggleRunning(true);
+                if (_stamina <= 0)
+                {
+                    SetWalkingState();
+                }
+                else
+                {
+                    SetRunningState();
+                    _stamina -= 50 * Time.deltaTime;
+                    _isRegeneratingStamina = false;
+                }
             }
             else
             {
-                _accelerationMultiplier = _walkAcceleration;
-                _gun?.ToggleRunning(false);
-            }
-
-            if (_stamina <= 0)
-            {
-                _stamina = 0;
+                if (_stamina >= 100) return;
                 _isRegeneratingStamina = true;
-                _accelerationMultiplier = _walkAcceleration;
-                _gun?.ToggleRunning(false);
+                SetWalkingState();
             }
+        }
 
-            if (_controller.SprintDown) return;
-            if (_isRolling)
-            {
-                _accelerationMultiplier = _sprintAcceleration;
-            }
-            else
-            {
-                _accelerationMultiplier = _walkAcceleration;
-            }
+        private void SetRollingState()
+        {
+            _accelerationMultiplier = SprintAcceleration;
+            PlayerMobilityState = PlayerMobilityState.Rolling;
+        }
+
+        private void SetWalkingState()
+        {
+            _accelerationMultiplier = WalkAcceleration;
+            _gun?.ToggleRunning(false);
+            PlayerMobilityState = PlayerMobilityState.Walking;
+        }
+
+        private void SetRunningState()
+        {
+            _accelerationMultiplier = SprintAcceleration;
+            _gun?.ToggleRunning(true);
+            PlayerMobilityState = PlayerMobilityState.Running;
         }
 
         public void EquipGun(string name)
@@ -331,10 +351,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void Move()
         {
+            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
             var deltaTime = Time.deltaTime;
 
             Acceleration *= _speed * deltaTime;
-            Velocity = (0.95f * Velocity + _accelerationMultiplier * Acceleration);
+            Velocity = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -389,7 +410,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void DeclareDead()
         {
-            _playerState = PlayerState.Dead;
+            PlayerState = PlayerState.Dead;
             _cameraTracker.setEnabled(false);
         }
 
@@ -416,7 +437,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Reload()
         {
-
             if (_gun != null)
                 _gun.ReloadMagazine();
         }
@@ -435,12 +455,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             var damage = bullet.Parameters.Damage;
             _health -= damage;
-            _blood.Sprinkle((int)damage, bullet.Velocity);
+            _blood.Sprinkle(damage, bullet.Velocity);
             Velocity += bullet.Velocity * bullet.Parameters.Knockback * Time.deltaTime;
 
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
-                _playerState = PlayerState.Dying;
+                PlayerState = PlayerState.Dying;
                 DropDead();
                 DisablePlayer();
 
@@ -495,7 +515,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
 
-            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * 20f);
+
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * _slownessFactor);
 
             if (FacingAngle.Y > 0)
             {

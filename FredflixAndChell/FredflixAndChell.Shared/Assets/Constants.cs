@@ -41,6 +41,7 @@ namespace FredflixAndChell.Shared.Assets
             public const int Pit = 2;
             public const int Collectible = 3;
             public const int EventEmitter = 4;
+            public const int Obstacle = 5;
         }
 
         public class Layers

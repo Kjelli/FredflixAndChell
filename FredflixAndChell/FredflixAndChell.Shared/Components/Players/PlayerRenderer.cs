@@ -168,6 +168,8 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public void update()
         {
             UpdateAnimation();
+            var hit = Physics.linecast(_player.position, _player.position + _player.FacingAngle * 1000f);
+            Debug.drawLine(_player.position, _player.position + _player.FacingAngle * 1000f, Color.Gray);
         }
 
         public void UpdateRenderLayerDepth()

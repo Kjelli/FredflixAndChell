@@ -10,7 +10,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
     public abstract class BulletBehaviour : Component, IUpdatable
     {
         protected readonly Bullet _bullet;
-        protected CircleCollider _collider;
+        protected Collider _collider;
         protected ProjectileMover _mover;
 
         public BulletBehaviour(Bullet bullet)
@@ -20,24 +20,45 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public override void onAddedToEntity()
         {
-            _collider = entity.addComponent<CircleCollider>();
-            _collider.radius = 2f;
+
+            if (_bullet.Parameters.BulletType == BulletType.Entity)
+            {
+                SetupEntityBullet();
+            }
+
+            if (_bullet.Parameters.BulletType == BulletType.Line)
+            {
+                SetupLineBullet();
+            }
+            OnFired();
+        }
+
+        private void SetupLineBullet()
+        {
+            // TODO
+        }
+
+        private void SetupEntityBullet()
+        {
+            var collider = entity.addComponent<CircleCollider>();
+            collider.radius = 2f;
+            _collider = collider;
+
+            _mover = _bullet.addComponent(new ProjectileMover());
 
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
             Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
             Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Bullet);
 
-            _mover = entity.addComponent(new ProjectileMover());
-
             // Hack to avoid moving without collider and causing nullreference
+
             _collider.onAddedToEntity();
             _mover.onAddedToEntity();
-
         }
 
         public virtual void OnFired()
         {
-            // TO BE IMPLEMENTED
+
         }
 
         public virtual void OnNonPlayerImpact(CollisionResult collision)
@@ -58,7 +79,8 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             if (_bullet.Velocity.Length() == 0) return;
 
             var isColliding = _mover.move(_bullet.Velocity * Time.deltaTime);
-            if (isColliding) {
+            if (isColliding)
+            {
                 HandleCollisions();
             }
         }
@@ -68,7 +90,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             if (_collider.collidesWithAny(out CollisionResult collision))
             {
                 var collidedWithEntity = collision.collider.entity;
-                if (Flags.isFlagSet(collidedWithEntity.tag, Tags.Player))
+                if (collidedWithEntity.tag == Tags.Player)
                 {
                     HitPlayer(collision.collider.entity);
                 }
@@ -97,6 +119,8 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         private void HitPlayer(Entity playerEntity)
         {
             var player = playerEntity as Player;
+            if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
+
             OnImpact(player);
         }
 
