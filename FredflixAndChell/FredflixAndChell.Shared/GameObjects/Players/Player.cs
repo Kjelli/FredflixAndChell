@@ -93,7 +93,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupComponents();
             SetupParameters();
             SetupDebug();
-            scene.getSceneComponent<GameSystem>().RegisterPlayer(this);
+            _gameSystem.RegisterPlayer(this);
             updateOrder = 0;
         }
 
@@ -375,6 +375,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _health = 0;
             DisablePlayer();
             DisableHitbox();
+            PlayerState = PlayerState.Dying;
             var easeType = EaseType.CubicOut;
             var durationSeconds = 2f;
             var targetScale = 0.2f;
@@ -458,7 +459,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _blood.Sprinkle(damage, bullet.Velocity);
             Velocity += bullet.Velocity * bullet.Parameters.Knockback * Time.deltaTime;
 
-            if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
+            if (_health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
                 PlayerState = PlayerState.Dying;
                 DropDead();

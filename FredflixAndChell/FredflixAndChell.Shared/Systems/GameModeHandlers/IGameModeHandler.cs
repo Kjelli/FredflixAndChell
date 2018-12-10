@@ -9,5 +9,6 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
     public interface IGameModeHandler
     {
         void Setup(GameSettings settings);
+        bool WeHaveAWinner();
     }
 }

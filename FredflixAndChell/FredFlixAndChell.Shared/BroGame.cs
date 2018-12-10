@@ -25,11 +25,7 @@ namespace FredflixAndChell.Shared
 
             // YamlSerializer.SerializeAll();
 
-            var settings = new GameSettings
-            {
-                GameMode = GameModes.Rounds,
-                Map = "winter_debug"
-            };
+            var settings = GameSettings.Default;
             scene = new BroScene(settings);
         }
     }

@@ -71,7 +71,6 @@ namespace FredflixAndChell.Shared.Scenes
         public override void unload()
         {
             base.unload();
-            //AssetLoader.Dispose();
         }
 
 

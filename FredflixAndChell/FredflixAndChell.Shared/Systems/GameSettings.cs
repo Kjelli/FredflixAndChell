@@ -15,11 +15,13 @@ namespace FredflixAndChell.Shared.Systems
         public static GameSettings Default = new GameSettings
         {
             GameMode = GameModes.Rounds,
-            Map = "winter_debug"
+            Map = "winter_debug",
+            ScoreLimit = 2
         };
 
         public Teams Team { get; set; }
         public GameModes GameMode { get; set; }
         public string Map { get; set; }
+        public int ScoreLimit { get; set; }
     }
 }
