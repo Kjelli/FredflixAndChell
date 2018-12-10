@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -74,10 +75,11 @@ namespace FredflixAndChell.Shared.Scenes
             _table.add(label);
 
             _table.row().setPadTop(10);
+
+            // TODO: limit maps based on number of players here?
             var twoPlayersbutton = _table.add(new TextButton("2 players", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             twoPlayersbutton.onClicked += btn =>
             {
-                ContextHelper.NumPlayers = 2;
                 ShowSelectMap(btn);
             };
 
@@ -85,7 +87,6 @@ namespace FredflixAndChell.Shared.Scenes
             var threePlayersButton = _table.add(new TextButton("3 players", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             threePlayersButton.onClicked += btn =>
             {
-                ContextHelper.NumPlayers = 3;
                 ShowSelectMap(btn);
             };
 
@@ -93,7 +94,6 @@ namespace FredflixAndChell.Shared.Scenes
             var fourPlayersButton = _table.add(new TextButton("4 players", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             fourPlayersButton.onClicked += btn =>
             {
-                ContextHelper.NumPlayers = 4;
                 ShowSelectMap(btn);
             };
 
@@ -153,8 +153,8 @@ namespace FredflixAndChell.Shared.Scenes
             var dungeonButton = _table.add(new TextButton("Dungeon", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             dungeonButton.onClicked += btn =>
             {
-                ContextHelper.CurrentMap = "dungeon_1";
-                Core.startSceneTransition(new FadeTransition(() => new BroScene()));
+                // TODO dont default bro
+                Core.startSceneTransition(new FadeTransition(() => new BroScene(GameSettings.Default)));
             };
 
             _table.row().setPadTop(10);
@@ -163,8 +163,8 @@ namespace FredflixAndChell.Shared.Scenes
             var winterButton = _table.add(new TextButton("Winter", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             winterButton.onClicked += btn =>
             {
-                ContextHelper.CurrentMap = "winter_1";
-                Core.startSceneTransition(new FadeTransition(() => new BroScene()));
+                // TODO dont default bro
+                Core.startSceneTransition(new FadeTransition(() => new BroScene(GameSettings.Default)));
             };
 
             dungeonButton.gamepadDownElement = winterButton;

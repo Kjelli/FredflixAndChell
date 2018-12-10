@@ -102,8 +102,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         protected void DamagePlayer(Player player)
         {
-            player.Damage((int)_bullet.Parameters.Damage, _bullet.Velocity);
-            player.Velocity += _bullet.Velocity * _bullet.Parameters.Knockback * Time.deltaTime;
+            player.Damage(_bullet);
         }
 
         public virtual void update()

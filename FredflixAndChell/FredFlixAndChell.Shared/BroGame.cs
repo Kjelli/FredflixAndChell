@@ -1,8 +1,12 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Scenes;
+using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Serialization;
 using Nez;
+using Nez.Systems;
+using System;
 
 namespace FredflixAndChell.Shared
 {
@@ -16,12 +20,17 @@ namespace FredflixAndChell.Shared
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
 
+
             //scene = new LobbyScene();
 
             // YamlSerializer.SerializeAll();
 
-            ContextHelper.CurrentMap = "winter_debug";
-            scene = new BroScene();
+            var settings = new GameSettings
+            {
+                GameMode = GameModes.Rounds,
+                Map = "winter_debug"
+            };
+            scene = new BroScene(settings);
         }
     }
 }

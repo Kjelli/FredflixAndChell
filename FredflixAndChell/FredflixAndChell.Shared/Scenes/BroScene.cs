@@ -21,12 +21,15 @@ namespace FredflixAndChell.Shared.Scenes
 {
     public class BroScene : Scene
     {
+        private readonly GameSettings _gameSettings;
         private ScreenSpaceRenderer _screenSpaceRenderer;
 
         public CinematicLetterboxPostProcessor LetterBox { get; private set; }
 
-        public BroScene()
+        public BroScene(GameSettings gameSettings)
         {
+            _gameSettings = gameSettings;
+            Setup();
         }
 
         public override void initialize()
@@ -35,22 +38,26 @@ namespace FredflixAndChell.Shared.Scenes
             AssetLoader.LoadBroScene(content);
             setDesignResolution(ScreenWidth, ScreenHeight, SceneResolutionPolicy.ShowAll);
 
+            SetupRenderering();
+        }
+
+        public void Setup()
+        {
             InitializePlayerScores();
 
             var map = addEntity(new Map());
-            map.Setup();
+            map.Setup(_gameSettings.Map);
 
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new HUD());
             var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
             connector.SpawnDebugPlayer();
-            addSceneComponent(new GameSystem());
+            var gameSystem = new GameSystem(_gameSettings);
+            addSceneComponent(gameSystem);
             addSceneComponent(new ControllerSystem());
-
 
             // TODO turn back on for sweet details. Sweetails.
             addEntity(new DebugHud());
-            SetupRenderering();
         }
 
         private void InitializePlayerScores()

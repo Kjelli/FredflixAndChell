@@ -1,11 +1,13 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Particles;
 using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
@@ -42,6 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Collider _proximityHitbox;
         private Collider _playerHitbox;
         private BloodEngine _blood;
+        private GameSystem _gameSystem;
 
         private Gun _gun;
 
@@ -142,11 +145,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign camera tracker component
             _cameraTracker = addComponent(new CameraTracker(() => _playerState != PlayerState.Dead));
 
-            //Particles
-            //TODO: Disse to linjene (eller komponetner) blir brukt, bare for stek
-            //_bloodParticles = _particlesEntity.addComponent(new ParticleEngine(ParticleDesigner.flame));
-
+            // Blood
             _blood = addComponent(new BloodEngine());
+
+            _gameSystem = scene.getSceneComponent<GameSystem>();
         }
 
         private void SetupParameters()
@@ -370,6 +372,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .setCompletionHandler(_ => DeclareDead())
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
+
+            _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
+            {
+                Killed = this
+            });
         }
 
         private void DisableHitbox()
@@ -424,15 +431,24 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _playerCollisionHandler.InteractWithNearestEntity();
         }
 
-        public void Damage(int damage, Vector2 damageDirection)
+        public void Damage(Bullet bullet)
         {
+            var damage = bullet.Parameters.Damage;
             _health -= damage;
-            _blood.Sprinkle(damage, damageDirection);
+            _blood.Sprinkle((int)damage, bullet.Velocity);
+            Velocity += bullet.Velocity * bullet.Parameters.Knockback * Time.deltaTime;
+
             if (_health <= 0 && _playerState != PlayerState.Dying && _playerState != PlayerState.Dead)
             {
                 _playerState = PlayerState.Dying;
                 DropDead();
                 DisablePlayer();
+
+                _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
+                {
+                    Killed = this,
+                    Killer = bullet.Owner
+                });
             }
         }
 

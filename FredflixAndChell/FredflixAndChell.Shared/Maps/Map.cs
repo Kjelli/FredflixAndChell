@@ -28,9 +28,9 @@ namespace FredflixAndChell.Shared.Maps
             MapEventListeners = new List<MapEventListener>();
         }
 
-        public void Setup()
+        public void Setup(string mapName)
         {
-            _tiledMap = AssetLoader.GetMap(ContextHelper.CurrentMap);
+            _tiledMap = AssetLoader.GetMap(mapName);
 
             var tiledMapComponent = addComponent(new TiledMapComponent(_tiledMap));
             tiledMapComponent.layerIndicesToRender = new int[] { 5, 2, 1, 0 };

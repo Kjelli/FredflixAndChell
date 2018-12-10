@@ -100,9 +100,16 @@
     <Compile Include="Maps\Events\TimedEventEmitter.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Scenes\LobbyScene.cs" />
+    <Compile Include="Systems\GameModeHandlers\GameModeHandler.cs" />
+    <Compile Include="Systems\GameModeHandlers\GameModes.cs" />
+    <Compile Include="Systems\GameModeHandlers\IGameModeHandler.cs" />
+    <Compile Include="Systems\GameModeHandlers\RoundsHandler.cs" />
+    <Compile Include="Systems\GameSettings.cs" />
     <Compile Include="Systems\GameSystem.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />
     <Compile Include="Utilities\Activator\ObjectActivatorHelper.cs" />
+    <Compile Include="Utilities\Events\GameEventParameters.cs" />
+    <Compile Include="Utilities\Events\GameEvents.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
