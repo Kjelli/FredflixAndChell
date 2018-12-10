@@ -32,6 +32,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const float ThrowSpeed = 0.5f;
         private const float WalkAcceleration = 0.25f;
         private const float SprintAcceleration = 0.40f;
+        private const float RollAcceleration = 1.20f;
         private const float BaseSlownessFactor = 20f;
         private const int DodgeRollStaminaCost = 50;
 
@@ -243,7 +244,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _numSprintPressed = 0;
                 _stamina -= DodgeRollStaminaCost;
 
-                _initialRollingDirection = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
+                _initialRollingDirection = (1f * Velocity + _accelerationMultiplier * Acceleration);
             }
 
             if (PlayerMobilityState == PlayerMobilityState.Rolling)
@@ -308,7 +309,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetRollingState()
         {
-            _accelerationMultiplier = SprintAcceleration;
+            _accelerationMultiplier = RollAcceleration;
             PlayerMobilityState = PlayerMobilityState.Rolling;
         }
 
