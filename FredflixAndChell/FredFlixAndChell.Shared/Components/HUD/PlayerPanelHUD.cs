@@ -142,6 +142,11 @@ namespace FredflixAndChell.Shared.Components.HUD
                 {
                     _head.tweenColorTo(new Color(0.1f, 0.1f, 0.1f), 0.4f).start();
                 }
+
+                if (_player.PlayerState == PlayerState.Normal)
+                {
+                    _head.tweenColorTo(Color.White, 0.4f).start();
+                }
             }
             _previousPlayerState = _player.PlayerState;
         }

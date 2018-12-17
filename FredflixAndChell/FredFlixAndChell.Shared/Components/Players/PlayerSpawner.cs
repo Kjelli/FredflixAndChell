@@ -28,6 +28,8 @@ namespace FredflixAndChell.Shared.Utilities
         private bool _randomSpawns { get; set; }
         private int _indexer { get; set; }
 
+        public List<SpawnLocation> SpawnLocations => _spawnLocations;
+
         public PlayerSpawner(bool RandomSpawns = true)
         {
             _spawnLocations = new List<SpawnLocation>();
