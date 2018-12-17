@@ -52,7 +52,8 @@ namespace FredflixAndChell.Shared.Scenes
             addSceneComponent(new HUD());
             var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
             connector.SpawnDebugPlayer();
-            var gameSystem = new GameSystem(_gameSettings);
+            connector.SpawnDebugPlayer();
+            var gameSystem = new GameSystem(_gameSettings, map);
             addSceneComponent(gameSystem);
             addSceneComponent(new ControllerSystem());
 

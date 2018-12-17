@@ -104,6 +104,7 @@
     <Compile Include="Systems\GameModeHandlers\GameModeHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\GameModes.cs" />
     <Compile Include="Systems\GameModeHandlers\IGameModeHandler.cs" />
+    <Compile Include="Systems\GameModeHandlers\DeathmatchHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\RoundsHandler.cs" />
     <Compile Include="Systems\GameSettings.cs" />
     <Compile Include="Systems\GameSystem.cs" />

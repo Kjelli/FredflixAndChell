@@ -10,6 +10,7 @@ using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FredflixAndChell.Shared.Maps;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
@@ -27,10 +28,11 @@ namespace FredflixAndChell.Shared.Systems
 
         private GameState _gameState;
 
-        private List<Player> _players;
+        private readonly List<Player> _players;
         private BroScene _broScene;
         private SmoothCamera _camera;
         private Emitter<GameEvents, GameEventParameters> _emitter;
+        private Map _map;
 
         private GameSettings _gameSettings;
         private IGameModeHandler _gameHandler;
@@ -40,9 +42,11 @@ namespace FredflixAndChell.Shared.Systems
         public GameState GameState => _gameState;
         public List<Player> Players => _players;
         public List<DebugLine> DebugLines = new List<DebugLine>();
+        public Map Map => _map;
 
-        public GameSystem(GameSettings gameSettings)
+        public GameSystem(GameSettings gameSettings, Map map)
         {
+            _map = map;
             _players = new List<Player>();
             _transitionDelay = new Cooldown(TransitionDelay, true);
             _gameSettings = gameSettings;
@@ -68,6 +72,7 @@ namespace FredflixAndChell.Shared.Systems
                     _gameHandler = new RoundsHandler(this);
                     break;
                 case GameModeHandlers.GameModes.Deathmatch:
+                    _gameHandler = new DeathmatchHandler(this);
                     break;
                 case GameModeHandlers.GameModes.CaptureTheFlag:
                     break;

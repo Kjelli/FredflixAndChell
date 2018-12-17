@@ -12,6 +12,7 @@ using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
+using FredflixAndChell.Shared.Utilities;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
@@ -32,6 +33,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const float ThrowSpeed = 0.5f;
         private const float WalkAcceleration = 0.25f;
         private const float SprintAcceleration = 0.40f;
+        private const float RollAcceleration = 1.20f;
         private const float BaseSlownessFactor = 20f;
         private const int DodgeRollStaminaCost = 50;
 
@@ -243,7 +245,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _numSprintPressed = 0;
                 _stamina -= DodgeRollStaminaCost;
 
-                _initialRollingDirection = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
+                _initialRollingDirection = (1f * Velocity + _accelerationMultiplier * Acceleration);
             }
 
             if (PlayerMobilityState == PlayerMobilityState.Rolling)
@@ -285,7 +287,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
 
-            if (_controller.SprintDown)
+            if (_controller.SprintDown && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
                 if (_stamina <= 0)
                 {
@@ -308,7 +310,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetRollingState()
         {
-            _accelerationMultiplier = SprintAcceleration;
+            _accelerationMultiplier = RollAcceleration;
             PlayerMobilityState = PlayerMobilityState.Rolling;
         }
 
@@ -401,6 +403,30 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             });
         }
 
+        private void EnableProximityHitbox()
+        {
+            Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Interactables);
+            _proximityHitbox.registerColliderWithPhysicsSystem();
+            _proximityHitbox.setEnabled(true);
+        }
+
+        private void DisableProximityHitbox()
+        {
+            _proximityHitbox.collidesWithLayers = 0;
+            _proximityHitbox.unregisterColliderWithPhysicsSystem();
+            _proximityHitbox.setEnabled(false);
+        }
+
+        private void EnableHitbox()
+        {
+            _mover.setEnabled(true);
+            Flags.setFlagExclusive(ref _playerHitbox.collidesWithLayers, Layers.MapObstacles);
+            Flags.setFlag(ref _playerHitbox.collidesWithLayers, Layers.Player);
+            Flags.setFlagExclusive(ref _playerHitbox.physicsLayer, Layers.Player);
+            _playerHitbox.registerColliderWithPhysicsSystem();
+            _playerHitbox.setEnabled(true);
+        }
+
         private void DisableHitbox()
         {
             _mover.setEnabled(false);
@@ -425,9 +451,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             //_playerHitbox.unregisterColliderWithPhysicsSystem();
             //_playerHitbox.collidesWithLayers = 0;
             //_playerHitbox.setEnabled(false);
-            _proximityHitbox.unregisterColliderWithPhysicsSystem();
-            _proximityHitbox.setEnabled(false);
-            _proximityHitbox.collidesWithLayers = 0;
+            DisableProximityHitbox();
         }
 
         public void Attack()
@@ -489,7 +513,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _blood.Leak();
         }
 
-
         public void DropGun()
         {
             if (_gun != null)
@@ -542,6 +565,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
 
             _renderer.UpdateRenderLayerDepth();
+        }
+
+        public void Respawn(Vector2 furthestSpawn)
+        {
+            position = furthestSpawn;
+            PlayerState = PlayerState.Normal;
+            
+            localRotation = 0;
+            scale = new Vector2(1.0f ,1.0f );
+            _renderer.TweenColor(Color.White, 0.1f);
+            _controller.SetInputEnabled(true);
+            _cameraTracker.setEnabled(true);
+            Console.WriteLine($"{name} Respawned");
+
+            SetupParameters();
+            EnableHitbox();
+            EnableProximityHitbox();
         }
     }
 

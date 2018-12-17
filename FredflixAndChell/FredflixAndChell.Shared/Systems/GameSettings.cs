@@ -14,8 +14,8 @@ namespace FredflixAndChell.Shared.Systems
     {
         public static GameSettings Default = new GameSettings
         {
-            GameMode = GameModes.Rounds,
-            Map = "winter_debug",
+            GameMode = GameModes.Deathmatch,
+            Map = "winter_1",
             ScoreLimit = 2
         };
 

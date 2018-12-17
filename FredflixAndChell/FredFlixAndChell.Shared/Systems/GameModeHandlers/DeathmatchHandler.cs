@@ -7,15 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 {
-    public class RoundsHandler : GameModeHandler
+    public class DeathmatchHandler : GameModeHandler
     {
         private bool _weHaveAWinner;
 
-        public RoundsHandler(GameSystem gameSystem) : base(gameSystem) { }
+        public DeathmatchHandler(GameSystem gameSystem) : base(gameSystem) { }
 
         public override void Setup(GameSettings settings)
         {
@@ -29,7 +30,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
         private void QueueOnPlayerKilled(GameEventParameters parameters)
         {
-            Core.schedule(1.0f, _ => OnPlayerKilled(parameters));
+            Core.schedule(2.0f, _ => OnPlayerKilled(parameters));
         }
 
         private void OnPlayerKilled(GameEventParameters parameters)
@@ -43,33 +44,30 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             {
                 Console.WriteLine($"{pkParams.Killed.name} smashed themself");
             }
+
+            RespawnPlayer(pkParams.Killed);
             CheckForWinner();
+        }
+
+        private void RespawnPlayer(Player player)
+        {
+            var playerLocations = GameSystem.Players.Select(p => p.position);
+            var spawnLocations = GameSystem.Map.PlayerSpawner.SpawnLocations;
+            var furthestSpawn = spawnLocations.Aggregate((spawnA, spawnB) =>
+            {
+                var enumerable = playerLocations as Vector2[] ?? playerLocations.ToArray();
+                return enumerable.Sum(p1 => (new Vector2(spawnA.X, spawnA.Y) - p1).Length()) >
+                       enumerable.Sum(p2 => (new Vector2(spawnB.X, spawnB.Y) - p2).Length())
+                    ? spawnA
+                    : spawnB;
+            });
+            player.Respawn(new Vector2(furthestSpawn.X, furthestSpawn.Y));
         }
 
         private void CheckForWinner()
         {
-            var alivePlayersLeft = GameSystem.Players
-                .Where(p => p.PlayerState == PlayerState.Normal);
-
-            if (alivePlayersLeft.Count() > 1)
-            {
-                return;
-            }
-
-            var player = alivePlayersLeft.FirstOrDefault();
-            if (player != null)
-            {
-                var playerScore = ContextHelper.PlayerScores?.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
-                if (playerScore == null) return;
-
-                playerScore.Score++;
-
-                if (playerScore.Score >= Settings.ScoreLimit)
-                {
-                    _weHaveAWinner = true;
-                }
-            }
-
+            _weHaveAWinner = false;
+            return;
             GameSystem.EndRound();
         }
 
