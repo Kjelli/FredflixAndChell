@@ -59,7 +59,9 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             var player = alivePlayersLeft.FirstOrDefault();
             if (player != null)
             {
-                var playerScore = ContextHelper.PlayerScores.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+                var playerScore = ContextHelper.PlayerScores?.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+                if (playerScore == null) return;
+
                 playerScore.Score++;
 
                 if (playerScore.Score >= Settings.ScoreLimit)
