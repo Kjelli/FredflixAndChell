@@ -85,7 +85,6 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
                 var player = hit.collider.entity as Player;
                 if (hit.fraction < closestObstacleHit.fraction && player != _bullet.Owner)
                 {
-                    Console.WriteLine($"Player {_bullet.Owner.PlayerIndex} shot Player {player.PlayerIndex}");
                     OnImpact(player);
                 }
             }

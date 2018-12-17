@@ -9,6 +9,8 @@ namespace FredflixAndChell.Shared.Utilities
 {
     public class PlayerSpawner
     {
+        private bool _shuffled;
+
         public class SpawnLocation
         {
             public string ID { get; set; }
@@ -40,36 +42,32 @@ namespace FredflixAndChell.Shared.Utilities
 
         public void AddLocation(string name, int x, int y)
         {
-            _spawnLocations.Add(new SpawnLocation(name,x,y));
+            _spawnLocations.Add(new SpawnLocation(name, x, y));
         }
 
         public Vector2 DistributeSpawn()
         {
-            Random rnd = new Random();
-            try
+            if (_randomSpawns && !_shuffled)
             {
-                if (_randomSpawns)
-                {
-                    
-                    int index = rnd.Next(0, _spawnLocations.Count);
-                    Vector2 s = new Vector2(_spawnLocations[index].X, _spawnLocations[index].Y);
-                    _spawnLocations.Remove(_spawnLocations[index]);
-                    return s;
-                }
-                else
-                {
-                    var temp = _spawnLocations[_indexer];
-                    _indexer++;
-                    return new Vector2(temp.X, temp.Y);
-                }
-            }catch(Exception e)
-            {
-                Console.Error.WriteLine("ERROR: Could not distribute a spawn. Getting that standard shit. \n " + e);
-                return new Vector2(100 + rnd.Next(-20,20), 100 + rnd.Next(-20,20));
+                RandomizeSpawnOrder();
+                _shuffled = true;
             }
-            
+            var spawnLocation = _spawnLocations[_indexer];
+            _indexer++;
+            return new Vector2(spawnLocation.X, spawnLocation.Y);
         }
 
-
+        private void RandomizeSpawnOrder()
+        {
+            var spawns = _spawnLocations.Count();
+            for (var i = 0; i < spawns; i++)
+            {
+                var current = _spawnLocations[i];
+                var next = Nez.Random.nextInt(spawns);
+                var temp = _spawnLocations[next];
+                _spawnLocations[next] = current;
+                _spawnLocations[i] = temp;
+            }
+        }
     }
 }

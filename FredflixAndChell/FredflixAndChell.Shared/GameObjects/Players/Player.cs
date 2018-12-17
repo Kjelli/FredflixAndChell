@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using FredflixAndChell.Shared.Utilities;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
+using FredflixAndChell.Shared.Assets;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -36,6 +37,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private const float RollAcceleration = 1.20f;
         private const float BaseSlownessFactor = 20f;
         private const int DodgeRollStaminaCost = 50;
+
+        private static bool DebugToggledRecently { get; set; }
 
         private readonly CharacterParameters _params;
         private Mover _mover;
@@ -95,6 +98,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupComponents();
             SetupParameters();
             SetupDebug();
+
             _gameSystem.RegisterPlayer(this);
             updateOrder = 0;
         }
@@ -118,7 +122,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupComponents()
         {
             setTag(Tags.Player);
-
+            
             // Assign movement component
             _mover = addComponent(new Mover());
 
@@ -126,7 +130,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign gun component
-            EquipGun("Goggles");
+            EquipGun("M4");
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -170,6 +174,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             ReadInputs();
             Move();
             SetFacing();
+            if (Time.frameCount % 5 == 0)
+            {
+                DebugToggledRecently = false;
+            }
         }
 
         private void ReadInputs()
@@ -190,8 +198,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Interact();
             if (_controller.SprintPressed)
                 ToggleDodgeRoll();
-            if (_controller.DebugModePressed)
+            if (_controller.DebugModePressed && !DebugToggledRecently)
+            {
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
+                DebugToggledRecently = true;
+            }
 
             HandleDodgeRollGracePeriod();
             PerformDodgeRoll();
@@ -374,6 +385,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void FallIntoPit(Entity pitEntity)
         {
+            if (PlayerState != PlayerState.Normal) return;
+
             _health = 0;
             DisablePlayer();
             DisableHitbox();
@@ -571,13 +584,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             position = furthestSpawn;
             PlayerState = PlayerState.Normal;
-            
+
             localRotation = 0;
-            scale = new Vector2(1.0f ,1.0f );
+            scale = new Vector2(1.0f, 1.0f);
             _renderer.TweenColor(Color.White, 0.1f);
             _controller.SetInputEnabled(true);
             _cameraTracker.setEnabled(true);
-            Console.WriteLine($"{name} Respawned");
+            _blood.StopLeaking();
 
             SetupParameters();
             EnableHitbox();

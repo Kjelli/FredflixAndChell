@@ -34,7 +34,6 @@ namespace FredflixAndChell.Shared.Components.HUD
         public override void update()
         {
             base.update();
-            var count = _gameSystem.DebugLines.Count;
             var stringBuilder = BuildDebugText(new StringBuilder(""), _gameSystem.DebugLines);
             _debugOutput.text = stringBuilder.ToString();
         }

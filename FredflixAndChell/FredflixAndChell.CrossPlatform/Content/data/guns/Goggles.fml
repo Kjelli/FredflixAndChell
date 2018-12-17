@@ -7,7 +7,7 @@ BulletCount: 1
 BulletParameters:
   BulletBehaviour: LaserBehaviour
   BulletType: Line
-  Damage: 0.25
+  Damage: 0.45
   Knockback: 2.0
   LifeSpanSeconds: 0.01
   RotateWithGun: true

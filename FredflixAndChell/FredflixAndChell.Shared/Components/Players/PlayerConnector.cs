@@ -60,7 +60,6 @@ namespace FredflixAndChell.Components.Players
             _connectedPlayers.Add(player);
 
             _playerSpawnedThisFrame = true;
-            Console.WriteLine($"Spawned {player.name}");
         }
 
         public override void update()

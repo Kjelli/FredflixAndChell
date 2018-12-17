@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
+using FredflixAndChell.Shared.Components.Cameras;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 {
@@ -30,7 +31,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
         private void QueueOnPlayerKilled(GameEventParameters parameters)
         {
-            Core.schedule(2.0f, _ => OnPlayerKilled(parameters));
+            Core.schedule(2.5f, false, _ => OnPlayerKilled(parameters));
         }
 
         private void OnPlayerKilled(GameEventParameters parameters)
@@ -38,36 +39,59 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             var pkParams = parameters as PlayerKilledEventParameters;
             if (pkParams.Killer != null)
             {
-                Console.WriteLine($"{pkParams.Killer.name} smashed {pkParams.Killed.name}");
+                var playerScore = ContextHelper.PlayerScores?.First(s => s.PlayerIndex == pkParams.Killer.PlayerIndex);
+                if (playerScore != null)
+                {
+                    playerScore.Score++;
+                }
             }
-            else
-            {
-                Console.WriteLine($"{pkParams.Killed.name} smashed themself");
-            }
-
-            RespawnPlayer(pkParams.Killed);
             CheckForWinner();
+            RespawnPlayer(pkParams.Killed);
         }
 
         private void RespawnPlayer(Player player)
         {
-            var playerLocations = GameSystem.Players.Select(p => p.position);
+            if (_weHaveAWinner) return;
+
+            var players = GameSystem.Players;
             var spawnLocations = GameSystem.Map.PlayerSpawner.SpawnLocations;
-            var furthestSpawn = spawnLocations.Aggregate((spawnA, spawnB) =>
+
+            var furthestDistance = 0.0f;
+            var furthestSpawnPosition = new Vector2();
+            foreach (var spawnLocation in spawnLocations)
             {
-                var enumerable = playerLocations as Vector2[] ?? playerLocations.ToArray();
-                return enumerable.Sum(p1 => (new Vector2(spawnA.X, spawnA.Y) - p1).Length()) >
-                       enumerable.Sum(p2 => (new Vector2(spawnB.X, spawnB.Y) - p2).Length())
-                    ? spawnA
-                    : spawnB;
-            });
-            player.Respawn(new Vector2(furthestSpawn.X, furthestSpawn.Y));
+                var spawnPosition = new Vector2(spawnLocation.X, spawnLocation.Y);
+                var distanceToSpawnLocation = 0.0f;
+                foreach (var otherPlayer in players)
+                {
+                    if (otherPlayer == player) continue;
+                    var distance = Math.Abs((otherPlayer.position - spawnPosition).Length());
+                    distanceToSpawnLocation += distance;
+                }
+                if (distanceToSpawnLocation >= furthestDistance)
+                {
+                    furthestDistance = distanceToSpawnLocation;
+                    furthestSpawnPosition = spawnPosition;
+                }
+            }
+            player.Respawn(furthestSpawnPosition);
         }
 
         private void CheckForWinner()
         {
-            _weHaveAWinner = false;
-            return;
+            if (_weHaveAWinner) return;
+
+            var maxScoreHolder = ContextHelper.PlayerScores.Max();
+            if (maxScoreHolder.Score < Settings.ScoreLimit) return;
+
+            _weHaveAWinner = true;
+            var winningPlayer = GameSystem.Players.First(p => p.PlayerIndex == maxScoreHolder.PlayerIndex);
+            winningPlayer.getComponent<CameraTracker>().setEnabled(true);
+            var otherPlayers = GameSystem.Players.Where(p => p.PlayerIndex != maxScoreHolder.PlayerIndex);
+            foreach (var otherPlayer in otherPlayers)
+            {
+                otherPlayer.getComponent<CameraTracker>().setEnabled(false);
+            }
             GameSystem.EndRound();
         }
 

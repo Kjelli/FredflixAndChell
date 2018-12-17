@@ -35,14 +35,6 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         private void OnPlayerKilled(GameEventParameters parameters)
         {
             var pkParams = parameters as PlayerKilledEventParameters;
-            if (pkParams.Killer != null)
-            {
-                Console.WriteLine($"{pkParams.Killer.name} smashed {pkParams.Killed.name}");
-            }
-            else
-            {
-                Console.WriteLine($"{pkParams.Killed.name} smashed themself");
-            }
             CheckForWinner();
         }
 

@@ -166,9 +166,14 @@ namespace FredflixAndChell.Shared.Systems
         }
     }
 
-    public class PlayerScore
+    public class PlayerScore : IComparable<PlayerScore>
     {
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
+
+        public int CompareTo(PlayerScore other)
+        {
+            return Score.CompareTo(other.Score);
+        }
     }
 }
