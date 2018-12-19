@@ -35,7 +35,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         {
             base.update();
             var stringBuilder = BuildDebugText(new StringBuilder(""), _gameSystem.DebugLines);
-            _debugOutput.text = stringBuilder.ToString();
+            _debugOutput.text = Core.debugRenderEnabled ? stringBuilder.ToString() : " ";
         }
 
         private StringBuilder BuildDebugText(StringBuilder sb, List<DebugLine> debugLines, int tab = 0)

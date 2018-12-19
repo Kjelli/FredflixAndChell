@@ -70,7 +70,6 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             if (player != null && player != _bullet.Owner)
             {
                 DamagePlayer(player);
-                _bullet.destroy();
             }
         }
 
@@ -123,10 +122,21 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
             OnImpact(player);
         }
-
-        protected void DamagePlayer(Player player)
+        /// <summary>
+		/// Returns true and damages player if it can be damaged, returns false if player cannot be damaged by the bullet.
+		/// </summary>
+        protected bool DamagePlayer(Player player, bool destroyBullet = true)
         {
-            player.Damage(_bullet);
+            if (player.CanBeDamagedBy(_bullet))
+            {
+                player.Damage(_bullet);
+                if (destroyBullet)
+                {
+                    _bullet.destroy();
+                }
+                return true;
+            }
+            return false;
         }
 
         public virtual void update()

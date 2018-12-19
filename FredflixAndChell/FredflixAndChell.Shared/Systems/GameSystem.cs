@@ -43,6 +43,7 @@ namespace FredflixAndChell.Shared.Systems
         public List<Player> Players => _players;
         public List<DebugLine> DebugLines = new List<DebugLine>();
         public Map Map => _map;
+        public GameSettings Settings => _gameSettings;
 
         public GameSystem(GameSettings gameSettings, Map map)
         {

@@ -20,13 +20,7 @@ namespace FredflixAndChell.Shared
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
 
-
-            //scene = new LobbyScene();
-
-            // YamlSerializer.SerializeAll();
-
-            var settings = GameSettings.Default;
-            scene = new BroScene(settings);
+            scene = new LobbyScene();
         }
     }
 }

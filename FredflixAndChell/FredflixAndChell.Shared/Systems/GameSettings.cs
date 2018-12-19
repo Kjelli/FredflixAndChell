@@ -15,13 +15,15 @@ namespace FredflixAndChell.Shared.Systems
         public static GameSettings Default = new GameSettings
         {
             GameMode = GameModes.Deathmatch,
-            Map = "winter_1",
-            ScoreLimit = 2
+            Map = "winter_debug",
+            ScoreLimit = 3,
+            FriendlyFire = true
         };
 
         public Teams Team { get; set; }
         public GameModes GameMode { get; set; }
         public string Map { get; set; }
         public int ScoreLimit { get; set; }
+        public bool FriendlyFire { get; set; }
     }
 }

@@ -84,6 +84,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public int HorizontalFacing { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
+        public int TeamIndex { get; set; }
 
         public Player(CharacterParameters characterParameters, int x, int y, int playerIndex) : base(x, y)
         {
@@ -491,6 +492,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Damage(Bullet bullet)
         {
+            if (!CanBeDamagedBy(bullet)) return;
             var damage = bullet.Parameters.Damage;
             _health -= damage;
             _blood.Sprinkle(damage, bullet.Velocity);
@@ -508,6 +510,17 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     Killer = bullet.Owner
                 });
             }
+        }
+
+        public bool CanBeDamagedBy(Bullet bullet)
+        {
+            var isFriendlyFire = bullet.Owner.TeamIndex > 0
+                && TeamIndex > 0
+                && bullet.Owner.TeamIndex == TeamIndex;
+            var isFriendlyFireEnabled = _gameSystem.Settings.FriendlyFire;
+
+            return isFriendlyFire && isFriendlyFireEnabled
+                || !isFriendlyFire;
         }
 
         private void DropDead()
