@@ -6,7 +6,7 @@ BarrelOffset:
 BulletCount: 1
 BulletParameters:
   BulletBehaviour: RotatingReturningBullet
-  Damage: 10.0
+  Damage: 16.0
   Knockback: 0.25
   LifeSpanSeconds: -1.0
   RotateWithGun: false

@@ -25,15 +25,15 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public override void OnImpact(Player player)
         {
-            if (player == _owner)
+            if (player != _owner)
             {
                 DamagePlayer(player);
-                entity.destroy();
             }
             else
             {
+                _bullet.Parameters.Damage /= 2;
                 DamagePlayer(player);
-                _bullet.destroy();
+                _bullet.Parameters.Damage *= 2;
             }
         }
 

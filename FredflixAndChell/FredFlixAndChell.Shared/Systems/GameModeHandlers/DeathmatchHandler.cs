@@ -37,7 +37,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         private void OnPlayerKilled(GameEventParameters parameters)
         {
             var pkParams = parameters as PlayerKilledEventParameters;
-            if (pkParams.Killer != null)
+            if (pkParams.Killer != null && pkParams.Killed != pkParams.Killer)
             {
                 var playerScore = ContextHelper.PlayerScores?.First(s => s.PlayerIndex == pkParams.Killer.PlayerIndex);
                 if (playerScore != null)

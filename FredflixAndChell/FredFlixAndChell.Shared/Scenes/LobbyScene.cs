@@ -11,6 +11,8 @@ namespace FredflixAndChell.Shared.Scenes
 {
     class LobbyScene : Scene
     {
+        private GameSettings _gameSettings;
+
         private readonly PrimitiveDrawable normalButtonColor;
         private readonly PrimitiveDrawable pressedButtonColor;
         private readonly PrimitiveDrawable hoverButtonColor;
@@ -22,6 +24,8 @@ namespace FredflixAndChell.Shared.Scenes
 
         public LobbyScene()
         {
+            _gameSettings = GameSettings.Default;
+
             addRenderer(new ScreenSpaceRenderer(100, Constants.Layers.HUD));
             addRenderer(new RenderLayerExcludeRenderer(0, Constants.Layers.HUD));
 
@@ -153,8 +157,8 @@ namespace FredflixAndChell.Shared.Scenes
             var dungeonButton = _table.add(new TextButton("Dungeon", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             dungeonButton.onClicked += btn =>
             {
-                // TODO dont default bro
-                Core.startSceneTransition(new FadeTransition(() => new BroScene(GameSettings.Default)));
+                _gameSettings.Map = "dungeon_2";
+                Core.startSceneTransition(new FadeTransition(() => new BroScene(_gameSettings)));
             };
 
             _table.row().setPadTop(10);
@@ -163,8 +167,8 @@ namespace FredflixAndChell.Shared.Scenes
             var winterButton = _table.add(new TextButton("Winter", normalButtonStyle)).setFillX().setMinHeight(30).getElement<TextButton>();
             winterButton.onClicked += btn =>
             {
-                // TODO dont default bro
-                Core.startSceneTransition(new FadeTransition(() => new BroScene(GameSettings.Default)));
+                _gameSettings.Map = "winter_1";
+                Core.startSceneTransition(new FadeTransition(() => new BroScene(_gameSettings)));
             };
 
             dungeonButton.gamepadDownElement = winterButton;

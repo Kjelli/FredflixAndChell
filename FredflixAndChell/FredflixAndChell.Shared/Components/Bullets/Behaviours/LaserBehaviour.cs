@@ -32,7 +32,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         {
             if (player != _bullet.Owner)
             {
-                DamagePlayer(player);
+                DamagePlayer(player, false);
             }
         }
 
