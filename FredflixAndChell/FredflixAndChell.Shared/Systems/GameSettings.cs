@@ -25,5 +25,8 @@ namespace FredflixAndChell.Shared.Systems
         public string Map { get; set; }
         public int ScoreLimit { get; set; }
         public bool FriendlyFire { get; set; }
+        public float DamageMultiplier { get; set; } = 1.0f;
+        public float KnockbackMultiplier { get; set; } = 1.0f;
+        public float StaminaMultiplier { get; set; } = 0.2f;
     }
 }

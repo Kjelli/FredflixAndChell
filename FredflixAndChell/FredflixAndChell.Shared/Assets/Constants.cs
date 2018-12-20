@@ -12,6 +12,11 @@ namespace FredflixAndChell.Shared.Assets
         public const int ScreenHeight = 720;
         public const float RenderLayerDepthFactor = 1 / 10000f;
 
+        public class Strings
+        {
+            public const string CollisionMapEventEnter = "enter";
+            public const string CollisionMapEventExit = "exit";
+        }
 
         public class Assets
         {
@@ -42,6 +47,7 @@ namespace FredflixAndChell.Shared.Assets
             public const int Collectible = 3;
             public const int EventEmitter = 4;
             public const int Obstacle = 5;
+            public const int ReadyZone = 6;
         }
 
         public class Layers

@@ -26,6 +26,7 @@ namespace FredflixAndChell.Shared.Assets
 
             // Load fonts to be used in the game
             LoadFont("fonts/debug");
+            LoadFont("fonts/monitor");
 
             LoadPlayerTexture("textures/players/trump");
             LoadPlayerTexture("textures/players/doge");
@@ -55,6 +56,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/shader_flash");
 
             LoadMap("maps/firstlevel");
+            LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");

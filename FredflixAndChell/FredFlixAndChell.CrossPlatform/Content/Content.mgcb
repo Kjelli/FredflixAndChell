@@ -63,6 +63,13 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/debug.spritefont
 
+#begin fonts/monitor.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/monitor.spritefont
+
 #begin maps/dungeon_1.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
@@ -135,6 +142,11 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:maps/winter_debug.tmx
+
+#begin maps/winter_hub.tmx
+/importer:
+/processor:
+/build:maps/winter_hub.tmx
 
 #begin textures/bullets/fidgetspinner.png
 /importer:TextureImporter

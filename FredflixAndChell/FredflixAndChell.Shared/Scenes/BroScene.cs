@@ -41,7 +41,7 @@ namespace FredflixAndChell.Shared.Scenes
             SetupRenderering();
         }
 
-        public void Setup()
+        public virtual void Setup()
         {
             InitializePlayerScores();
 
@@ -73,7 +73,6 @@ namespace FredflixAndChell.Shared.Scenes
         {
             base.unload();
         }
-
 
         private void SetupRenderering()
         {

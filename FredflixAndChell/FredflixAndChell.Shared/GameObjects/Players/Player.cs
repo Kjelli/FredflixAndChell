@@ -16,6 +16,7 @@ using FredflixAndChell.Shared.Utilities;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -40,7 +41,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private static bool DebugToggledRecently { get; set; }
 
-        private readonly CharacterParameters _params;
+        private CharacterParameters _params;
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -56,6 +57,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private float _health;
         private float _maxHealth;
         private float _stamina;
+
         private float _maxStamina;
         private float _speed = 50f;
         private float _accelerationMultiplier;
@@ -149,7 +151,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _playerCollisionHandler = addComponent(new PlayerCollisionHandler(_playerHitbox, _proximityHitbox));
 
             // Assign renderer component
-            _renderer = addComponent(new PlayerRenderer(_params.PlayerSprite, _gun));
+            SetupRenderer(_params.PlayerSprite);
 
             // Assign camera tracker component
             _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead));
@@ -159,6 +161,21 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             _gameSystem = scene.getSceneComponent<GameSystem>();
             SetWalkingState();
+        }
+
+        private void SetupRenderer(PlayerSprite playerSprite)
+        {
+            _renderer = addComponent(new PlayerRenderer(playerSprite, _gun));
+        }
+
+        public void ChangePlayerSprite(PlayerSprite playerSprite)
+        {
+            if (_renderer != null)
+            {
+                _renderer.setEnabled(false);
+                _renderer.removeComponent();
+            }
+            SetupRenderer(playerSprite);
         }
 
         private void SetupParameters()
@@ -255,7 +272,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
                 _numSprintPressed = 0;
-                _stamina -= DodgeRollStaminaCost;
+                _stamina -= DodgeRollStaminaCost * _gameSystem.Settings.StaminaMultiplier;
 
                 _initialRollingDirection = (1f * Velocity + _accelerationMultiplier * Acceleration);
             }
@@ -308,7 +325,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 else
                 {
                     SetRunningState();
-                    _stamina -= 50 * Time.deltaTime;
+                    _stamina -= 50 * _gameSystem.Settings.StaminaMultiplier * Time.deltaTime;
                     _isRegeneratingStamina = false;
                 }
             }
@@ -493,10 +510,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public void Damage(Bullet bullet)
         {
             if (!CanBeDamagedBy(bullet)) return;
-            var damage = bullet.Parameters.Damage;
+
+            var damage = bullet.Parameters.Damage * _gameSystem.Settings.DamageMultiplier;
             _health -= damage;
             _blood.Sprinkle(damage, bullet.Velocity);
-            Velocity += bullet.Velocity * bullet.Parameters.Knockback * Time.deltaTime;
+
+            var knockback = bullet.Parameters.Knockback * _gameSystem.Settings.KnockbackMultiplier;
+            Velocity += bullet.Velocity * knockback * Time.deltaTime;
 
             if (_health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
@@ -523,6 +543,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 || !isFriendlyFire;
         }
 
+        public void SetParameters(CharacterParameters nextCharacter)
+        {
+            _params = nextCharacter;
+            SetupParameters();
+            ChangePlayerSprite(nextCharacter.PlayerSprite);
+        }
         private void DropDead()
         {
             var easeType = EaseType.BounceOut;

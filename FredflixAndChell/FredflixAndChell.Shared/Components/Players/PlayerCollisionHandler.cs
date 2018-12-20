@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.Components.Interactables;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Maps.Events;
@@ -72,7 +73,8 @@ namespace FredflixAndChell.Shared.Components.Players
             }
             else if (other.entity.tag == Tags.EventEmitter)
             {
-                (other.entity as CollisionEventEmitter).EmitMapEvent();
+                (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventEnter });
             }
         }
 
@@ -90,6 +92,11 @@ namespace FredflixAndChell.Shared.Components.Players
 
         private void HitboxTriggerExit(Collider other, Collider local)
         {
+            if (other.entity.tag == Tags.EventEmitter)
+            {
+                (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventExit });
+            }
         }
 
         private void ProximityTriggerExit(Collider other, Collider local)
@@ -113,6 +120,8 @@ namespace FredflixAndChell.Shared.Components.Players
             ((other2.position - entity.position).Length() < (other1.position - entity.position).Length() ? other2 : other1));
 
             var interactable = closestEntity.getComponent<InteractableComponent>();
+            if (interactable == null) return;
+
             interactable.OnInteract(_player);
 
             if (closestEntity is Collectible collectible)

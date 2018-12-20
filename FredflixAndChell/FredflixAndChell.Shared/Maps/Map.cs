@@ -1,9 +1,13 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Effects.Weather;
+using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps.Events;
+using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Tiled;
@@ -20,12 +24,33 @@ namespace FredflixAndChell.Shared.Maps
     {
         private PlayerSpawner _playerSpawner;
         private TiledMap _tiledMap;
+        private GameSystem _gameSystem;
+
         public PlayerSpawner PlayerSpawner => _playerSpawner;
         public List<MapEventListener> MapEventListeners { get; set; }
 
         public Map() : base(TiledObjects.TiledMapEntity)
         {
             MapEventListeners = new List<MapEventListener>();
+        }
+
+        public override void onAddedToScene()
+        {
+            _gameSystem = scene.getSceneComponent<GameSystem>();
+        }
+
+        public void EmitMapEvent(MapEvent mapEvent, bool emitGlobally = false)
+        {
+            MapEventListeners
+                .Where(listener => listener.EventKey == mapEvent.EventKey)
+                .ToList()
+                .ForEach(listener => listener.EventTriggered(mapEvent));
+
+            if (emitGlobally)
+            {
+                _gameSystem.Publish(GameEvents.GlobalMapEvent,
+                    new GlobalMapEventParameters { MapEvent = mapEvent });
+            }
         }
 
         public void Setup(string mapName)
@@ -59,14 +84,15 @@ namespace FredflixAndChell.Shared.Maps
             SetupItemSpawners(mapObjects);
             SetupPlayerSpawns(mapObjects);
             SetupMapEvents(mapObjects);
+            SetupScreens(mapObjects);
 
             foreach (var lightSource in mapObjects.objectsWithName("light_source"))
             {
-                var entity = scene.createEntity("world-light", lightSource.position +  new Vector2(8,8));
+                var entity = scene.createEntity("world-light", lightSource.position + new Vector2(8, 8));
                 entity.setScale(0.5f);
                 var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
                 sprite.material = Material.blendLinearDodge();
-                sprite.color = ColorExt.hexToColor("#"+lightSource.properties["color"].Substring(2));
+                sprite.color = ColorExt.hexToColor("#" + lightSource.properties["color"].Substring(2));
                 sprite.renderLayer = Layers.Lights;
 
                 var props = lightSource.properties;
@@ -84,6 +110,33 @@ namespace FredflixAndChell.Shared.Maps
             }
         }
 
+        private void SetupScreens(TiledObjectGroup mapObjects)
+        {
+            foreach (var screen in mapObjects.objectsWithName("screen"))
+            {
+                var props = screen.properties;
+                var text = props.ContainsKey("text") ? props["text"] : "";
+                var entity = scene.createEntity("screen");
+                var textComponent = new Text(new NezSpriteFont(Assets.AssetLoader.GetFont("monitor")),
+                    text, new Vector2(screen.position.X + screen.width / 2, screen.position.Y), Color.White);
+                textComponent.horizontalOrigin = HorizontalAlign.Center;
+                entity.addComponent(textComponent);
+
+                if (props.ContainsKey("set_key") && !string.IsNullOrWhiteSpace(props["set_key"]))
+                {
+                    var listener = entity.addComponent(new MapEventListener(props["set_key"])
+                    {
+                        EventTriggered = mapEvent =>
+                        {
+                            textComponent.text = (string)mapEvent.Parameters[0];
+                        }
+                    });
+                    MapEventListeners.Add(listener);
+                }
+            }
+
+        }
+
         private void SetupMapEvents(TiledObjectGroup mapObjects)
         {
             foreach (var eventEmitter in mapObjects.objectsWithName(TiledObjects.EventEmitter))
@@ -92,7 +145,9 @@ namespace FredflixAndChell.Shared.Maps
                 var props = eventEmitter.properties;
                 var type = props["type"];
                 var key = props["key"];
+                var global = props.ContainsKey("global") ? bool.Parse(props["global"]) : false;
 
+                MapEventEmitter emitter = null;
                 switch (type)
                 {
                     case "timed":
@@ -100,19 +155,23 @@ namespace FredflixAndChell.Shared.Maps
                         float.TryParse(props["interval_max"], out float intervalMax);
                         int.TryParse(props["repeat"], out int repeat);
 
-                        scene.addEntity(new TimedEventEmitter(this, key, intervalMin, intervalMax, repeat));
+                        emitter = scene.addEntity(new TimedEventEmitter(this, key, intervalMin, intervalMax, repeat));
                         break;
                     case "collision":
                         int.TryParse(props["physics_layer"], out int physicsLayer);
-                        var c = scene.addEntity(new CollisionEventEmitter(this, key, bounds, physicsLayer));
+                        emitter = scene.addEntity(new CollisionEventEmitter(this, key, bounds, physicsLayer));
                         break;
                     case "interact":
-                        var i = scene.addEntity(new InteractEventEmitter(this, key, bounds));
-                        Console.WriteLine("interactable placed at " + i.position);
+                        emitter = scene.addEntity(new InteractEventEmitter(this, key, bounds));
                         break;
                     default:
                         Console.Error.WriteLine($"MapEventEmitter of type {type} not recognized!");
                         break;
+                }
+
+                if (global)
+                {
+                    emitter.EmitGlobally = true;
                 }
             }
         }
