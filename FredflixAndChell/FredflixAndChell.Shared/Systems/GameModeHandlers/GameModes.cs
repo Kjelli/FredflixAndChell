@@ -1,7 +1,7 @@
 ﻿
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 {
-    public enum GameModes
+    public enum GameMode
     {
         Hub, // Used for game settings configuration
         Rounds, // Score by being last player alive

@@ -16,6 +16,16 @@ namespace FredflixAndChell.Shared.Assets
         {
             public const string CollisionMapEventEnter = "enter";
             public const string CollisionMapEventExit = "exit";
+
+            public const string TiledMapGameModeKey = "mode";
+            public const string TiledMapGameModeDisplayKey = "mode_display";
+            public const string TiledMapTeamsKey = "teams";
+            public const string TiledMapTeamsDisplayKey = "teams_display";
+            public const string TiledMapMapKey = "map";
+            public const string TiledMapMapDisplayKey = "map_display";
+            public const string TiledMapCharacterSelectKey = "character";
+
+            public const string EventReady = "ready";
         }
 
         public class Assets

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -47,21 +49,23 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/shockwave_sm");
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
-
             LoadTexture("textures/UI/HUD");
-
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
 
             LoadEffect("effects/shader_flash");
 
-            LoadMap("maps/firstlevel");
             LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
             LoadTexture("maps/spawner_tile");
+        }
+
+        public static List<string> GetMaps()
+        {
+            return _maps.Keys.ToList();
         }
 
         private static void LoadPlayerTexture(string playerDirectory)

@@ -31,6 +31,7 @@ namespace FredflixAndChell.Shared.Systems
 
         private void CheckConnectedGamepads()
         {
+            return;
             foreach(var gamePad in Input.gamePads)
             {
                 if (gamePad.isConnected())

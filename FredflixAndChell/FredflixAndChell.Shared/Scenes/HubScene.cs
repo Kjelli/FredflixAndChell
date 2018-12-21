@@ -5,11 +5,13 @@ namespace FredflixAndChell.Shared.Scenes
 {
     public class HubScene : BroScene
     {
-        public HubScene() : base(new GameSettings {
-            GameMode = GameModes.Hub,
+        public HubScene() : base(new GameSettings
+        {
+            GameMode = GameMode.Hub,
             Map = "winter_hub",
             DamageMultiplier = 0.0f,
-            KnockbackMultiplier = 0.0f})
+            KnockbackMultiplier = 0.0f
+        })
         {
         }
 
@@ -23,6 +25,7 @@ namespace FredflixAndChell.Shared.Scenes
         {
             base.Setup();
             System.Console.WriteLine("Setting up Hubscene");
+            
         }
     }
 }

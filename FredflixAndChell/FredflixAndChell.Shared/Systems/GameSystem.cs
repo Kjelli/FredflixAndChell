@@ -13,6 +13,7 @@ using System.Linq;
 using FredflixAndChell.Shared.Maps;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
+using Microsoft.Xna.Framework;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -44,6 +45,7 @@ namespace FredflixAndChell.Shared.Systems
         public List<DebugLine> DebugLines = new List<DebugLine>();
         public Map Map => _map;
         public GameSettings Settings => _gameSettings;
+        public IGameModeHandler GameModeHandler => _gameHandler;
 
         public GameSystem(GameSettings gameSettings, Map map)
         {
@@ -69,18 +71,19 @@ namespace FredflixAndChell.Shared.Systems
         {
             switch (_gameSettings.GameMode)
             {
-                case GameModes.Hub:
+                case GameMode.Hub:
                     _gameHandler = new HubHandler(this);
                     break;
-                case GameModes.Rounds:
+                case GameMode.Rounds:
                     _gameHandler = new RoundsHandler(this);
                     break;
-                case GameModes.Deathmatch:
+                case GameMode.Deathmatch:
                     _gameHandler = new DeathmatchHandler(this);
                     break;
-                case GameModes.CaptureTheFlag:
+                case GameMode.CaptureTheFlag:
                     break;
             }
+            (scene as BroScene)?.OnGameHandlerAdded(_gameHandler);
             _gameHandler.Setup(_gameSettings);
         }
 
@@ -128,7 +131,7 @@ namespace FredflixAndChell.Shared.Systems
         private void EndGame()
         {
             ContextHelper.PlayerScores = null;
-            Core.scene = new LobbyScene();
+            Core.startSceneTransition(new CrossFadeTransition(() => new HubScene()));
         }
 
         public void StartRound()
@@ -144,9 +147,10 @@ namespace FredflixAndChell.Shared.Systems
             TweenManager.stopAllTweens();
         }
 
-        private void StartNextRound()
+        public void StartNextRound()
         {
-            Core.startSceneTransition(new CrossFadeTransition(() => new BroScene(_gameSettings)));
+            Core.startSceneTransition(new CrossFadeTransition(
+                () => new BroScene(ContextHelper.GameSettings)));
         }
 
         public void EndRound()
@@ -157,6 +161,10 @@ namespace FredflixAndChell.Shared.Systems
             var sepia = _broScene.addPostProcessor(new VignettePostProcessor(5));
             sepia.effect = new SepiaEffect();
             _camera.SetWinMode(true);
+            if (_gameHandler.WeHaveAWinner())
+            {
+                _broScene.LetterBox.color = Color.White;
+            }
         }
 
         public void Subscribe(GameEvents gameEvent, Action<GameEventParameters> handler)

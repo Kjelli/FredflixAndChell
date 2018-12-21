@@ -1,12 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Scenes;
-using FredflixAndChell.Shared.Systems;
-using FredflixAndChell.Shared.Systems.GameModeHandlers;
-using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Utilities.Serialization;
 using Nez;
-using Nez.Systems;
-using System;
 
 namespace FredflixAndChell.Shared
 {

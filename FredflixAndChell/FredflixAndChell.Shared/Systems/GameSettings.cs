@@ -4,7 +4,7 @@ using Nez;
 
 namespace FredflixAndChell.Shared.Systems
 {
-    public enum Teams
+    public enum TeamMode
     {
         FreeForAll,
         Team
@@ -14,14 +14,14 @@ namespace FredflixAndChell.Shared.Systems
     {
         public static GameSettings Default = new GameSettings
         {
-            GameMode = GameModes.Deathmatch,
+            GameMode = GameMode.Deathmatch,
             Map = "winter_debug",
             ScoreLimit = 3,
             FriendlyFire = true
         };
 
-        public Teams Team { get; set; }
-        public GameModes GameMode { get; set; }
+        public TeamMode TeamMode { get; set; }
+        public GameMode GameMode { get; set; }
         public string Map { get; set; }
         public int ScoreLimit { get; set; }
         public bool FriendlyFire { get; set; }

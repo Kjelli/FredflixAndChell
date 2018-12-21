@@ -7,6 +7,7 @@ using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -69,11 +70,17 @@ namespace FredflixAndChell.Shared.Scenes
             }
         }
 
+        public virtual void OnGameHandlerAdded(IGameModeHandler gameModeHandler)
+        {
+        }
+
+
         public override void unload()
         {
             base.unload();
         }
 
+        #region Rendering Setup
         private void SetupRenderering()
         {
             camera.setMinimumZoom(4);
@@ -102,5 +109,6 @@ namespace FredflixAndChell.Shared.Scenes
             // Letterbox effect when a winner is determined
             LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(3));
         }
+        #endregion
     }
 }

@@ -6,21 +6,36 @@ using FredflixAndChell.Shared.Assets;
 using static FredflixAndChell.Shared.Assets.Constants;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using System.Linq;
+using Nez;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 {
     public class HubHandler : GameModeHandler
     {
-        private GameSettings _gameSettings;
+        private GameSettings _nextGameSettings;
+
+        private int readyPlayers = 0;
+        private bool starting;
+
         public HubHandler(GameSystem gameSystem) : base(gameSystem)
         {
-            _gameSettings = new GameSettings();
+            SetGameSettings(ContextHelper.GameSettings ?? GameSettings.Default);
         }
 
         public override void Setup(GameSettings settings)
         {
             base.Setup(settings);
             GameSystem.Subscribe(GameEvents.GlobalMapEvent, HandleMapEvent);
+        }
+
+        public void SetGameSettings(GameSettings gameSettings)
+        {
+            _nextGameSettings = gameSettings;
+
+            ToggleGameMode(gameSettings.GameMode);
+            ToggleMap(gameSettings.Map);
+            ToggleTeamMode(gameSettings.TeamMode);
         }
 
         private void HandleMapEvent(GameEventParameters parameters)
@@ -30,24 +45,28 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
             switch (mapEventParameters.MapEvent.EventKey)
             {
-                case "ready":
+                case Strings.EventReady:
                     var state = mapEventParameters.MapEvent.Parameters[0];
-                    var entered = (string) state == Strings.CollisionMapEventEnter;
+                    var entered = (string)state == Strings.CollisionMapEventEnter;
                     HandleReadiness(entered);
                     break;
-                case "mode":
-                    ToggleGameMode();
+                case Strings.TiledMapGameModeKey:
+                    ToggleGameMode(_nextGameSettings.GameMode.Next());
                     break;
-                case "teams":
-                    ToggleTeams();
+                case Strings.TiledMapTeamsKey:
+                    ToggleTeamMode(_nextGameSettings.TeamMode.Next());
                     break;
-                case "character":
+                case Strings.TiledMapCharacterSelectKey:
                     var player = mapEventParameters.MapEvent.Parameters[0] as Player;
                     SelectCharacter(player);
+                    break;
+                case Strings.TiledMapMapKey:
+                    ToggleMap();
                     break;
             }
         }
 
+      
         private void SelectCharacter(Player player)
         {
             var currentCharacter = player.Parameters.CharacterName;
@@ -55,34 +74,80 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             player.SetParameters(nextCharacter);
         }
 
-        private void ToggleTeams()
+        private void NotifyGameSettingsChange(string key, string value)
         {
-            var teamMode = _gameSettings.Team;
-            var nextTeamMode = teamMode.Next();
-            _gameSettings.Team = nextTeamMode;
             GameSystem.Map.EmitMapEvent(new MapEvent
             {
-                EventKey = "teams_display",
-                Parameters = new string[] { $"{nextTeamMode}" }
+                EventKey = key,
+                Parameters = new string[] { $"{value}" }
             });
+        }
+
+        private void ToggleGameMode(GameMode gameMode)
+        {
+            // Cannot select hub
+            if (gameMode == GameMode.Hub) {
+                gameMode = gameMode.Next();
+            }
+            _nextGameSettings.GameMode = gameMode;
+            NotifyGameSettingsChange(Strings.TiledMapGameModeDisplayKey, gameMode.ToString());
+        }
+        private void ToggleMap(string nextMap = null)
+        {
+            if (nextMap == null)
+            {
+                var allMaps = AssetLoader.GetMaps();
+                var currentMapIndex = allMaps.IndexOf(_nextGameSettings.Map);
+                nextMap = allMaps[(currentMapIndex + 1) % allMaps.Count];
+            }
+            _nextGameSettings.Map = nextMap;
+
+            NotifyGameSettingsChange(Strings.TiledMapMapDisplayKey, nextMap);
+        }
+
+        private void ToggleTeamMode(TeamMode teamMode)
+        {
+            var nextTeamMode = teamMode;
+            _nextGameSettings.TeamMode = nextTeamMode;
+            NotifyGameSettingsChange(Strings.TiledMapTeamsDisplayKey, nextTeamMode.ToString());
         }
 
         private void HandleReadiness(bool playerBecameReady)
         {
-            Console.WriteLine($"A player is ready? {playerBecameReady}");
+            readyPlayers += playerBecameReady ? 1 : -1;
+            if (readyPlayers == GameSystem.Players.Count() && !starting)
+            {
+                starting = true;
+                Countdown(3);
+            }
         }
 
-        private void ToggleGameMode()
+        private void Countdown(int seconds)
         {
-            var gameMode = _gameSettings.GameMode;
-            var nextGameMode = gameMode.Next();
-            if (nextGameMode == GameModes.Hub) nextGameMode = nextGameMode.Next();
-            _gameSettings.GameMode = nextGameMode;
-            GameSystem.Map.EmitMapEvent(new MapEvent {
-                EventKey = "mode_display",
-                Parameters = new string[]{ $"{nextGameMode}" }
-            });
+            Console.WriteLine($"Starting in {seconds} seconds");
+            if (readyPlayers == GameSystem.Players.Count())
+            {
+                if (seconds == 0)
+                {
+                    StartMatch();
+                }
+                else
+                {
+                    Core.schedule(1, _ => Countdown(seconds - 1));
+                }
+            }
+            else
+            {
+                starting = false;
+            }
         }
+
+        private void StartMatch()
+        {
+            ContextHelper.GameSettings = _nextGameSettings;
+            GameSystem.StartNextRound();
+        }
+
 
         public override bool WeHaveAWinner()
         {
