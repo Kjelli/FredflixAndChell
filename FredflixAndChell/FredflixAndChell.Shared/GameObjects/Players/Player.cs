@@ -361,8 +361,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
+#if DEBUG
             var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
             EquipGun(nextGun);
+#endif
         }
 
         private void Move()
