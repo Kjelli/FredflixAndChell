@@ -12,10 +12,8 @@ using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
-using FredflixAndChell.Shared.Utilities;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
-using FredflixAndChell.Shared.Assets;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -123,7 +121,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupComponents()
         {
             setTag(Tags.Player);
-            
+
             // Assign movement component
             _mover = addComponent(new Mover());
 
@@ -344,7 +342,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (_gun != null)
             {
+#if DEBUG
                 DropGun();
+#else
+                UnEquipGun();
+#endif
             }
             _gun = scene.addEntity(new Gun(this, Guns.Get(name)));
             IsArmed = true;
@@ -359,8 +361,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SwitchWeapon()
         {
+#if DEBUG
             var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
             EquipGun(nextGun);
+#endif
         }
 
         private void Move()
