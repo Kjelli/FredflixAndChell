@@ -1,19 +1,13 @@
 ﻿using FredflixAndChell.Components.Players;
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
-using FredflixAndChell.Shared.Components.Effects.Weather;
 using FredflixAndChell.Shared.Components.HUD;
-using FredflixAndChell.Shared.Components.PlayerComponents;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Nez.Textures;
-using Nez.Tiled;
-using System;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
@@ -51,8 +45,10 @@ namespace FredflixAndChell.Shared.Scenes
             addSceneComponent(new SmoothCamera());
             addSceneComponent(new HUD());
             var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
+#if DEBUG
             connector.SpawnDebugPlayer();
             connector.SpawnDebugPlayer();
+#endif
             var gameSystem = new GameSystem(_gameSettings, map);
             addSceneComponent(gameSystem);
             addSceneComponent(new ControllerSystem());
