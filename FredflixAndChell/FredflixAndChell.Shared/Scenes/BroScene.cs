@@ -1,20 +1,15 @@
 ﻿using FredflixAndChell.Components.Players;
 using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
-using FredflixAndChell.Shared.Components.Effects.Weather;
 using FredflixAndChell.Shared.Components.HUD;
-using FredflixAndChell.Shared.Components.PlayerComponents;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Nez.Textures;
-using Nez.Tiled;
-using System;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
@@ -24,6 +19,7 @@ namespace FredflixAndChell.Shared.Scenes
     {
         private readonly GameSettings _gameSettings;
         private ScreenSpaceRenderer _screenSpaceRenderer;
+        private ReflectionRenderer _reflectionRenderer;
 
         public CinematicLetterboxPostProcessor LetterBox { get; private set; }
 
@@ -49,11 +45,13 @@ namespace FredflixAndChell.Shared.Scenes
             var map = addEntity(new Map());
             map.Setup(_gameSettings.Map);
 
-            addSceneComponent(new SmoothCamera());
+            addSceneComponent(new SmoothCamera(_reflectionRenderer.camera));
             addSceneComponent(new HUD());
             var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
+#if DEBUG
             connector.SpawnDebugPlayer();
             connector.SpawnDebugPlayer();
+#endif
             var gameSystem = new GameSystem(_gameSettings, map);
             addSceneComponent(gameSystem);
             addSceneComponent(new ControllerSystem());
@@ -86,6 +84,12 @@ namespace FredflixAndChell.Shared.Scenes
             camera.setMinimumZoom(4);
             camera.setMaximumZoom(6);
             camera.setZoom(4);
+
+            // Render reflective surfaces
+            _reflectionRenderer = ReflectionRenderer.createAndSetupScene(this, -1,
+                new int[] { Layers.Player, Layers.Bullet, Layers.Interactables });
+
+            Materials.ReflectionMaterial = new ReflectionMaterial(_reflectionRenderer);
 
             // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,

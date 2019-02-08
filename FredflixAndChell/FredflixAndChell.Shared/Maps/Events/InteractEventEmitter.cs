@@ -15,7 +15,7 @@ namespace FredflixAndChell.Shared.Maps.Events
         public InteractEventEmitter(Map map, string eventKey, RectangleF rectangle) : base(map, eventKey)
         {
             tag = Tags.EventEmitter;
-            name = "InteractEventEmitter";
+            name = "InteractEventEmitter_" + eventKey;
             position = new Vector2(rectangle.x + 8, rectangle.y + 8);
 
             var collider = addComponent(new BoxCollider(rectangle.width, rectangle.height));

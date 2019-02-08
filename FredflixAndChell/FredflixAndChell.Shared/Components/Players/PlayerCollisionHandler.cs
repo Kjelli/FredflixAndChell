@@ -50,14 +50,22 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other == null || other.entity == null) return;
             if (_entitiesInProximity.Contains(other.entity)) return;
 
+            _entitiesInProximity.Add(other.entity);
+
             var interactable = other.entity.getComponent<InteractableComponent>();
+
             if (interactable != null)
             {
-                _entitiesInProximity.Add(other.entity);
                 if (other.entity is Collectible collectible && collectible.CanBeCollected())
                 {
                     collectible?.Highlight();
                 }
+            }
+            
+            if(other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[]{ true });
+                Console.WriteLine("Emitting proximity enter event " + pee.name);
             }
         }
 
@@ -103,12 +111,17 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             if (other == null || other.entity == null) return;
             if (!_entitiesInProximity.Contains(other.entity)) return;
-
             _entitiesInProximity.Remove(other.entity);
 
             if (other.entity is Collectible collectible)
             {
                 collectible?.Unhighlight();
+            }
+
+            if (other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[] { false });
+                Console.WriteLine("Emitting proximity exit event " + pee.name);
             }
         }
 

@@ -50,8 +50,11 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
             LoadTexture("textures/UI/HUD");
+            LoadTexture("textures/UI/screen_bg");
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
+
+            LoadTexture("maps/spawner_tile");
 
             LoadEffect("effects/shader_flash");
 
@@ -60,7 +63,6 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
-            LoadTexture("maps/spawner_tile");
         }
 
         public static List<string> GetMaps()

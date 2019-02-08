@@ -1,21 +1,19 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects.Weather;
-using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps.Events;
+using FredflixAndChell.Shared.Maps.MapBuilders;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Tiled;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Maps
@@ -68,9 +66,6 @@ namespace FredflixAndChell.Shared.Maps
             tiledMapDetailsComponent.layerIndicesToRender = new int[] { 3, 4 };
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
-            //tiledMapDetailsComponent.material.effect = content.loadNezEffect<SpriteAlphaTestEffect>();
-
-            //CustomizeTiles(tiledMapComponent);
 
             ApplyWeather(_tiledMap);
         }
@@ -79,101 +74,16 @@ namespace FredflixAndChell.Shared.Maps
         {
             var mapObjects = _tiledMap.getObjectGroup(TiledObjects.ObjectGroup);
 
-            SetupCollisions(mapObjects);
-            SetupPits(mapObjects);
-            SetupItemSpawners(mapObjects);
+            this.BuildCollisionZones(mapObjects);
+            this.BuildPits(mapObjects);
+            this.BuildItemSpawns(mapObjects);
+            this.BuildEventEmitters(mapObjects);
+            this.BuildMonitors(mapObjects);
+            this.BuildLightSources(mapObjects);
+            this.BuildCameraTrackers(mapObjects);
+
             SetupPlayerSpawns(mapObjects);
-            SetupMapEvents(mapObjects);
-            SetupScreens(mapObjects);
 
-            foreach (var lightSource in mapObjects.objectsWithName("light_source"))
-            {
-                var entity = scene.createEntity("world-light", lightSource.position + new Vector2(8, 8));
-                entity.setScale(0.5f);
-                var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-                sprite.material = Material.blendLinearDodge();
-                sprite.color = ColorExt.hexToColor("#" + lightSource.properties["color"].Substring(2));
-                sprite.renderLayer = Layers.Lights;
-
-                var props = lightSource.properties;
-                if (props.ContainsKey("toggle_key") && !string.IsNullOrWhiteSpace(props["toggle_key"]))
-                {
-                    var listener = entity.addComponent(new MapEventListener(props["toggle_key"])
-                    {
-                        EventTriggered = _ =>
-                        {
-                            entity.setEnabled(!entity.enabled);
-                        }
-                    });
-                    MapEventListeners.Add(listener);
-                }
-            }
-        }
-
-        private void SetupScreens(TiledObjectGroup mapObjects)
-        {
-            foreach (var screen in mapObjects.objectsWithName("screen"))
-            {
-                var props = screen.properties;
-                var text = props.ContainsKey("text") ? props["text"] : "";
-                var entity = scene.createEntity("screen");
-                var textComponent = new Text(new NezSpriteFont(Assets.AssetLoader.GetFont("monitor")),
-                    text, new Vector2(screen.position.X + screen.width / 2, screen.position.Y), Color.White);
-                textComponent.horizontalOrigin = HorizontalAlign.Center;
-                entity.addComponent(textComponent);
-
-                if (props.ContainsKey("set_key") && !string.IsNullOrWhiteSpace(props["set_key"]))
-                {
-                    var listener = entity.addComponent(new MapEventListener(props["set_key"])
-                    {
-                        EventTriggered = mapEvent =>
-                        {
-                            textComponent.text = (string)mapEvent.Parameters[0];
-                        }
-                    });
-                    MapEventListeners.Add(listener);
-                }
-            }
-
-        }
-
-        private void SetupMapEvents(TiledObjectGroup mapObjects)
-        {
-            foreach (var eventEmitter in mapObjects.objectsWithName(TiledObjects.EventEmitter))
-            {
-                var bounds = new RectangleF(eventEmitter.position, new Vector2(eventEmitter.width, eventEmitter.height));
-                var props = eventEmitter.properties;
-                var type = props["type"];
-                var key = props["key"];
-                var global = props.ContainsKey("global") ? bool.Parse(props["global"]) : false;
-
-                MapEventEmitter emitter = null;
-                switch (type)
-                {
-                    case "timed":
-                        float.TryParse(props["interval_min"], out float intervalMin);
-                        float.TryParse(props["interval_max"], out float intervalMax);
-                        int.TryParse(props["repeat"], out int repeat);
-
-                        emitter = scene.addEntity(new TimedEventEmitter(this, key, intervalMin, intervalMax, repeat));
-                        break;
-                    case "collision":
-                        int.TryParse(props["physics_layer"], out int physicsLayer);
-                        emitter = scene.addEntity(new CollisionEventEmitter(this, key, bounds, physicsLayer));
-                        break;
-                    case "interact":
-                        emitter = scene.addEntity(new InteractEventEmitter(this, key, bounds));
-                        break;
-                    default:
-                        Console.Error.WriteLine($"MapEventEmitter of type {type} not recognized!");
-                        break;
-                }
-
-                if (global)
-                {
-                    emitter.EmitGlobally = true;
-                }
-            }
         }
 
         private void SetupPlayerSpawns(TiledObjectGroup mapObjects)
@@ -185,49 +95,7 @@ namespace FredflixAndChell.Shared.Maps
             }
         }
 
-        private void SetupItemSpawners(TiledObjectGroup objectGroup)
-        {
-            foreach (var spawnObject in objectGroup.objectsWithName(TiledObjects.ItemSpawn))
-            {
-                var spawner = scene.addEntity(new Spawner(spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2));
-
-                // Example event listener for spawning weapons usage
-                //var props = spawnObject.properties;
-                //if (props.ContainsKey("key") && !string.IsNullOrWhiteSpace(props["key"]))
-                //{
-                //    var listener = spawner.addComponent(new MapEventListener(props["key"])
-                //    {
-                //        EventTriggered = _ => spawner.SpawnItem()
-                //    });
-                //    MapEventListeners.Add(listener);
-                //}
-                // Example event listener usage
-            }
-        }
-
-        private void SetupPits(TiledObjectGroup objectGroup)
-        {
-            foreach (var pit in objectGroup.objectsWithName(TiledObjects.Pit))
-            {
-                var pitEntity = scene.createEntity("pit" + pit.id, new Vector2((pit.x + pit.width / 2), pit.y + pit.height / 2));
-                pitEntity.setTag(Tags.Pit);
-                var hitbox = pitEntity.addComponent(new BoxCollider(pit.width, pit.height));
-                hitbox.isTrigger = true;
-                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
-            }
-        }
-
-        private void SetupCollisions(TiledObjectGroup objectGroup)
-        {
-            foreach (var collisionObject in objectGroup.objectsWithName(TiledObjects.Collision))
-            {
-                var collidable = scene.createEntity("collidable" + collisionObject.id, new Vector2((collisionObject.x + collisionObject.width / 2), collisionObject.y + collisionObject.height / 2));
-                collidable.tag = Tags.Obstacle;
-                var hitbox = collidable.addComponent(new BoxCollider(collisionObject.width, collisionObject.height));
-                Flags.setFlagExclusive(ref hitbox.physicsLayer, Layers.MapObstacles);
-            }
-        }
-
+        /* Unused tile-based lightsources
         private void CustomizeTiles(TiledMapComponent mapComponent)
         {
             var tileSize = new Vector2(mapComponent.tiledMap.tileWidth, mapComponent.tiledMap.tileHeight);
@@ -262,6 +130,7 @@ namespace FredflixAndChell.Shared.Maps
                 sprite.renderLayer = Layers.Lights;
             }
         }
+        */
 
         public SceneComponent GetWeatherEffect(string name)
         {

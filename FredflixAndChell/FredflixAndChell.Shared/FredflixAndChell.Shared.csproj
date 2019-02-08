@@ -73,6 +73,15 @@
     <Compile Include="Components\HUD\HUD.cs" />
     <Compile Include="Components\Interactables\InteractableComponent.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
+    <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
+    <Compile Include="Maps\MapBuilders\CameraTrackerBuilder.cs" />
+    <Compile Include="Maps\MapBuilders\CollisionZoneBuilder.cs" />
+    <Compile Include="Maps\MapBuilders\EventEmitterBuilder.cs" />
+    <Compile Include="Maps\MapBuilders\LightsourceBuilder.cs" />
+    <Compile Include="Maps\MapBuilders\ItemSpawnBuilder.cs" />
+    <Compile Include="GameObjects\Monitor.cs" />
+    <Compile Include="Maps\MapBuilders\PitBuilder.cs" />
+    <Compile Include="Maps\MapBuilders\MonitorBuilder.cs" />
     <Compile Include="Scenes\HubScene.cs" />
     <Compile Include="Systems\ControllerSystem.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
@@ -116,6 +125,7 @@
     <Compile Include="Utilities\Events\GameEvents.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
+    <Compile Include="Utilities\Graphics\Materials.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
     <Compile Include="BroGame.cs" />
