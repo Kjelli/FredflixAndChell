@@ -20,6 +20,7 @@ namespace FredflixAndChell.Shared.Scenes
         private readonly GameSettings _gameSettings;
         private ScreenSpaceRenderer _screenSpaceRenderer;
         private ReflectionRenderer _reflectionRenderer;
+        private RenderLayerRenderer _lightRenderer;
 
         public CinematicLetterboxPostProcessor LetterBox { get; private set; }
 
@@ -44,6 +45,8 @@ namespace FredflixAndChell.Shared.Scenes
 
             var map = addEntity(new Map());
             map.Setup(_gameSettings.Map);
+
+            _lightRenderer.renderTargetClearColor = map.AmbientLightingColor;
 
             addSceneComponent(new SmoothCamera(_reflectionRenderer.camera));
             addSceneComponent(new HUD());
@@ -97,13 +100,13 @@ namespace FredflixAndChell.Shared.Scenes
             renderLayerExcludeRenderer.renderTargetClearColor = new Color(0, 0, 0);
 
             // Rendering lights
-            var lightRenderer = addRenderer(new RenderLayerRenderer(1,
+            _lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
-            lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
+            _lightRenderer.renderTexture = new RenderTexture();
+            _lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
 
             // Postprocessor effects for lighting
-            var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
+            var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, _lightRenderer.renderTexture));
 
             // Render screenspace
             _screenSpaceRenderer = new ScreenSpaceRenderer(100, Layers.HUD);

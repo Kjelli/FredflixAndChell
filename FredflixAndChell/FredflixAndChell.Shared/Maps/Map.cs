@@ -27,6 +27,9 @@ namespace FredflixAndChell.Shared.Maps
         public PlayerSpawner PlayerSpawner => _playerSpawner;
         public List<MapEventListener> MapEventListeners { get; set; }
 
+        // Map properties
+        public Color AmbientLightingColor { get; set; }
+
         public Map() : base(TiledObjects.TiledMapEntity)
         {
             MapEventListeners = new List<MapEventListener>();
@@ -68,6 +71,7 @@ namespace FredflixAndChell.Shared.Maps
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
 
             ApplyWeather(_tiledMap);
+            ApplyAmbientLighting(_tiledMap);
         }
 
         private void SetupMapObjects()
@@ -147,11 +151,11 @@ namespace FredflixAndChell.Shared.Maps
             }
         }
 
-        private void ApplyWeather(TiledMap tiledmap)
+        private void ApplyWeather(TiledMap tiledMap)
         {
             try
             {
-                var weatherAttribute = tiledmap.properties["weather"];
+                var weatherAttribute = tiledMap.properties["weather"];
                 if (weatherAttribute != null && weatherAttribute != "")
                 {
                     scene.addSceneComponent(GetWeatherEffect(weatherAttribute));
@@ -159,5 +163,19 @@ namespace FredflixAndChell.Shared.Maps
             }
             catch (KeyNotFoundException) { }
         }
+
+        private void ApplyAmbientLighting(TiledMap tiledMap)
+        {
+            try
+            {
+                var ambientLightingColor = tiledMap.properties["ambient_lighting"];
+                AmbientLightingColor = ColorExt.hexToColor(ambientLightingColor.Substring(3));
+                
+            }
+            catch (KeyNotFoundException) {
+                AmbientLightingColor = Color.DarkGray;
+            }
+        }
+
     }
 }

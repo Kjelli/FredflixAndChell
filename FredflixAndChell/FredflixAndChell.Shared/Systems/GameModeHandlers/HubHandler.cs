@@ -115,6 +115,17 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         private void HandleReadiness(bool playerBecameReady)
         {
             readyPlayers += playerBecameReady ? 1 : -1;
+
+            var readyZoneColor = readyPlayers == 0 ? "standby" :
+                readyPlayers < GameSystem.Players.Count() ? "partial_ready"
+                : "ready";
+
+            GameSystem.Map.EmitMapEvent(new MapEvent
+            {
+                EventKey = "ready_zone",
+                Parameters = new object[] { readyZoneColor }
+            });
+
             if (readyPlayers == GameSystem.Players.Count() && !starting)
             {
                 starting = true;

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="70" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="109">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="70" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="113">
+ <properties>
+  <property name="ambient_lighting" type="color" value="#ff000053"/>
+ </properties>
  <tileset firstgid="1" source="tileset_winter.tsx"/>
  <tileset firstgid="1025" source="props_tileset.tsx"/>
  <layer id="12" name="Floor" width="70" height="50">
@@ -238,11 +241,14 @@
    </properties>
    <ellipse/>
   </object>
-  <object id="108" name="zone" x="152" y="176" width="48.25" height="48">
+  <object id="108" name="ready_zone" type="zone" x="152" y="176" width="48.25" height="48">
    <properties>
-    <property name="color" type="color" value="#ffff0000"/>
+    <property name="color" type="color" value="#ff5500ff"/>
     <property name="glow" type="bool" value="true"/>
-    <property name="key" value="ready"/>
+    <property name="key" value="ready_zone"/>
+    <property name="partial_ready" type="color" value="#ffffff00"/>
+    <property name="ready" type="color" value="#ff00aa00"/>
+    <property name="standby" type="color" value="#ff5500ff"/>
    </properties>
   </object>
  </objectgroup>
