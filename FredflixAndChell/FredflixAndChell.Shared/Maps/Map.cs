@@ -81,6 +81,7 @@ namespace FredflixAndChell.Shared.Maps
             this.BuildMonitors(mapObjects);
             this.BuildLightSources(mapObjects);
             this.BuildCameraTrackers(mapObjects);
+            this.BuildZones(mapObjects);
 
             SetupPlayerSpawns(mapObjects);
 

@@ -43,6 +43,8 @@ namespace FredflixAndChell.Shared.Assets
             public const string Pit = "pit";
             public const string EventEmitter = "event_emitter";
             public const string CameraTracker = "camera_tracker";
+            public const string Monitor = "monitor";
+            public const string Zone = "zone";
         }
 
         public class TiledProperties

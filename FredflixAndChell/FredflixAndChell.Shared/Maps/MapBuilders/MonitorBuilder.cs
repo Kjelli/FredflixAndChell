@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Props;
 using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
@@ -19,7 +20,7 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
     {
         public static void BuildMonitors(this Map map, TiledObjectGroup mapObjects)
         {
-            foreach (var screen in mapObjects.objectsWithName("screen"))
+            foreach (var screen in mapObjects.objectsWithName(TiledObjects.Monitor))
             {
                 var entity = CreateMonitorEntity(map, screen);
                 map.scene.addEntity(entity);

@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Props;
 using Nez.Tiled;
 using System;
 using System.Collections.Generic;

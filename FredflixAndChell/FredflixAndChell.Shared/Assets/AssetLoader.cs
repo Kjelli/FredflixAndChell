@@ -16,12 +16,6 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
-        public static void LoadLoadingScene(ContentManager cm)
-        {
-            _content = cm;
-            LoadTexture("textures/effects/rainbow");
-        }
-
         public static void LoadBroScene(ContentManager cm)
         {
             _content = cm;
@@ -38,6 +32,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/lightmask");
             LoadTexture("textures/effects/lightmask_sm");
             LoadTexture("textures/effects/lightmask_xs");
+            LoadTexture("textures/effects/inverted_lightmask_xs");
+            LoadTexture("textures/effects/zone_1");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
@@ -57,6 +53,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("maps/spawner_tile");
 
             LoadEffect("effects/shader_flash");
+            LoadEffect("effects/zone_shader");
 
             LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");

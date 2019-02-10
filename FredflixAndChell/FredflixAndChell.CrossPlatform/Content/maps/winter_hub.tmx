@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="70" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="108">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="70" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="109">
  <tileset firstgid="1" source="tileset_winter.tsx"/>
  <tileset firstgid="1025" source="props_tileset.tsx"/>
  <layer id="12" name="Floor" width="70" height="50">
@@ -96,7 +96,7 @@
   <object id="78" name="player_spawn" x="296" y="192" width="16" height="16"/>
   <object id="79" name="player_spawn" x="248" y="192" width="16" height="16"/>
   <object id="80" name="player_spawn" x="272" y="216" width="16" height="16"/>
-  <object id="81" name="screen" x="120" y="96" width="80" height="16">
+  <object id="81" name="monitor" x="120" y="96" width="80" height="16">
    <properties>
     <property name="set_key" value="mode_display"/>
     <property name="text" value="TEST"/>
@@ -193,7 +193,7 @@
     <property name="type" value="interact"/>
    </properties>
   </object>
-  <object id="99" name="screen" x="216" y="96" width="80" height="16">
+  <object id="99" name="monitor" x="216" y="96" width="80" height="16">
    <properties>
     <property name="set_key" value="map_display"/>
     <property name="text" value="TEST"/>
@@ -237,6 +237,13 @@
     <property name="toggle_key" value="cam_mode"/>
    </properties>
    <ellipse/>
+  </object>
+  <object id="108" name="zone" x="152" y="176" width="48.25" height="48">
+   <properties>
+    <property name="color" type="color" value="#ffff0000"/>
+    <property name="glow" type="bool" value="true"/>
+    <property name="key" value="ready"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

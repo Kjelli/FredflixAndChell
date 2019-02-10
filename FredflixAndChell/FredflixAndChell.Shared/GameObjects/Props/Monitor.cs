@@ -5,7 +5,7 @@ using Nez;
 using Nez.Sprites;
 using static FredflixAndChell.Shared.Assets.Constants;
 
-namespace FredflixAndChell.Shared.GameObjects
+namespace FredflixAndChell.Shared.GameObjects.Props
 {
     public class Monitor : Entity
     {
