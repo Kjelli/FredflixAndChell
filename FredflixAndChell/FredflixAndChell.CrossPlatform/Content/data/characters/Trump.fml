@@ -79,4 +79,14 @@ PlayerSprite:
       Origin:
         X: 0.0
         Y: 0.0
+SkinColor:
+  A: 255
+  B: 183
+  G: 210
+  R: 247
+BloodColor:
+  A: 255
+  B: 0
+  G: 0
+  R: 220
 Speed: 50.0

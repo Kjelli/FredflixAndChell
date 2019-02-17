@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Scenes;
+using FredflixAndChell.Shared.Utilities.Serialization;
 using Nez;
 
 namespace FredflixAndChell.Shared
