@@ -26,6 +26,7 @@ namespace FredflixAndChell.Shared.Assets
 
             LoadPlayerTexture("textures/players/trump");
             LoadPlayerTexture("textures/players/doge");
+            LoadPlayerTexture("textures/players/masschin");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
@@ -54,6 +55,7 @@ namespace FredflixAndChell.Shared.Assets
 
             LoadEffect("effects/shader_flash");
             LoadEffect("effects/zone_shader");
+            LoadEffect("effects/grayscale_shader");
 
             LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");

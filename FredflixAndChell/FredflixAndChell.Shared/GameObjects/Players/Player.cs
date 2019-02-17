@@ -7,12 +7,14 @@ using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
@@ -39,7 +41,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private static bool DebugToggledRecently { get; set; }
 
-        private CharacterParameters _params;
+        private CharacterParameters _characterParameters;
+        private GunParameters _gunParameters;
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -66,13 +69,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private int _numSprintPressed = 0;
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
-        private float _slownessFactor;
         private Vector2 _initialRollingDirection;
 
         public PlayerMobilityState PlayerMobilityState { get; set; }
         public PlayerState PlayerState { get; set; }
-        public CharacterParameters Parameters => _params;
-        public float SlownessFactor { get => _slownessFactor; set => _slownessFactor = value; }
+        public CharacterParameters Parameters => _characterParameters;
+        public float SlownessFactor { get; set; }
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
         public int PlayerIndex { get; set; }
@@ -86,10 +88,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool FlipGun { get; set; }
         public int TeamIndex { get; set; }
 
-        public Player(CharacterParameters characterParameters, int x, int y, int playerIndex) : base(x, y)
+        public Player(CharacterParameters characterParameters, GunParameters gunParameters, int x, int y, int playerIndex) : base(x, y)
         {
-            _params = characterParameters;
+            _characterParameters = characterParameters;
             _entitiesInProximity = new List<Entity>();
+            _gunParameters = gunParameters;
             PlayerIndex = playerIndex;
             name = $"Player {PlayerIndex}";
         }
@@ -131,7 +134,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign gun component
-            EquipGun("M4");
+            EquipGun(_gunParameters.Name);
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -149,7 +152,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _playerCollisionHandler = addComponent(new PlayerCollisionHandler(_playerHitbox, _proximityHitbox));
 
             // Assign renderer component
-            SetupRenderer(_params.PlayerSprite);
+            SetupRenderer(_characterParameters.PlayerSprite);
 
             // Assign camera tracker component
             _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead));
@@ -178,11 +181,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupParameters()
         {
-            _health = _params.MaxHealth;
-            _maxHealth = _params.MaxHealth;
-            _stamina = _params.MaxStamina;
-            _maxStamina = _params.MaxStamina;
-            _speed = _params.Speed;
+            _health = _characterParameters.MaxHealth;
+            _maxHealth = _characterParameters.MaxHealth;
+            _stamina = _characterParameters.MaxStamina;
+            _maxStamina = _characterParameters.MaxStamina;
+            _speed = _characterParameters.Speed;
         }
 
         public override void Update()
@@ -365,8 +368,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 UnEquipGun();
 #endif
             }
-            _gun = scene.addEntity(new Gun(this, Guns.Get(name)));
+            var gunParams = Guns.Get(name);
+            _gun = scene.addEntity(new Gun(this, gunParams));
             IsArmed = true;
+
+            var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
+            if (meta != null)
+            {
+                meta.Gun = gunParams;
+            }
         }
 
         public void UnEquipGun()
@@ -549,9 +559,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void SetParameters(CharacterParameters nextCharacter)
         {
-            _params = nextCharacter;
+            _characterParameters = nextCharacter;
             SetupParameters();
             ChangePlayerSprite(nextCharacter.PlayerSprite);
+            var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
+            if (meta != null)
+            {
+                meta.Character = nextCharacter;
+            }
         }
         private void DropDead()
         {
@@ -596,7 +611,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
 
 
-            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * _slownessFactor);
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * SlownessFactor);
 
             if (FacingAngle.Y > 0)
             {

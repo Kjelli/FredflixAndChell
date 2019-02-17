@@ -65,7 +65,6 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
                     break;
             }
         }
-
       
         private void SelectCharacter(Player player)
         {

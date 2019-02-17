@@ -5,7 +5,7 @@ namespace FredflixAndChell.Shared.Utilities
 {
     public static class ContextHelper
     {
-        public static List<PlayerScore> PlayerScores { get; set; }
+        public static List<PlayerMetadata> PlayerMetadata { get; set; }
         public static GameSettings GameSettings { get; set; }
     }
 }

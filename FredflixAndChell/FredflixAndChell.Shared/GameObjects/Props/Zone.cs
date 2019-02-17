@@ -122,7 +122,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             if (_glow)
             {
                 _lightSprite.material.effect.Parameters["gameTime"].SetValue(Time.time);
-                if (Time.checkEvery(0.9f))
+                if (Time.checkEvery(1.1f))
                 {
                     SpawnBorderEffect(_zoneBorderTexture);
                 }

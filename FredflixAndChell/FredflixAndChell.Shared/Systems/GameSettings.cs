@@ -1,6 +1,9 @@
 ﻿
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using Nez;
+using System.Collections.Generic;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -19,7 +22,6 @@ namespace FredflixAndChell.Shared.Systems
             ScoreLimit = 3,
             FriendlyFire = true
         };
-
         public TeamMode TeamMode { get; set; }
         public GameMode GameMode { get; set; }
         public string Map { get; set; }
@@ -29,4 +31,5 @@ namespace FredflixAndChell.Shared.Systems
         public float KnockbackMultiplier { get; set; } = 1.0f;
         public float StaminaMultiplier { get; set; } = 0.2f;
     }
+
 }

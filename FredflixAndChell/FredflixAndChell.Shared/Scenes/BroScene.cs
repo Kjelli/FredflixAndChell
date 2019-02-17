@@ -65,9 +65,9 @@ namespace FredflixAndChell.Shared.Scenes
 
         private void InitializePlayerScores()
         {
-            if (ContextHelper.PlayerScores == null)
+            if (ContextHelper.PlayerMetadata == null)
             {
-                ContextHelper.PlayerScores = new List<PlayerScore>();
+                ContextHelper.PlayerMetadata = new List<PlayerMetadata>();
             }
         }
 
@@ -117,5 +117,10 @@ namespace FredflixAndChell.Shared.Scenes
             LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(3));
         }
         #endregion
+
+        public override void update()
+        {
+            base.update();
+        }
     }
 }

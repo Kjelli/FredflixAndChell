@@ -58,7 +58,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             sprite.material = Materials.ReflectionMaterial;
             sprite.material.effect = new ReflectionEffect
             {
-                normalMap = AssetLoader.GetTexture("effects/lava2")
+                normalMap = AssetLoader.GetTexture("effects/zone_1")
             };
             sprite.setOrigin(Vector2.Zero);
             sprite.SetScale(new Vector2(_size.X / 8, _size.Y / 8));

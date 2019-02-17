@@ -14,6 +14,8 @@ using FredflixAndChell.Shared.Maps;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 using Microsoft.Xna.Framework;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -90,10 +92,12 @@ namespace FredflixAndChell.Shared.Systems
         public void RegisterPlayer(Player player)
         {
             _players.Add(player);
-            var playerScore = ContextHelper.PlayerScores.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
-            if (playerScore == null)
+            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+            if (playerMeta == null)
             {
-                ContextHelper.PlayerScores.Add(new PlayerScore { PlayerIndex = player.PlayerIndex, Score = 0 });
+                playerMeta = new PlayerMetadata();
+                playerMeta.PlayerIndex = player.PlayerIndex;
+                ContextHelper.PlayerMetadata.Add(playerMeta);
             }
         }
 
@@ -130,7 +134,7 @@ namespace FredflixAndChell.Shared.Systems
 
         private void EndGame()
         {
-            ContextHelper.PlayerScores = null;
+            ContextHelper.PlayerMetadata.ForEach(p => p.Score = 0);
             Core.startSceneTransition(new CrossFadeTransition(() => new HubScene()));
         }
 
@@ -178,12 +182,21 @@ namespace FredflixAndChell.Shared.Systems
         }
     }
 
-    public class PlayerScore : IComparable<PlayerScore>
+    public class PlayerMetadata : IComparable<PlayerMetadata>
     {
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
+        public CharacterParameters Character { get; set; }
+        public GunParameters Gun {get; set;}
 
-        public int CompareTo(PlayerScore other)
+        public PlayerMetadata()
+        {
+            Score = 0;
+            Character = Characters.All()[0];
+            Gun = Guns.All()[0];
+        }
+
+        public int CompareTo(PlayerMetadata other)
         {
             return Score.CompareTo(other.Score);
         }

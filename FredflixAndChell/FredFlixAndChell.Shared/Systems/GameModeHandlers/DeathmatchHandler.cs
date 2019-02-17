@@ -39,7 +39,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             var pkParams = parameters as PlayerKilledEventParameters;
             if (pkParams.Killer != null && pkParams.Killed != pkParams.Killer)
             {
-                var playerScore = ContextHelper.PlayerScores?.First(s => s.PlayerIndex == pkParams.Killer.PlayerIndex);
+                var playerScore = ContextHelper.PlayerMetadata?.First(s => s.PlayerIndex == pkParams.Killer.PlayerIndex);
                 if (playerScore != null)
                 {
                     playerScore.Score++;
@@ -81,7 +81,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         {
             if (_weHaveAWinner) return;
 
-            var maxScoreHolder = ContextHelper.PlayerScores.Max();
+            var maxScoreHolder = ContextHelper.PlayerMetadata.Max();
             if (maxScoreHolder.Score < Settings.ScoreLimit) return;
 
             _weHaveAWinner = true;

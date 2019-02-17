@@ -54,7 +54,15 @@ namespace FredflixAndChell.Components.Players
             Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
-            var player = scene.addEntity(new Player(Characters.All().randomItem(), spawnX, spawnY, index));
+            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == index);
+            if(playerMeta == null)
+            {
+                playerMeta = new PlayerMetadata
+                {
+                    PlayerIndex = index
+                };
+            }
+            var player = scene.addEntity(new Player(playerMeta.Character, playerMeta.Gun, spawnX, spawnY, index));
             player.addComponent(new PlayerController(gamepad));
 
             _connectedPlayers.Add(player);

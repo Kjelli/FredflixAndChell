@@ -20,6 +20,9 @@
 #begin data/characters/Doge.fml
 /copy:data/characters/Doge.fml
 
+#begin data/characters/Masschin.fml
+/copy:data/characters/Masschin.fml
+
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
@@ -37,6 +40,12 @@
 
 #begin data/guns/PewPew.fml
 /copy:data/guns/PewPew.fml
+
+#begin effects/grayscale_shader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/grayscale_shader.fx
 
 #begin effects/shader_flash.fx
 /importer:EffectImporter
@@ -494,6 +503,42 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/players/kjelli_head.png
+
+#begin textures/players/masschin/head.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/head.png
+
+#begin textures/players/masschin/legs.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/legs.png
+
+#begin textures/players/masschin/torso.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/torso.png
 
 #begin textures/players/tormod_body.png
 /importer:TextureImporter
