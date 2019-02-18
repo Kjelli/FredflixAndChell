@@ -25,7 +25,7 @@ BulletParameters:
     Source: bullets/laser
 BulletSpread: 0.0
 DropChance: 0.8
-FireRate: 0.01
+FireRate: 0.02
 MagazineAmmo: 75
 MagazineSize: 75
 MaxAmmo: 750
