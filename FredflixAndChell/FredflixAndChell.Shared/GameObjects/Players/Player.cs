@@ -345,7 +345,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
             else
             {
-                if (_stamina >= 100) return;
+                if (_stamina >= _characterParameters.MaxStamina) return;
                 _isRegeneratingStamina = true;
                 SetWalkingState();
             }
