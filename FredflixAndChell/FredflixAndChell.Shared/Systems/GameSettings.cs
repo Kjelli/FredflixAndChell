@@ -1,9 +1,4 @@
-﻿
-using FredflixAndChell.Shared.GameObjects.Players.Characters;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Systems.GameModeHandlers;
-using Nez;
-using System.Collections.Generic;
+﻿using FredflixAndChell.Shared.Systems.GameModeHandlers;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -29,7 +24,7 @@ namespace FredflixAndChell.Shared.Systems
         public bool FriendlyFire { get; set; }
         public float DamageMultiplier { get; set; } = 1.0f;
         public float KnockbackMultiplier { get; set; } = 1.0f;
-        public float StaminaMultiplier { get; set; } = 0.2f;
+        public float StaminaMultiplier { get; set; } = 1.0f;
     }
 
 }
