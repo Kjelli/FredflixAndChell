@@ -72,16 +72,16 @@ namespace FredflixAndChell.Shared.Systems
         {
             switch (_gameSettings.GameMode)
             {
-                case GameMode.Hub:
+                case GameMode.HUB:
                     _gameHandler = new HubHandler(this);
                     break;
-                case GameMode.Rounds:
+                case GameMode.FRAGS:
                     _gameHandler = new RoundsHandler(this);
                     break;
-                case GameMode.Deathmatch:
+                case GameMode.DM:
                     _gameHandler = new DeathmatchHandler(this);
                     break;
-                case GameMode.CaptureTheFlag:
+                case GameMode.CTF:
                     break;
             }
             (scene as BroScene)?.OnGameHandlerAdded(_gameHandler);

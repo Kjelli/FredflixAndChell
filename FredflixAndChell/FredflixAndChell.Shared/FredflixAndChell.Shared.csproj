@@ -73,6 +73,7 @@
     <Compile Include="Components\HUD\HUD.cs" />
     <Compile Include="Components\Interactables\InteractableComponent.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
+    <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
     <Compile Include="Maps\MapBuilders\CameraTrackerBuilder.cs" />

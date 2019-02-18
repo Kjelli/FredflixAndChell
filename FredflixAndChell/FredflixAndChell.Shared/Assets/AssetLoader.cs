@@ -70,6 +70,11 @@ namespace FredflixAndChell.Shared.Assets
             return _maps.Keys.ToList();
         }
 
+        public static List<KeyValuePair<string, string>> GetMapsWithDisplayName()
+        {
+            return _maps.Select(m => new KeyValuePair<string,string>(m.Key, m.Value.properties["name"])).ToList();
+        }
+
         private static void LoadPlayerTexture(string playerDirectory)
         {
             LoadTexture(playerDirectory + "/head");
