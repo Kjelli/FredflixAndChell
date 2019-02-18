@@ -197,11 +197,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupParameters()
         {
-            _health = Parameters.MaxHealth;
+            Health = Parameters.MaxHealth;
             _maxHealth = Parameters.MaxHealth;
             _stamina = Parameters.MaxStamina;
             _maxStamina = Parameters.MaxStamina;
-            _speed = Parameters.Speed;
+            Speed = Parameters.Speed;
         }
 
         public override void Update()
