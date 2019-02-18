@@ -56,6 +56,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/shader_flash");
             LoadEffect("effects/zone_shader");
             LoadEffect("effects/grayscale_shader");
+            LoadEffect("effects/weapon_hand_color");
 
             LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");

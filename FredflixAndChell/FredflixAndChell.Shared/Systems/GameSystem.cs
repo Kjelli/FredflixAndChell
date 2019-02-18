@@ -194,8 +194,8 @@ namespace FredflixAndChell.Shared.Systems
         public PlayerMetadata()
         {
             Score = 0;
-            Character = Characters.All()[0];
-            Gun = Guns.All()[0];
+            Character = Characters.Get("Trump");
+            Gun = Guns.Get("M4");
         }
 
         public int CompareTo(PlayerMetadata other)

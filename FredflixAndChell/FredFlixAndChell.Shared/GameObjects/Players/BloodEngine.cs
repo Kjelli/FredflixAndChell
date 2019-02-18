@@ -22,16 +22,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Cooldown _leakInterval;
         private Texture2D _bloodTexture;
 
-        private int _bloodId = 0;
         private bool _leak = false;
         private int _particlesPrLeakage;
 
-        public BloodEngine()
+        public BloodEngine(Color bloodColor)
         {
             _rng = new System.Random();
             _leakInterval = new Cooldown(1f);
             _bloodTexture = new Texture2D(Core.graphicsDevice, 1, 1);
-            _bloodTexture.SetData(new[] { Color.DarkRed });
+            _bloodTexture.SetData(new[] { bloodColor });
         }
 
         public void Sprinkle(float damage, Vector2 direction)

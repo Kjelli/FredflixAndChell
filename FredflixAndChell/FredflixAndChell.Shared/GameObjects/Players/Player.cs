@@ -171,7 +171,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead && PlayerState != PlayerState.Idle));
 
             // Blood
-            _blood = addComponent(new BloodEngine());
+            _blood = addComponent(new BloodEngine(_characterParameters.BloodColor));
 
             _gameSystem = scene.getSceneComponent<GameSystem>();
             SetWalkingState();

@@ -4,6 +4,7 @@ using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Textures;
@@ -24,6 +25,7 @@ namespace FredflixAndChell.Shared.Components.Guns
         private bool _isPlayerRunning;
 
         private float _renderOffset;
+        private Color _playerSkinColor;
         Sprite<GunAnimations> _animation;
 
         public GunRenderer(Gun gun, Player player)
@@ -31,6 +33,7 @@ namespace FredflixAndChell.Shared.Components.Guns
             _gun = gun;
             _player = player;
             _renderOffset = _gun.Parameters.RenderOffset;
+            _playerSkinColor = player.Parameters.SkinColor;
         }
 
         private Sprite<GunAnimations> SetupAnimations(GunSprite sprite)
@@ -49,8 +52,13 @@ namespace FredflixAndChell.Shared.Components.Guns
             entity.setScale(_gun.Parameters.Scale);
             setUpdateOrder(1);
 
+            var handColorizer = AssetLoader.GetEffect("weapon_hand_color");
+            handColorizer.Parameters["hand_color"].SetValue(_playerSkinColor.ToVector4());
+            handColorizer.Parameters["hand_border_color"].SetValue(_playerSkinColor.subtract(new Color(0.1f,0.1f,0.1f,0.0f)).ToVector4());
+
             _animation = entity.addComponent(SetupAnimations(_gun.Parameters.Sprite));
             _animation.renderLayer = Layers.Player;
+            _animation.material = new Material(BlendState.NonPremultiplied, handColorizer);
 
             var shadow = entity.addComponent(new SpriteMime(_animation));
             shadow.color = new Color(0, 0, 0, 80);
