@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.Components.StatusEffects;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
@@ -53,39 +54,42 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private GameSystem _gameSystem;
 
         private Gun _gun;
-
-        private float _health;
         private float _maxHealth;
         private float _stamina;
 
         private float _maxStamina;
-        private float _speed = 50f;
-        private float _accelerationMultiplier;
+        private float _accelerationPlayerFactor;
+        private float _deaccelerationPlayerFactor = 0.2f;
         private bool _isRegeneratingStamina = false;
 
         private List<Entity> _entitiesInProximity;
+
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
         private Vector2 _initialRollingDirection;
 
+        public int PlayerIndex { get; set; }
         public PlayerMobilityState PlayerMobilityState { get; set; }
         public PlayerState PlayerState { get; set; }
         public CharacterParameters Parameters => _characterParameters;
-        public float SlownessFactor { get; set; }
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
-        public int PlayerIndex { get; set; }
-        public int Health => (int)_health;
-        public int MaxHealth => (int)_maxHealth;
-        public float MaxStamina => (int)_maxStamina;
+        public float AimingSlownessFactor { get; set; }
+        public float Speed { get; set; } = 50f;
+        public float DeaccelerationExternalFactor { get; set; } = 1f;
+        public float AccelerationExternalFactor { get; set; } = 1f;
+        public float Health { get; set; }
+        public float MaxHealth => _maxHealth;
+        public float MaxStamina => _maxStamina;
         public int Stamina => (int)_stamina;
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
+        public int TeamIndex { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
-        public int TeamIndex { get; set; }
+        public bool Disarmed { get; set; }
 
         public Player(CharacterParameters characterParameters, GunParameters gunParameters, int x, int y, int playerIndex) : base(x, y)
         {
@@ -193,11 +197,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupParameters()
         {
-            _health = _characterParameters.MaxHealth;
+            Health = _characterParameters.MaxHealth;
             _maxHealth = _characterParameters.MaxHealth;
             _stamina = _characterParameters.MaxStamina;
             _maxStamina = _characterParameters.MaxStamina;
-            _speed = _characterParameters.Speed;
+            Speed = _characterParameters.Speed;
         }
 
         public override void Update()
@@ -219,7 +223,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller.FirePressed)
                 Attack();
             if (!_controller.FirePressed)
-                SlownessFactor = BaseSlownessFactor;
+                AimingSlownessFactor = BaseSlownessFactor;
             if (_controller.ReloadPressed)
                 Reload();
             if (_controller.DropGunPressed)
@@ -288,7 +292,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _numSprintPressed = 0;
                 _stamina -= DodgeRollStaminaCost * _gameSystem.Settings.StaminaMultiplier;
 
-                _initialRollingDirection = (1f * Velocity + _accelerationMultiplier * Acceleration);
+                _initialRollingDirection = 1f * Velocity + CalculateAcceleration();
             }
 
             if (PlayerMobilityState == PlayerMobilityState.Rolling)
@@ -311,6 +315,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 localRotation = 0;
                 _numSprintPressed = 0;
             }
+        }
+
+        private Vector2 CalculateAcceleration()
+        {
+            return (_accelerationPlayerFactor * AccelerationExternalFactor) * Acceleration - (_deaccelerationPlayerFactor * DeaccelerationExternalFactor) * Velocity;
         }
 
         private void ToggleStaminaRegeneration()
@@ -353,20 +362,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetRollingState()
         {
-            _accelerationMultiplier = RollAcceleration;
+            _accelerationPlayerFactor = RollAcceleration;
             PlayerMobilityState = PlayerMobilityState.Rolling;
         }
 
         private void SetWalkingState()
         {
-            _accelerationMultiplier = WalkAcceleration;
+            _accelerationPlayerFactor = WalkAcceleration;
             _gun?.ToggleRunning(false);
             PlayerMobilityState = PlayerMobilityState.Walking;
         }
 
         private void SetRunningState()
         {
-            _accelerationMultiplier = SprintAcceleration;
+            _accelerationPlayerFactor = SprintAcceleration;
             _gun?.ToggleRunning(true);
             PlayerMobilityState = PlayerMobilityState.Running;
         }
@@ -412,8 +421,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
             var deltaTime = Time.deltaTime;
 
-            Acceleration *= _speed * deltaTime;
-            Velocity = (0.8f * Velocity + _accelerationMultiplier * Acceleration);
+            Acceleration *= Speed * deltaTime;
+            Velocity = Velocity + CalculateAcceleration();
+            
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -432,7 +442,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (PlayerState != PlayerState.Normal) return;
 
-            _health = 0;
+            Health = 0;
             DisablePlayer();
             DisableHitbox();
             PlayerState = PlayerState.Dying;
@@ -514,6 +524,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Attack()
         {
+            if (Disarmed) return;
+
             if (_gun != null)
                 _gun.Fire();
         }
@@ -542,6 +554,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters();
             SetupDebug();
 
+            addComponent(new RegenEffect());
+
             _gameSystem.RegisterPlayer(this);
             updateOrder = 0;
 
@@ -559,13 +573,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (!CanBeDamagedBy(bullet)) return;
 
             var damage = bullet.Parameters.Damage * _gameSystem.Settings.DamageMultiplier;
-            _health -= damage;
+            Health -= damage;
             _blood.Sprinkle(damage, bullet.Velocity);
 
             var knockback = bullet.Parameters.Knockback * _gameSystem.Settings.KnockbackMultiplier;
             Velocity += bullet.Velocity * knockback * Time.deltaTime;
 
-            if (_health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
+            if (Health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
                 PlayerState = PlayerState.Dying;
                 DropDead();
@@ -644,7 +658,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
 
 
-            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * SlownessFactor);
+            FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * AimingSlownessFactor);
 
             if (FacingAngle.Y > 0)
             {

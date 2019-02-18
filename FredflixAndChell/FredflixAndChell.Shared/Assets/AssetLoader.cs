@@ -50,6 +50,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/UI/screen_bg");
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
+            LoadTexture("textures/statuseffects/slow");
 
             LoadTexture("maps/spawner_tile");
 
@@ -63,6 +64,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
+            LoadMap("maps/fido_fighters");
         }
 
         public static List<string> GetMaps()

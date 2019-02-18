@@ -5,12 +5,13 @@ BarrelOffset:
   Y: 0.0
 BulletCount: 5
 BulletParameters:
+  BulletBehaviour: SlowingBullet
   Damage: 0.0
-  Knockback: 1.0
-  LifeSpanSeconds: 0.5
+  Knockback: 1.25
+  LifeSpanSeconds: 0.85
   RotateWithGun: true
   Scale: 0.25
-  Speed: 60.0
+  Speed: 70.0
   Sprite:
     Bullet:
       FPS: 1.0

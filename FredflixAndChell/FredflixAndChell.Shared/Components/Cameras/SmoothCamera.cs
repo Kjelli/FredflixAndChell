@@ -115,8 +115,8 @@ namespace FredflixAndChell.Shared.Components.Cameras
             }
             if (!anyToTrack)
             {
-                Zoom = Lerps.lerpTowards(_camera.rawZoom, 2.7f, 0.75f, Time.deltaTime * 10f);
-                Position = new Vector2(_map.bounds.right / 2, _map.bounds.bottom / 2);
+                Zoom = Lerps.lerpTowards(_camera.rawZoom, 2.7f, 0.95f, Time.deltaTime * 10f);
+                Position = Lerps.lerpTowards(_camera.position, new Vector2(_map.bounds.right / 2, _map.bounds.bottom / 2), 0.95f, Time.deltaTime * 10f);
                 return;
             }
             var targetWidth = Math.Max(ScreenWidth, (right - left) * _baseZoom);

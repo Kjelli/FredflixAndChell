@@ -60,6 +60,7 @@
     <Compile Include="Components\Bullets\Behaviours\AndyBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\ReturningBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\RotatingReturningBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\SlowingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\StandardBullet.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
@@ -73,6 +74,9 @@
     <Compile Include="Components\HUD\HUD.cs" />
     <Compile Include="Components\Interactables\InteractableComponent.cs" />
     <Compile Include="Components\Players\PlayerCollisionHandler.cs" />
+    <Compile Include="Components\StatusEffects\DisarmEffect.cs" />
+    <Compile Include="Components\StatusEffects\RegenEffect.cs" />
+    <Compile Include="Components\StatusEffects\SlowEffect.cs" />
     <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
