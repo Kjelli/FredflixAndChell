@@ -1,5 +1,6 @@
 ﻿
 using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities.Serialization;
 using System;
 using System.Collections.Generic;

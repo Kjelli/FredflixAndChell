@@ -2,6 +2,7 @@
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;

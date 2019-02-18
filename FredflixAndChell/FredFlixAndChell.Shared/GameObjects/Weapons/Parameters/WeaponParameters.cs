@@ -1,6 +1,6 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
 
-namespace FredflixAndChell.Shared.GameObjects.Weapons
+namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
 {
     public class WeaponParameters
     {

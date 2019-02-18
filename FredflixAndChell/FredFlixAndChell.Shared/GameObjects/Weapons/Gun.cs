@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Components.Weapons;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using System;

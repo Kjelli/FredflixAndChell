@@ -77,10 +77,10 @@
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
-    <Compile Include="GameObjects\Weapons\MeleeParameters.cs" />
+    <Compile Include="GameObjects\Weapons\Parameters\MeleeParameters.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\MeleeSprite.cs" />
     <Compile Include="GameObjects\Weapons\Weapon.cs" />
-    <Compile Include="GameObjects\Weapons\WeaponParameters.cs" />
+    <Compile Include="GameObjects\Weapons\Parameters\WeaponParameters.cs" />
     <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
     <Compile Include="Maps\MapBuilders\CameraTrackerBuilder.cs" />
     <Compile Include="Maps\MapBuilders\CollisionZoneBuilder.cs" />
@@ -109,7 +109,7 @@
     <Compile Include="GameObjects\Players\Sprites\PlayerSprite.cs" />
     <Compile Include="GameObjects\Players\Sprites\PlayerSpritePresets.cs" />
     <Compile Include="GameObjects\Props\Spawner.cs" />
-    <Compile Include="GameObjects\Weapons\GunParameters.cs" />
+    <Compile Include="GameObjects\Weapons\Parameters\GunParameters.cs" />
     <Compile Include="GameObjects\Weapons\Guns.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSprite.cs" />
     <Compile Include="Maps\Events\InteractEventEmitter.cs" />

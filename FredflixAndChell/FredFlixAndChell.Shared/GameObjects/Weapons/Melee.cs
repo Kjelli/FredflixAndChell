@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Components.Weapons;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
@@ -11,7 +12,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public MeleeParameters Parameters { get; }
         public Cooldown Cooldown { get; set; }
-
 
         public Melee(Player player, MeleeParameters weaponParameters) : base(0, 0)
         {

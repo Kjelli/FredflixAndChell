@@ -2,7 +2,7 @@
 using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
 using Microsoft.Xna.Framework;
 
-namespace FredflixAndChell.Shared.GameObjects.Weapons
+namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
 {
     public class GunParameters : WeaponParameters
     {

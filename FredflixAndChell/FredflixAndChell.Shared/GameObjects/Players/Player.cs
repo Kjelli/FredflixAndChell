@@ -5,6 +5,7 @@ using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
@@ -40,7 +41,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private static bool DebugToggledRecently { get; set; }
 
-        private CharacterParameters _characterParameters;
         private GunParameters _gunParameters;
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
@@ -72,7 +72,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public PlayerMobilityState PlayerMobilityState { get; set; }
         public PlayerState PlayerState { get; set; }
-        public CharacterParameters Parameters => _characterParameters;
+        public CharacterParameters Parameters { get; private set; }
         public float SlownessFactor { get; set; }
         public Vector2 Acceleration { get; set; }
         public Vector2 FacingAngle { get; set; }
@@ -89,7 +89,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public Player(CharacterParameters characterParameters, GunParameters gunParameters, int x, int y, int playerIndex) : base(x, y)
         {
-            _characterParameters = characterParameters;
+            Parameters = characterParameters;
             _entitiesInProximity = new List<Entity>();
             _gunParameters = gunParameters;
             PlayerIndex = playerIndex;
@@ -164,13 +164,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _playerCollisionHandler = addComponent(new PlayerCollisionHandler(_playerHitbox, _proximityHitbox));
 
             // Assign renderer component
-            SetupRenderer(_characterParameters.PlayerSprite);
+            SetupRenderer(Parameters.PlayerSprite);
 
             // Assign camera tracker component
             _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead && PlayerState != PlayerState.Idle));
 
             // Blood
-            _blood = addComponent(new BloodEngine(_characterParameters.BloodColor));
+            _blood = addComponent(new BloodEngine(Parameters.BloodColor));
 
             _gameSystem = scene.getSceneComponent<GameSystem>();
             SetWalkingState();
@@ -193,11 +193,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupParameters()
         {
-            _health = _characterParameters.MaxHealth;
-            _maxHealth = _characterParameters.MaxHealth;
-            _stamina = _characterParameters.MaxStamina;
-            _maxStamina = _characterParameters.MaxStamina;
-            _speed = _characterParameters.Speed;
+            _health = Parameters.MaxHealth;
+            _maxHealth = Parameters.MaxHealth;
+            _stamina = Parameters.MaxStamina;
+            _maxStamina = Parameters.MaxStamina;
+            _speed = Parameters.Speed;
         }
 
         public override void Update()
@@ -345,7 +345,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
             else
             {
-                if (_stamina >= _characterParameters.MaxStamina) return;
+                if (_stamina >= Parameters.MaxStamina) return;
                 _isRegeneratingStamina = true;
                 SetWalkingState();
             }
@@ -592,7 +592,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void SetParameters(CharacterParameters nextCharacter)
         {
-            _characterParameters = nextCharacter;
+            Parameters = nextCharacter;
             SetupParameters();
             ChangePlayerSprite(nextCharacter.PlayerSprite);
             var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
