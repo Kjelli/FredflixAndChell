@@ -1,14 +1,10 @@
 ﻿using FredflixAndChell.Shared.Components.HUD;
-using FredflixAndChell.Shared.Components.PlayerComponents;
+using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Players;
-using FredflixAndChell.Shared.GameObjects.Players.Characters;
-using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Nez;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

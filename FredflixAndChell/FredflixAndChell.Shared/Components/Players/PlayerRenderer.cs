@@ -16,7 +16,7 @@ using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
 using FredflixAndChell.Shared.Components.Players;
 
-namespace FredflixAndChell.Shared.Components.PlayerComponents
+namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerRenderer : Component, IUpdatable
     {

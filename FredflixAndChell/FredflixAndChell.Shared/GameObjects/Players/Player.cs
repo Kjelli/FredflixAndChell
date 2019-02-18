@@ -1,5 +1,4 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
-using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Collectibles;

@@ -5,7 +5,7 @@ using Nez;
 using System;
 using static Nez.VirtualJoystick;
 
-namespace FredflixAndChell.Shared.Components.PlayerComponents
+namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerController : Component, IUpdatable
     {

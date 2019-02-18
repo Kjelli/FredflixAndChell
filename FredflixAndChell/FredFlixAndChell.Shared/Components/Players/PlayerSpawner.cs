@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FredflixAndChell.Shared.Utilities
+namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerSpawner
     {
