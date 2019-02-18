@@ -18,7 +18,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
 
         private TiledMapComponent _map;
         private List<CameraTracker> _trackers;
-        private Vector2 _reflectiveOffset = new Vector2(8,8);
+        private Vector2 _reflectiveOffset = new Vector2(8, 8);
 
         public float BaseZoom { get => _baseZoom; set => _baseZoom = value; }
         public float Zoom
@@ -31,7 +31,9 @@ namespace FredflixAndChell.Shared.Components.Cameras
             }
         }
 
-        public Vector2 Position { get => _camera.position;
+        public Vector2 Position
+        {
+            get => _camera.position;
             set
             {
                 _camera.position = value;
@@ -56,7 +58,9 @@ namespace FredflixAndChell.Shared.Components.Cameras
         {
             base.update();
             CenterCamera();
+#if DEBUG
             DebugZoom();
+#endif
         }
 
         private void DebugZoom()
@@ -79,12 +83,12 @@ namespace FredflixAndChell.Shared.Components.Cameras
         {
             _trackers.Remove(cameraTracker);
             SortByPriority();
-
         }
 
         private void CenterCamera()
         {
-            if (_trackers.Count == 0) return;
+            if (_trackers.Count == 0)
+                return;
 
             float left = 10000,
                 right = -10000,
@@ -111,6 +115,8 @@ namespace FredflixAndChell.Shared.Components.Cameras
             }
             if (!anyToTrack)
             {
+                Zoom = Lerps.lerpTowards(_camera.rawZoom, 2.7f, 0.75f, Time.deltaTime * 10f);
+                Position = new Vector2(_map.bounds.right / 2, _map.bounds.bottom / 2);
                 return;
             }
             var targetWidth = Math.Max(ScreenWidth, (right - left) * _baseZoom);
@@ -121,7 +127,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
             Zoom = Lerps.lerpTowards(_camera.rawZoom, zoom, 0.75f, Time.deltaTime * 10f);
 
             Position = Lerps.lerpTowards(_camera.position, center, 0.25f, Time.deltaTime * 10f);
-            
+
             // Hack to avoid weird camera stopping if players are still
             _camera.position += new Vector2(1f, 0);
             _camera.position += new Vector2(-1f, 0);

@@ -1,21 +1,20 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
+using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Systems;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FredflixAndChell.Shared.Maps;
-using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
-using Microsoft.Xna.Framework;
-using FredflixAndChell.Shared.GameObjects.Players.Characters;
-using FredflixAndChell.Shared.GameObjects.Weapons;
 
 namespace FredflixAndChell.Shared.Systems
 {
@@ -95,8 +94,10 @@ namespace FredflixAndChell.Shared.Systems
             var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
             if (playerMeta == null)
             {
-                playerMeta = new PlayerMetadata();
-                playerMeta.PlayerIndex = player.PlayerIndex;
+                playerMeta = new PlayerMetadata
+                {
+                    PlayerIndex = player.PlayerIndex
+                };
                 ContextHelper.PlayerMetadata.Add(playerMeta);
             }
         }
@@ -187,7 +188,8 @@ namespace FredflixAndChell.Shared.Systems
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
         public CharacterParameters Character { get; set; }
-        public GunParameters Gun {get; set;}
+        public GunParameters Gun { get; set; }
+        public bool IsInitialized { get; set; }
 
         public PlayerMetadata()
         {

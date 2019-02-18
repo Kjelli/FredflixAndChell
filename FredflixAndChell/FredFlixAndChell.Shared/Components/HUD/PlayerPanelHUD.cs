@@ -111,7 +111,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         public override void update()
         {
             base.update();
-
+            if (_player.PlayerState == PlayerState.Idle) return;
             if (_firstFrame)
             {
                 _firstFrame = false;
