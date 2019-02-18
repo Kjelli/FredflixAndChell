@@ -1,7 +1,4 @@
 ﻿using FredflixAndChell.Components.Players;
-using FredflixAndChell.Shared.GameObjects.Players;
-using FredflixAndChell.Shared.Systems;
-using FredflixAndChell.Shared.Utilities.Input;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using System;
@@ -31,7 +28,8 @@ namespace FredflixAndChell.Shared.Systems
 
         private void CheckConnectedGamepads()
         {
-            foreach(var gamePad in Input.gamePads)
+            //return;
+            foreach (var gamePad in Input.gamePads)
             {
                 if (gamePad.isConnected())
                 {
@@ -51,7 +49,7 @@ namespace FredflixAndChell.Shared.Systems
             };
 
             int index = 0;
-            foreach(var gamepad in Input.gamePads)
+            foreach (var gamepad in Input.gamePads)
             {
                 if (checkOnlyConnected && !gamepad.isConnected()) continue;
                 index++;
@@ -65,7 +63,7 @@ namespace FredflixAndChell.Shared.Systems
                 var buttons = Enum.GetValues(typeof(Buttons));
 
                 // Debug print all button states
-                foreach(var button in buttons)
+                foreach (var button in buttons)
                 {
                     gamePadDebug.SubLines.Add(new DebugLine()
                     {
@@ -87,7 +85,7 @@ namespace FredflixAndChell.Shared.Systems
 
         public override void update()
         {
-            base.update(); 
+            base.update();
         }
     }
 }

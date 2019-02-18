@@ -16,7 +16,7 @@ using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
 using FredflixAndChell.Shared.Components.Players;
 
-namespace FredflixAndChell.Shared.Components.PlayerComponents
+namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerRenderer : Component, IUpdatable
     {
@@ -28,6 +28,14 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private Sprite<HeadAnimation> _head;
         private Sprite<TorsoAnimation> _torso;
         private Sprite<LegsAnimation> _legs;
+        private Sprite _light;
+
+        private SpriteMime _headShadow;
+        private SpriteMime _torsoShadow;
+        private SpriteMime _legsShadow;
+        private SpriteMime _headSilhouette;
+        private SpriteMime _torsoSilhouette;
+        private SpriteMime _legsSilhouette;
 
         public Sprite<HeadAnimation> Head => _head;
 
@@ -44,49 +52,50 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             SetupPlayerSprites();
 
             // Assign faint glow to player
-            var light = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-            light.material = Material.blendScreen();
-            light.color = Color.White;
-            light.renderLayer = Layers.Lights;
+            _light = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
+            _light.material = Material.blendScreen();
+            _light.color = Color.White;
+            _light.renderLayer = Layers.Lights;
 
             // Assign renderable shadow component
-            var torsoShadow = entity.addComponent(new SpriteMime(_torso));
-            torsoShadow.color = new Color(0, 0, 0, 80);
-            torsoShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            torsoShadow.renderLayer = Layers.Shadow;
-            torsoShadow.localOffset = new Vector2(1, 2);
 
-            var legsShadow = entity.addComponent(new SpriteMime(_legs));
-            legsShadow.color = new Color(0, 0, 0, 80);
-            legsShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            legsShadow.renderLayer = Layers.Shadow;
-            legsShadow.localOffset = new Vector2(1, 2);
+            _headShadow = entity.addComponent(new SpriteMime(_head));
+            _headShadow.color = new Color(0, 0, 0, 80);
+            _headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _headShadow.renderLayer = Layers.Shadow;
+            _headShadow.localOffset = new Vector2(1, 2);
 
+            _torsoShadow = entity.addComponent(new SpriteMime(_torso));
+            _torsoShadow.color = new Color(0, 0, 0, 80);
+            _torsoShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _torsoShadow.renderLayer = Layers.Shadow;
+            _torsoShadow.localOffset = new Vector2(1, 2);
 
-            var headShadow = entity.addComponent(new SpriteMime(_head));
-            headShadow.color = new Color(0, 0, 0, 80);
-            headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            headShadow.renderLayer = Layers.Shadow;
-            headShadow.localOffset = new Vector2(1, 2);
+            _legsShadow = entity.addComponent(new SpriteMime(_legs));
+            _legsShadow.color = new Color(0, 0, 0, 80);
+            _legsShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _legsShadow.renderLayer = Layers.Shadow;
+            _legsShadow.localOffset = new Vector2(1, 2);
 
             // Assign silhouette component when player is visually blocked
-            var torsoSilhouette = entity.addComponent(new SpriteMime(_torso));
-            torsoSilhouette.color = new Color(0, 0, 0, 80);
-            torsoSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
-            torsoSilhouette.renderLayer = Layers.Foreground;
-            torsoSilhouette.localOffset = new Vector2(0, 0);
 
-            var legsSilhouette = entity.addComponent(new SpriteMime(_legs));
-            legsSilhouette.color = new Color(0, 0, 0, 80);
-            legsSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
-            legsSilhouette.renderLayer = Layers.Foreground;
-            legsSilhouette.localOffset = new Vector2(0, 0);
+            _headSilhouette = entity.addComponent(new SpriteMime(_head));
+            _headSilhouette.color = new Color(0, 0, 0, 80);
+            _headSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            _headSilhouette.renderLayer = Layers.Foreground;
+            _headSilhouette.localOffset = new Vector2(0, 0);
 
-            var headSilhouette = entity.addComponent(new SpriteMime(_head));
-            headSilhouette.color = new Color(0, 0, 0, 80);
-            headSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
-            headSilhouette.renderLayer = Layers.Foreground;
-            headSilhouette.localOffset = new Vector2(0, 0);
+            _torsoSilhouette = entity.addComponent(new SpriteMime(_torso));
+            _torsoSilhouette.color = new Color(0, 0, 0, 80);
+            _torsoSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            _torsoSilhouette.renderLayer = Layers.Foreground;
+            _torsoSilhouette.localOffset = new Vector2(0, 0);
+
+            _legsSilhouette = entity.addComponent(new SpriteMime(_legs));
+            _legsSilhouette.color = new Color(0, 0, 0, 80);
+            _legsSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
+            _legsSilhouette.renderLayer = Layers.Foreground;
+            _legsSilhouette.localOffset = new Vector2(0, 0);
 
             UpdateRenderLayerDepth();
         }
@@ -114,7 +123,6 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
         {
             var animations = new Sprite<HeadAnimation>();
-
             animations.addAnimation(HeadAnimation.FrontFacing,
                 headSprite.Front.ToSpriteAnimation(_playerSprite.Source + "/head"));
             animations.addAnimation(HeadAnimation.BackFacing,
@@ -168,15 +176,17 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
         public void update()
         {
             UpdateAnimation();
+            if (float.IsNaN(_player.position.X) || float.IsNaN(_player.position.Y) 
+                || float.IsNaN(_player.FacingAngle.X) || float.IsNaN(_player.FacingAngle.Y)) return;
             var hit = Physics.linecast(_player.position, _player.position + _player.FacingAngle * 1000f);
             Debug.drawLine(_player.position, _player.position + _player.FacingAngle * 1000f, Color.Gray);
         }
 
         public void UpdateRenderLayerDepth()
         {
-            _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
-            _torso.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
-            _legs.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if(_head != null) _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if(_torso != null) _torso.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if(_legs != null) _legs.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
         }
 
         private void UpdateAnimation()
@@ -251,6 +261,55 @@ namespace FredflixAndChell.Shared.Components.PlayerComponents
             {
                 _legs.play(legsAnimation);
             }
+        }
+
+        public override void onEnabled()
+        {
+            _light.setEnabled(true);
+
+            _head.setEnabled(true);
+            _headShadow.setEnabled(true);
+            _headSilhouette.setEnabled(true);
+
+            _torso.setEnabled(true);
+            _torsoShadow.setEnabled(true);
+            _torsoSilhouette.setEnabled(true);
+
+            _legs.setEnabled(true);
+            _legsShadow.setEnabled(true);
+            _legsSilhouette.setEnabled(true);
+        }
+
+        public override void onDisabled()
+        {
+            _light.setEnabled(false);
+
+            _head.setEnabled(false);
+            _headShadow.setEnabled(false);
+            _headSilhouette.setEnabled(false);
+
+            _torso.setEnabled(false);
+            _torsoShadow.setEnabled(false);
+            _torsoSilhouette.setEnabled(false);
+
+            _legs.setEnabled(false);
+            _legsShadow.setEnabled(false);
+            _legsSilhouette.setEnabled(false);
+        }
+
+        public override void onRemovedFromEntity()
+        {
+            _head.removeComponent();
+            _headShadow.removeComponent();
+            _headSilhouette.removeComponent();
+
+            _torso.removeComponent();
+            _torsoShadow.removeComponent();
+            _torsoSilhouette.removeComponent();
+
+            _legs.removeComponent();
+            _legsShadow.removeComponent();
+            _legsSilhouette.removeComponent();
         }
 
         public void FlipX(bool isFlipped)

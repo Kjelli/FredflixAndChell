@@ -15,6 +15,6 @@ namespace FredflixAndChell.Shared.Maps.Events
             EventKey = eventKey;
         }
 
-        public Action<MapEvent> EventTriggered;
+        public Action<MapEvent> EventTriggered { get; set; }
     }
 }

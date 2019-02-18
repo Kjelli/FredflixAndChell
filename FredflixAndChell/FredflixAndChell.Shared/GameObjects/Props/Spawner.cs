@@ -7,7 +7,7 @@ using Nez.Sprites;
 using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
-namespace FredflixAndChell.Shared.GameObjects
+namespace FredflixAndChell.Shared.GameObjects.Props
 {
     public enum SpawnerState
     {

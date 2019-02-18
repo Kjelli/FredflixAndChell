@@ -44,6 +44,11 @@ namespace FredflixAndChell.Shared.Utilities
             _cooldownTimer = 0;
         }
 
+        public float ElapsedNormalized()
+        {
+            return _cooldownTimer / _duration;
+        }
+
         public void Update()
         {
             if (_cooldownTimer > 0)

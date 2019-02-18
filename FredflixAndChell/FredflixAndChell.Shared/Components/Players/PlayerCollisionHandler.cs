@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.Components.Interactables;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Maps.Events;
@@ -49,14 +50,22 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other == null || other.entity == null) return;
             if (_entitiesInProximity.Contains(other.entity)) return;
 
+            _entitiesInProximity.Add(other.entity);
+
             var interactable = other.entity.getComponent<InteractableComponent>();
+
             if (interactable != null)
             {
-                _entitiesInProximity.Add(other.entity);
                 if (other.entity is Collectible collectible && collectible.CanBeCollected())
                 {
                     collectible?.Highlight();
                 }
+            }
+            
+            if(other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[]{ true });
+                Console.WriteLine("Emitting proximity enter event " + pee.name);
             }
         }
 
@@ -72,7 +81,8 @@ namespace FredflixAndChell.Shared.Components.Players
             }
             else if (other.entity.tag == Tags.EventEmitter)
             {
-                (other.entity as CollisionEventEmitter).EmitMapEvent();
+                (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventEnter });
             }
         }
 
@@ -90,18 +100,28 @@ namespace FredflixAndChell.Shared.Components.Players
 
         private void HitboxTriggerExit(Collider other, Collider local)
         {
+            if (other.entity.tag == Tags.EventEmitter)
+            {
+                (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventExit });
+            }
         }
 
         private void ProximityTriggerExit(Collider other, Collider local)
         {
             if (other == null || other.entity == null) return;
             if (!_entitiesInProximity.Contains(other.entity)) return;
-
             _entitiesInProximity.Remove(other.entity);
 
             if (other.entity is Collectible collectible)
             {
                 collectible?.Unhighlight();
+            }
+
+            if (other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[] { false });
+                Console.WriteLine("Emitting proximity exit event " + pee.name);
             }
         }
 
@@ -113,6 +133,8 @@ namespace FredflixAndChell.Shared.Components.Players
             ((other2.position - entity.position).Length() < (other1.position - entity.position).Length() ? other2 : other1));
 
             var interactable = closestEntity.getComponent<InteractableComponent>();
+            if (interactable == null) return;
+
             interactable.OnInteract(_player);
 
             if (closestEntity is Collectible collectible)

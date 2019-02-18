@@ -20,6 +20,9 @@
 #begin data/characters/Doge.fml
 /copy:data/characters/Doge.fml
 
+#begin data/characters/Masschin.fml
+/copy:data/characters/Masschin.fml
+
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
@@ -37,6 +40,12 @@
 
 #begin data/guns/PewPew.fml
 /copy:data/guns/PewPew.fml
+
+#begin effects/grayscale_shader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/grayscale_shader.fx
 
 #begin effects/shader_flash.fx
 /importer:EffectImporter
@@ -56,12 +65,31 @@
 /processorParam:DebugMode=Auto
 /build:effects/shader_wavy.fx
 
+#begin effects/weapon_hand_color.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/weapon_hand_color.fx
+
+#begin effects/zone_shader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/zone_shader.fx
+
 #begin fonts/debug.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:fonts/debug.spritefont
+
+#begin fonts/monitor.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/monitor.spritefont
 
 #begin maps/dungeon_1.tmx
 /importer:TiledMapImporter
@@ -89,6 +117,18 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:maps/firstlevel.tmx
+
+#begin maps/props_tileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:maps/props_tileset.png
 
 #begin maps/sheet_temple.png
 /importer:TextureImporter
@@ -135,6 +175,11 @@
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:maps/winter_debug.tmx
+
+#begin maps/winter_hub.tmx
+/importer:
+/processor:
+/build:maps/winter_hub.tmx
 
 #begin textures/bullets/fidgetspinner.png
 /importer:TextureImporter
@@ -207,6 +252,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/standard.png
+
+#begin textures/effects/inverted_lightmask_xs.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/inverted_lightmask_xs.png
 
 #begin textures/effects/lava1.jpg
 /importer:TextureImporter
@@ -291,6 +348,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/effects/rainbow.png
+
+#begin textures/effects/zone_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/zone_1.png
 
 #begin textures/guns/fidgetspinner.png
 /importer:TextureImporter
@@ -441,6 +510,42 @@
 /processorParam:TextureFormat=Color
 /build:textures/players/kjelli_head.png
 
+#begin textures/players/masschin/head.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/head.png
+
+#begin textures/players/masschin/legs.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/legs.png
+
+#begin textures/players/masschin/torso.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/masschin/torso.png
+
 #begin textures/players/tormod_body.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -512,4 +617,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/UI/HUD.png
+
+#begin textures/UI/screen_bg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/UI/screen_bg.png
 

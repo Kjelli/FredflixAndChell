@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -14,27 +16,25 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
-        public static void LoadLoadingScene(ContentManager cm)
-        {
-            _content = cm;
-            LoadTexture("textures/effects/rainbow");
-        }
-
         public static void LoadBroScene(ContentManager cm)
         {
             _content = cm;
 
             // Load fonts to be used in the game
             LoadFont("fonts/debug");
+            LoadFont("fonts/monitor");
 
             LoadPlayerTexture("textures/players/trump");
             LoadPlayerTexture("textures/players/doge");
+            LoadPlayerTexture("textures/players/masschin");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
             LoadTexture("textures/effects/lightmask");
             LoadTexture("textures/effects/lightmask_sm");
             LoadTexture("textures/effects/lightmask_xs");
+            LoadTexture("textures/effects/inverted_lightmask_xs");
+            LoadTexture("textures/effects/zone_1");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
@@ -46,20 +46,28 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/shockwave_sm");
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
-
             LoadTexture("textures/UI/HUD");
-
+            LoadTexture("textures/UI/screen_bg");
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
 
-            LoadEffect("effects/shader_flash");
+            LoadTexture("maps/spawner_tile");
 
-            LoadMap("maps/firstlevel");
+            LoadEffect("effects/shader_flash");
+            LoadEffect("effects/zone_shader");
+            LoadEffect("effects/grayscale_shader");
+            LoadEffect("effects/weapon_hand_color");
+
+            LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
-            LoadTexture("maps/spawner_tile");
+        }
+
+        public static List<string> GetMaps()
+        {
+            return _maps.Keys.ToList();
         }
 
         private static void LoadPlayerTexture(string playerDirectory)
