@@ -16,7 +16,7 @@ namespace FredflixAndChell.Shared.Scenes
 
         public HubScene() : base(new GameSettings
         {
-            GameMode = GameMode.Hub,
+            GameMode = GameMode.HUB,
             Map = "winter_hub",
             DamageMultiplier = 0.0f,
             KnockbackMultiplier = 0.0f

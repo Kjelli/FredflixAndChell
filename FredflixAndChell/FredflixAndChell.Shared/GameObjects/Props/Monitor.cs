@@ -18,7 +18,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             get => _textComponent?.text ?? null;
             set
             {
-                _textComponent?.setText(value);
+                _textComponent?.setText(value.ToUpper());
             }
         }
 
@@ -39,7 +39,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
         private void AddTextToScreen(string text)
         {
             _textEntity = new Entity();
-            _textEntity.setScale(1/8f);
+            _textEntity.setScale(1/2f);
             _textEntity.position = position;
             var font = Assets.AssetLoader.GetFont("monitor");
             var spritefont = new NezSpriteFont(font);

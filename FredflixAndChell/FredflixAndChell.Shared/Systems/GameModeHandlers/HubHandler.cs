@@ -85,7 +85,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         private void ToggleGameMode(GameMode gameMode)
         {
             // Cannot select hub
-            if (gameMode == GameMode.Hub) {
+            if (gameMode == GameMode.HUB) {
                 gameMode = gameMode.Next();
             }
             _nextGameSettings.GameMode = gameMode;
@@ -101,7 +101,10 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             }
             _nextGameSettings.Map = nextMap;
 
-            NotifyGameSettingsChange(Strings.TiledMapMapDisplayKey, nextMap);
+            var displayName = AssetLoader.GetMapsWithDisplayName()
+                .First(m => m.Key == nextMap)
+                .Value;
+            NotifyGameSettingsChange(Strings.TiledMapMapDisplayKey, displayName);
         }
 
         private void ToggleTeamMode(TeamMode teamMode)
