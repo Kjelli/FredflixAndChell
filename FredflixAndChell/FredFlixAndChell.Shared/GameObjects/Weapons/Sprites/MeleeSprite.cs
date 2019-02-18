@@ -2,20 +2,18 @@
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
 {
-    public class GunSprite
+    public class MeleeSprite
     {
-        public enum GunAnimations
+        public enum MeleeAnimations
         {
             Held_Idle,
-            Held_Fired,
-            Reload
+            Held_Fired
         }
 
         public string Source { get; set; }
 
         public SpriteAnimationDescriptor Idle { get; set; }
         public SpriteAnimationDescriptor Fire { get; set; }
-        public SpriteAnimationDescriptor Reload { get; set; }
         public SpriteAnimationDescriptor Icon { get; set; }
     }
 }

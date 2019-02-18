@@ -1,16 +1,15 @@
-﻿using System;
+﻿using FredflixAndChell.Shared.Components.Weapons;
 using FredflixAndChell.Shared.GameObjects.Bullets;
-using FredflixAndChell.Shared.Utilities;
-using FredflixAndChell.Shared.Components.Guns;
-using Microsoft.Xna.Framework;
 using FredflixAndChell.Shared.GameObjects.Players;
-using Nez;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
+using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
     public class Gun : GameObject
     {
-        private GunParameters _params;
         private GunRenderer _renderer;
         private Player _player;
 
@@ -27,12 +26,12 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public Cooldown Cooldown { get; set; }
         public Cooldown Reload { get; set; }
-        public GunParameters Parameters => _params;
+        public GunParameters Parameters { get; }
 
         public Gun(Player owner, GunParameters gunParameters) : base(0, 0)
         {
             _player = owner;
-            _params = gunParameters;
+            Parameters = gunParameters;
             SetupParameters();
         }
 
@@ -45,18 +44,17 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void SetupParameters()
         {
-            _accuracy = _params.Accuracy;
-            _ammo = _params.Ammo;
-            _maxAmmo = _params.MaxAmmo;
-            _magazineAmmo = _params.MagazineAmmo;
-            _magazineSize = _params.MagazineSize;
-            _barrelOffset = _params.BarrelOffset;
-            Cooldown = new Cooldown(_params.FireRate);
-            Reload = new Cooldown(_params.ReloadTime);
+            _accuracy = Parameters.Accuracy;
+            _ammo = Parameters.Ammo;
+            _maxAmmo = Parameters.MaxAmmo;
+            _magazineAmmo = Parameters.MagazineAmmo;
+            _magazineSize = Parameters.MagazineSize;
+            _barrelOffset = Parameters.BarrelOffset;
+            Cooldown = new Cooldown(Parameters.FireRate);
+            Reload = new Cooldown(Parameters.ReloadTime);
 
-            _bulletCount = _params.BulletCount;
-            _bulletSpread = _params.BulletSpread;
-
+            _bulletCount = Parameters.BulletCount;
+            _bulletSpread = Parameters.BulletSpread;
         }
 
         public void Fire()
@@ -66,7 +64,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             {
                 //Functionality
                 Cooldown.Start();
-                var dir = (float) Math.Atan2(_player.FacingAngle.Y,_player.FacingAngle.X);
+                var dir = (float)Math.Atan2(_player.FacingAngle.Y, _player.FacingAngle.X);
                 var x = (float)(position.X
                     + Math.Cos(localRotation) * _barrelOffset.X
                     + Math.Cos(localRotation) * _barrelOffset.Y);
@@ -79,7 +77,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
                     + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount);
 
-                    Bullet.Create(_player, x, y, direction, _params.BulletParameters);
+                    Bullet.Create(_player, x, y, direction, Parameters.BulletParameters);
                 }
                 _magazineAmmo--;
 
