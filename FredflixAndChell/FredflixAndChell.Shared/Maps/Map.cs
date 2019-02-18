@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects.Weather;
+using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Maps.MapBuilders;

@@ -1,5 +1,4 @@
 ﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.PlayerComponents;
 using FredflixAndChell.Shared.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

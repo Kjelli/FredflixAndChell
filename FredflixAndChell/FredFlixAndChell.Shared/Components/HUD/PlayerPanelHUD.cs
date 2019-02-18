@@ -1,5 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.PlayerComponents;
+using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.Utilities.Graphics;
