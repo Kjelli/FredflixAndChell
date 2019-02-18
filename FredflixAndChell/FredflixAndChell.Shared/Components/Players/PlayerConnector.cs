@@ -15,12 +15,11 @@ namespace FredflixAndChell.Components.Players
         private List<Player> _connectedPlayers;
         private GameSystem _gameSystem;
         private HUD _hud;
-        
         private bool _playerSpawnedThisFrame;
 
         public PlayerSpawner _spawnLocations { get; set; }
 
-        public PlayerConnector( PlayerSpawner spawnLocations = null)
+        public PlayerConnector(PlayerSpawner spawnLocations = null)
         {
             _connectedPlayers = new List<Player>();
             _spawnLocations = spawnLocations;
@@ -37,7 +36,7 @@ namespace FredflixAndChell.Components.Players
         public void ControllerConnected(GamePadData gamepad)
         {
             var index = _connectedPlayers.Count + 1;
-            SpawnPlayer(gamepad, index);
+            SpawnIdlePlayer(gamepad, index);
         }
 
         public void SpawnDebugPlayer()
@@ -51,7 +50,7 @@ namespace FredflixAndChell.Components.Players
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
             var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == index);
-            if(playerMeta == null)
+            if (playerMeta == null)
             {
                 playerMeta = new PlayerMetadata
                 {
@@ -59,6 +58,27 @@ namespace FredflixAndChell.Components.Players
                 };
             }
             var player = scene.addEntity(new Player(playerMeta.Character, playerMeta.Gun, spawnX, spawnY, index));
+            player.addComponent(new PlayerController(gamepad));
+
+            _connectedPlayers.Add(player);
+
+            _playerSpawnedThisFrame = true;
+        }
+
+        private void SpawnIdlePlayer(GamePadData gamepad, int index)
+        {
+            Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
+            var spawnX = (int)spawnLocation.X;
+            var spawnY = (int)spawnLocation.Y;
+            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == index);
+            if (playerMeta == null)
+            {
+                playerMeta = new PlayerMetadata
+                {
+                    PlayerIndex = index
+                };
+            }
+            var player = scene.addEntity(new Player(playerMeta.Character, playerMeta.Gun, spawnX, spawnY, index) { PlayerState = PlayerState.Idle });
             player.addComponent(new PlayerController(gamepad));
 
             _connectedPlayers.Add(player);

@@ -21,7 +21,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 {
     public enum PlayerState
     {
-        Normal, Dying, Dead
+        Idle, Normal, Dying, Dead
     }
 
     public enum PlayerMobilityState
@@ -98,12 +98,25 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnSpawn()
         {
-            SetupComponents();
-            SetupParameters();
-            SetupDebug();
+            var metadata = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == PlayerIndex);
+            if (metadata != null)
+            {
+                if (metadata.IsInitialized)
+                {
+                    JoinGame();
+                }
+            }
+            else
+            {
+                _controller = getComponent<PlayerController>();
+            }
 
-            _gameSystem.RegisterPlayer(this);
-            updateOrder = 0;
+            //SetupComponents();
+            //SetupParameters();
+            //SetupDebug();
+
+            //_gameSystem.RegisterPlayer(this);
+            //updateOrder = 0;
         }
 
         private void SetupDebug()
@@ -154,7 +167,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupRenderer(_characterParameters.PlayerSprite);
 
             // Assign camera tracker component
-            _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead));
+            _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead && PlayerState != PlayerState.Idle));
 
             // Blood
             _blood = addComponent(new BloodEngine(_characterParameters.BloodColor));
@@ -190,6 +203,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public override void Update()
         {
             ReadInputs();
+            if (PlayerState == PlayerState.Idle) return;
             Move();
             SetFacing();
             if (Time.frameCount % 5 == 0)
@@ -512,7 +526,27 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Interact()
         {
-            InteractWithNearestEntity();
+            if (PlayerState == PlayerState.Idle)
+            {
+                JoinGame();
+            }
+            else
+            {
+                InteractWithNearestEntity();
+            }
+        }
+
+        private void JoinGame()
+        {
+            SetupComponents();
+            SetupParameters();
+            SetupDebug();
+
+            _gameSystem.RegisterPlayer(this);
+            updateOrder = 0;
+
+            PlayerState = PlayerState.Normal;
+            ContextHelper.PlayerMetadata.First(x => x.PlayerIndex == PlayerIndex).IsInitialized = true;
         }
 
         private void InteractWithNearestEntity()

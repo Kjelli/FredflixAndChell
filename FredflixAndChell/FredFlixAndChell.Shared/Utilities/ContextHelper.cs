@@ -7,5 +7,6 @@ namespace FredflixAndChell.Shared.Utilities
     {
         public static List<PlayerMetadata> PlayerMetadata { get; set; }
         public static GameSettings GameSettings { get; set; }
+        public static bool IsGameInitialized { get; set; }
     }
 }

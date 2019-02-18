@@ -10,9 +10,9 @@ namespace FredflixAndChell.Shared.Scenes
 {
     public class HubScene : BroScene
     {
-        private VignettePostProcessor grayscalePostProcessor;
-        private UICanvas canvas;
-        private Cooldown grayscaleDelay;
+        private VignettePostProcessor _grayscalePostProcessor;
+        private UICanvas _canvas;
+        private Cooldown _grayscaleDelay;
 
         public HubScene() : base(new GameSettings
         {
@@ -22,12 +22,15 @@ namespace FredflixAndChell.Shared.Scenes
             KnockbackMultiplier = 0.0f
         })
         {
-            grayscaleDelay = new Cooldown(2, true);
+            _grayscaleDelay = new Cooldown(2, true);
         }
 
         public override void initialize()
         {
             base.initialize();
+            if (ContextHelper.IsGameInitialized)
+                return;
+
             Console.WriteLine("Initializing HubScene");
             var transition = new FadeTransition
             {
@@ -37,9 +40,11 @@ namespace FredflixAndChell.Shared.Scenes
 
             Core.startSceneTransition(transition);
 
-            grayscalePostProcessor = addPostProcessor(new VignettePostProcessor(5));
-            grayscalePostProcessor.effect = AssetLoader.GetEffect("grayscale_shader");
-            grayscalePostProcessor.effect.Parameters["intensity"].SetValue((float)1);
+            _grayscalePostProcessor = addPostProcessor(new VignettePostProcessor(5));
+            _grayscalePostProcessor.effect = AssetLoader.GetEffect("grayscale_shader");
+            _grayscalePostProcessor.effect.Parameters["intensity"].SetValue((float)1);
+
+            ContextHelper.IsGameInitialized = true;
         }
 
         public override void Setup()
@@ -51,23 +56,23 @@ namespace FredflixAndChell.Shared.Scenes
         public override void update()
         {
             base.update();
-            grayscaleDelay.Update();
-            if (!grayscaleDelay.IsReady())
+            _grayscaleDelay.Update();
+            if (!_grayscaleDelay.IsReady())
             {
                 Console.WriteLine("Reducing grayscale...");
-                var delta = grayscaleDelay.ElapsedNormalized();
-                grayscalePostProcessor.effect.Parameters["intensity"].SetValue(delta);
+                var delta = _grayscaleDelay.ElapsedNormalized();
+                _grayscalePostProcessor.effect.Parameters["intensity"].SetValue(delta);
             }
         }
 
         private void ShowTitleOverlay()
         {
             // create our canvas and put it on the screen space render layer
-            canvas = createEntity("ui").addComponent(new UICanvas());
-            canvas.isFullScreen = true;
-            canvas.renderLayer = Constants.Layers.HUD;
+            _canvas = createEntity("ui").addComponent(new UICanvas());
+            _canvas.isFullScreen = true;
+            _canvas.renderLayer = Constants.Layers.HUD;
 
-            var table = canvas.stage.addElement(new Table());
+            var table = _canvas.stage.addElement(new Table());
             table.setFillParent(true).center();
 
             var label = new Label("Ultimate Brodown");
@@ -76,8 +81,8 @@ namespace FredflixAndChell.Shared.Scenes
 
             Core.schedule(3, (s) =>
             {
-                canvas.removeComponent();
-                grayscaleDelay.Start();
+                _canvas.removeComponent();
+                _grayscaleDelay.Start();
             });
         }
     }
