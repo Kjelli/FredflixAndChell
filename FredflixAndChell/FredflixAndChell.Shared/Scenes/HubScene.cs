@@ -28,6 +28,9 @@ namespace FredflixAndChell.Shared.Scenes
         public override void initialize()
         {
             base.initialize();
+            if (ContextHelper.IsGameInitialized)
+                return;
+
             Console.WriteLine("Initializing HubScene");
             var transition = new FadeTransition
             {
@@ -40,6 +43,8 @@ namespace FredflixAndChell.Shared.Scenes
             _grayscalePostProcessor = addPostProcessor(new VignettePostProcessor(5));
             _grayscalePostProcessor.effect = AssetLoader.GetEffect("grayscale_shader");
             _grayscalePostProcessor.effect.Parameters["intensity"].SetValue((float)1);
+
+            ContextHelper.IsGameInitialized = true;
         }
 
         public override void Setup()
