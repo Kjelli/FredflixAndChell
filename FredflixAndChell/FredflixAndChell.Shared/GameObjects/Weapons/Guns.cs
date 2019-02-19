@@ -35,7 +35,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public static void LoadFromData()
         {
             Console.WriteLine("Loading .fml files for guns...");
-            var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/guns", "*.fml");
+            var gunFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/weapons/guns", "*.fml");
             foreach (var gunFilename in gunFilenames)
             {
                 var gun = YamlSerializer.DeserializeGunParameters(gunFilename);
