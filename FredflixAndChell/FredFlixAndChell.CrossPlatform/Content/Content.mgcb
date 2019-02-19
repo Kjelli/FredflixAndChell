@@ -26,21 +26,6 @@
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
-#begin data/guns/Fidgetspinner.fml
-/copy:data/guns/Fidgetspinner.fml
-
-#begin data/guns/Fido.fml
-/copy:data/guns/Fido.fml
-
-#begin data/guns/Goggles.fml
-/copy:data/guns/Goggles.fml
-
-#begin data/guns/M4.fml
-/copy:data/guns/M4.fml
-
-#begin data/guns/PewPew.fml
-/copy:data/guns/PewPew.fml
-
 #begin data/weapons/guns/Fidgetspinner.fml
 /copy:data/weapons/guns/Fidgetspinner.fml
 
@@ -55,6 +40,9 @@
 
 #begin data/weapons/guns/PewPew.fml
 /copy:data/weapons/guns/PewPew.fml
+
+#begin data/weapons/melee/Stick.fml
+/copy:data/weapons/melee/Stick.fml
 
 #begin effects/grayscale_shader.fx
 /importer:EffectImporter
