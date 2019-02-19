@@ -8,7 +8,7 @@ using System;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
-    public class Gun : GameObject
+    public class Gun : Weapon
     {
         private GunRenderer _renderer;
         private Player _player;
@@ -24,22 +24,20 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private Vector2 _barrelOffset;
 
-        public Cooldown Cooldown { get; set; }
         public Cooldown Reload { get; set; }
         public GunParameters Parameters { get; }
 
-        public Gun(Player owner, GunParameters gunParameters) : base(0, 0)
+        public Gun(Player player, GunParameters gunParameters) : base(player)
         {
-            _player = owner;
+            _player = player;
             Parameters = gunParameters;
             SetupParameters();
         }
 
         public override void OnSpawn()
         {
-            Cooldown.Start();
+            base.OnSpawn();
             _renderer = addComponent(new GunRenderer(this, _player));
-            updateOrder = 1;
         }
 
         private void SetupParameters()
@@ -124,15 +122,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public override void Update()
         {
-            Cooldown.Update();
+            base.Update();
             Reload.Update();
-        }
-
-        public void Destroy()
-        {
-            removeAllComponents();
-            setEnabled(false);
-            destroy();
         }
 
         public void ToggleRunning(bool isRunning)

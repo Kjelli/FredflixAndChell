@@ -5,26 +5,24 @@ using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
-    public class Melee : GameObject
+    public class Melee : Weapon
     {
         private MeleeRenderer _renderer;
         private Player _player;
 
         public MeleeParameters Parameters { get; }
-        public Cooldown Cooldown { get; set; }
 
-        public Melee(Player player, MeleeParameters weaponParameters) : base(0, 0)
+        public Melee(Player player, MeleeParameters meleeParameters) : base(player)
         {
             _player = player;
-            Parameters = weaponParameters;
+            Parameters = meleeParameters;
             SetupParameters();
         }
 
         public override void OnSpawn()
         {
-            Cooldown.Start();
+            base.OnSpawn();
             _renderer = addComponent(new MeleeRenderer(this, _player));
-            updateOrder = 1;
         }
 
         private void SetupParameters()
@@ -59,52 +57,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         //    }
         //}
 
-        //private void CheckAmmo()
-        //{
-        //    if (_magazineAmmo == 0)
-        //    {
-        //        if (_ammo <= 0)
-        //        {
-        //            //Totally out of ammo? 
-        //            //TODO: Throw away this
-        //        }
-        //        else
-        //        {
-        //            //Reload
-        //            ReloadMagazine();
-        //        }
-        //    }
-        //}
-
-        //public void ReloadMagazine()
-        //{
-        //    if (!Reload.IsOnCooldown() && _magazineAmmo != _magazineSize)
-        //    {
-        //        //Function
-        //        Reload.Start();
-        //        int newBullets = Math.Min(_magazineSize - _magazineAmmo, _ammo);
-        //        _ammo = _ammo - newBullets;
-        //        _magazineAmmo = _magazineAmmo + newBullets;
-
-        //        //Animation
-        //        _renderer.Reload();
-        //    }
-        //}
-
         public override void OnDespawn()
         {
         }
 
         public override void Update()
         {
-            Cooldown.Update();
-        }
-
-        public void Destroy()
-        {
-            removeAllComponents();
-            setEnabled(false);
-            destroy();
+            base.Update();
         }
 
         public void ToggleRunning(bool isRunning)
