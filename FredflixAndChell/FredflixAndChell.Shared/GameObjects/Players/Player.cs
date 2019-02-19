@@ -150,7 +150,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign gun component
-            EquipGun(_gunParameters.Name);
+            EquipWeapon(_gunParameters.Name);
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -380,7 +380,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             PlayerMobilityState = PlayerMobilityState.Running;
         }
 
-        public void EquipGun(string name)
+        public void EquipWeapon(string name)
         {
             if (_gun != null)
             {
@@ -412,7 +412,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
 #if DEBUG
             var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
-            EquipGun(nextGun);
+            EquipWeapon(nextGun);
 #endif
         }
 

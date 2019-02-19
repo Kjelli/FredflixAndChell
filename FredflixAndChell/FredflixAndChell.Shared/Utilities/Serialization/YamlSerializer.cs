@@ -35,7 +35,6 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             return characterParameters;
         }
 
-
         public static void SerializeCharacter(CharacterParameters player)
         {
             var serializer = new Serializer();

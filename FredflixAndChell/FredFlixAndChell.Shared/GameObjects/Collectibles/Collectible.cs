@@ -224,7 +224,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             if (_collectibleState != CollectibleState.Available) return;
 
-            player.EquipGun(Preset.Gun.Name);
+            player.EquipWeapon(Preset.Gun.Name);
              
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);

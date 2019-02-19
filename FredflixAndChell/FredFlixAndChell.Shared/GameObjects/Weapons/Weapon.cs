@@ -7,16 +7,15 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
     {
         private readonly Player _player;
 
+        public Cooldown Cooldown { get; set; }
+
         public Weapon(Player player) : base(0, 0)
         {
             _player = player;
         }
 
-        public Cooldown Cooldown { get; set; }
-
         public override void OnDespawn()
         {
-            throw new System.NotImplementedException();
         }
 
         public override void OnSpawn()

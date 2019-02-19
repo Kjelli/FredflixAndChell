@@ -85,6 +85,7 @@
     <Compile Include="GameObjects\Weapons\Sprites\MeleeSprite.cs" />
     <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\WeaponParameters.cs" />
+    <Compile Include="GameObjects\Weapons\WeaponType.cs" />
     <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
     <Compile Include="Maps\MapBuilders\CameraTrackerBuilder.cs" />
     <Compile Include="Maps\MapBuilders\CollisionZoneBuilder.cs" />

@@ -23,6 +23,5 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         public GunParameters Gun { get; set; }
         public float DropChance { get; set; }
         public Rarity Rarity { get; set; }
-
     }
 }
