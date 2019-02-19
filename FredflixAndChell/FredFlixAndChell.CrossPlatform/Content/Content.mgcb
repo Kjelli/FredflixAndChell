@@ -91,6 +91,11 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/monitor.spritefont
 
+#begin maps/ctf_snow.tmx
+/importer:
+/processor:
+/build:maps/ctf_snow.tmx
+
 #begin maps/dungeon_1.tmx
 /importer:
 /processor:

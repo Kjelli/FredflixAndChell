@@ -147,6 +147,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             private void UpdateRenderLayerDepth()
             {
                 _sprite.renderLayer = Layers.MapObstacles;
+                _sprite.layerDepth = 0.9f;
             }
         }
 

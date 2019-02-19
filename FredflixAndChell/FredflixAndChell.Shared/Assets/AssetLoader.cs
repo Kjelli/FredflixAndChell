@@ -65,6 +65,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
             LoadMap("maps/fido_fighters");
+            LoadMap("maps/ctf_snow");
         }
 
         public static List<string> GetMaps()

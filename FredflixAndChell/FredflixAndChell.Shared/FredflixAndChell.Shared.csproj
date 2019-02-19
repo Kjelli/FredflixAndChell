@@ -79,6 +79,7 @@
     <Compile Include="Components\StatusEffects\SlowEffect.cs" />
     <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
+    <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\MeleeParameters.cs" />
