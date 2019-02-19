@@ -21,6 +21,8 @@ BulletParameters:
       Origin:
         X: 0.0
         Y: 0.0
+      TileWidth: 16
+      TileHeight: 16
     Source: bullets/standard
 BulletSpread: 0.0
 DropChance: 0.6

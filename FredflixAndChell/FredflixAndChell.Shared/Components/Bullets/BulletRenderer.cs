@@ -54,7 +54,7 @@ namespace FredflixAndChell.Shared.Components.Bullets
         {
             var animations = new ScalableSprite<BulletAnimations>();
             animations.renderLayer = Layers.Bullet;
-            animations.addAnimation(BulletAnimations.Bullet, sprite.Bullet.ToSpriteAnimation(sprite.Source, 16, 16));
+            animations.addAnimation(BulletAnimations.Bullet, sprite.Bullet.ToSpriteAnimation(sprite.Source));
 
             return animations;
         }

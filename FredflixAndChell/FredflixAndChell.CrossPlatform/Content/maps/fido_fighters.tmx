@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="453">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="458">
  <properties>
   <property name="ambient_lighting" type="color" value="#ff000053"/>
   <property name="name" value="Fido"/>
@@ -32,7 +32,6 @@
   </data>
  </layer>
  <objectgroup id="6" name="Objects" offsetx="-0.25" offsety="-0.25">
-  <object id="46" name="collision" x="160" y="-56" width="64" height="24"/>
   <object id="59" name="player_spawn" x="104" y="168" width="16" height="16"/>
   <object id="148" name="player_spawn" x="104" y="56" width="16" height="16"/>
   <object id="149" name="player_spawn" x="280" y="56" width="16" height="16"/>
@@ -255,5 +254,9 @@
   <object id="450" name="pit" x="175.75" y="200" width="16" height="24"/>
   <object id="451" name="pit" x="191.75" y="200" width="16" height="24"/>
   <object id="452" name="pit" x="88" y="200" width="23.75" height="24"/>
+  <object id="453" name="collision" x="0" y="240" width="400.25" height="56.25"/>
+  <object id="455" name="collision" x="400" y="-55.75" width="48.25" height="352"/>
+  <object id="456" name="collision" x="0" y="-56" width="400.25" height="56.25"/>
+  <object id="457" name="collision" x="-48" y="-56" width="48.25" height="352"/>
  </objectgroup>
 </map>
