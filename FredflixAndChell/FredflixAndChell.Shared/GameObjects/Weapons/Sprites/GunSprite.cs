@@ -2,7 +2,7 @@
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
 {
-    public class GunSprite
+    public class GunSprite : WeaponSprite
     {
         public enum GunAnimations
         {
@@ -11,11 +11,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Sprites
             Reload
         }
 
-        public string Source { get; set; }
-
-        public SpriteAnimationDescriptor Idle { get; set; }
-        public SpriteAnimationDescriptor Fire { get; set; }
         public SpriteAnimationDescriptor Reload { get; set; }
-        public SpriteAnimationDescriptor Icon { get; set; }
     }
 }

@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
 {
@@ -42,7 +41,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private static bool DebugToggledRecently { get; set; }
 
-        private GunParameters _gunParameters;
+        private WeaponParameters _weaponParameters;
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -53,7 +52,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private BloodEngine _blood;
         private GameSystem _gameSystem;
 
-        private Gun _gun;
+        private Weapon _weapon;
         private float _maxHealth;
         private float _stamina;
 
@@ -91,11 +90,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool FlipGun { get; set; }
         public bool Disarmed { get; set; }
 
-        public Player(CharacterParameters characterParameters, GunParameters gunParameters, int x, int y, int playerIndex) : base(x, y)
+        public Player(CharacterParameters characterParameters, WeaponParameters weaponParameters, int x, int y, int playerIndex) : base(x, y)
         {
             Parameters = characterParameters;
             _entitiesInProximity = new List<Entity>();
-            _gunParameters = gunParameters;
+            _weaponParameters = weaponParameters;
             PlayerIndex = playerIndex;
             name = $"Player {PlayerIndex}";
         }
@@ -114,30 +113,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 _controller = getComponent<PlayerController>();
             }
-
-            //SetupComponents();
-            //SetupParameters();
-            //SetupDebug();
-
-            //_gameSystem.RegisterPlayer(this);
-            //updateOrder = 0;
         }
 
-        private void SetupDebug()
-        {
-            var gameSystem = scene.getSceneComponent<GameSystem>();
-            gameSystem.DebugLines.Add(new DebugLine
-            {
-                Text = () => $"Player {PlayerIndex}",
-                SubLines = new List<DebugLine>
-                {
-                    new DebugLine{ Text = () => $"Health: {Health}"},
-                    new DebugLine{ Text = () => $"Stamina: {Stamina}"},
-                    new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
-                    new DebugLine{ Text = () => $"Mobility state: {PlayerMobilityState.ToString()}"},
-                }
-            });
-        }
+        //private void SetupDebug()
+        //{
+        //    var gameSystem = scene.getSceneComponent<GameSystem>();
+        //    gameSystem.DebugLines.Add(new DebugLine
+        //    {
+        //        Text = () => $"Player {PlayerIndex}",
+        //        SubLines = new List<DebugLine>
+        //        {
+        //            new DebugLine{ Text = () => $"Health: {Health}"},
+        //            new DebugLine{ Text = () => $"Stamina: {Stamina}"},
+        //            new DebugLine{ Text = () => $"Weapon: {_gun?.Parameters.Name ?? "Unarmed"}"},
+        //            new DebugLine{ Text = () => $"Mobility state: {PlayerMobilityState.ToString()}"},
+        //        }
+        //    });
+        //}
 
         private void SetupComponents()
         {
@@ -150,7 +142,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign gun component
-            EquipWeapon(_gunParameters.Name);
+            EquipWeapon(_weaponParameters.Name);
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -182,7 +174,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupRenderer(PlayerSprite playerSprite)
         {
-            _renderer = addComponent(new PlayerRenderer(playerSprite, _gun));
+            _renderer = addComponent(new PlayerRenderer(playerSprite, _weapon));
         }
 
         public void ChangePlayerSprite(PlayerSprite playerSprite)
@@ -369,20 +361,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetWalkingState()
         {
             _accelerationPlayerFactor = WalkAcceleration;
-            _gun?.ToggleRunning(false);
+            _weapon?.ToggleRunning(false);
             PlayerMobilityState = PlayerMobilityState.Walking;
         }
 
         private void SetRunningState()
         {
             _accelerationPlayerFactor = SprintAcceleration;
-            _gun?.ToggleRunning(true);
+            _weapon?.ToggleRunning(true);
             PlayerMobilityState = PlayerMobilityState.Running;
         }
 
         public void EquipWeapon(string name)
         {
-            if (_gun != null)
+            if (_weapon != null)
             {
 #if DEBUG
                 DropGun();
@@ -390,29 +382,60 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 UnEquipGun();
 #endif
             }
-            var gunParams = Guns.Get(name);
-            _gun = scene.addEntity(new Gun(this, gunParams));
-            IsArmed = true;
 
-            var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
-            if (meta != null)
+            var gunParams = Guns.Get(name);
+            if (gunParams != null)
             {
-                meta.Gun = gunParams;
+                _weapon = scene.addEntity(new Gun(this, gunParams));
+                IsArmed = true;
+
+                var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
+                if (meta != null)
+                {
+                    meta.Weapon = gunParams;
+                }
+            }
+            else
+            {
+                var meleeParams = Melees.Get(name);
+                if (meleeParams != null)
+                {
+                    _weapon = scene.addEntity(new Melee(this, meleeParams));
+                    IsArmed = true;
+
+                    var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
+                    if (meta != null)
+                    {
+                        meta.Weapon = meleeParams;
+                    }
+                }
             }
         }
 
         public void UnEquipGun()
         {
             IsArmed = false;
-            _gun.destroy();
-            _gun = null;
+            _weapon.destroy();
+            _weapon = null;
         }
 
         private void SwitchWeapon()
         {
 #if DEBUG
-            var nextGun = Guns.GetNextAfter(_gun?.Parameters.Name ?? "M4").Name;
-            EquipWeapon(nextGun);
+
+            if (_weapon != null)
+            {
+                if (_weapon is Melee melee)
+                {
+                    var nextMelee = Melees.GetNextAfter(melee.Parameters.Name ?? "Stick").Name;
+                    EquipWeapon(nextMelee);
+                }
+                else if (_weapon is Gun gun)
+                {
+                    var nextGun = Guns.GetNextAfter(gun.Parameters.Name ?? "M4").Name;
+                    EquipWeapon(nextGun);
+                }
+            }
 #endif
         }
 
@@ -423,7 +446,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             Acceleration *= Speed * deltaTime;
             Velocity = Velocity + CalculateAcceleration();
-            
+
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -526,13 +549,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (Disarmed) return;
 
-            if (_gun != null)
-                _gun.Fire();
+            if (_weapon != null)
+                _weapon.Fire();
         }
 
         public void Reload()
         {
-            if (_gun != null)
+            if (_weapon != null && _weapon is Gun _gun)
                 _gun.ReloadMagazine();
         }
 
@@ -552,7 +575,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             SetupComponents();
             SetupParameters();
-            SetupDebug();
+            //SetupDebug();
 
             addComponent(new RegenEffect());
 
@@ -633,22 +656,32 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void DropGun()
         {
-            if (_gun != null)
+            if (_weapon != null)
             {
-                //Throw out a new gunz
-                var throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, _gun.Parameters.Name, true));
+                Collectible throwedItem = null;
+                if (_weapon is Gun gun)
+                {
+                    //Throw out a new gunz
+                    throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, gun.Parameters.Name, true));
+
+                }
+                else if (_weapon is Melee melee)
+                {
+                    //Throw out a new gunz
+                    throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, melee.Parameters.Name, true));
+                }
 
                 throwedItem.Velocity = new Vector2(
-                    FacingAngle.X * ThrowSpeed,
-                    FacingAngle.Y * ThrowSpeed)
-                    + Velocity * 2f;
+                        FacingAngle.X * ThrowSpeed,
+                        FacingAngle.Y * ThrowSpeed)
+                        + Velocity * 2f;
                 UnEquipGun();
             }
         }
 
         public override void OnDespawn()
         {
-            _gun?.Destroy();
+            _weapon?.Destroy();
         }
 
         private void SetFacing()
@@ -656,7 +689,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (PlayerState != PlayerState.Normal) return;
 
             if (_controller == null || (_controller.XRightAxis == 0 && _controller.YRightAxis == 0)) return;
-
 
             FacingAngle = Lerps.angleLerp(FacingAngle, new Vector2(_controller.XRightAxis, _controller.YRightAxis), Time.deltaTime * AimingSlownessFactor);
 

@@ -30,7 +30,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             Cooldown = new Cooldown(Parameters.FireRate);
         }
 
-        public void Fire()
+        public override void Fire()
         {
             if (Cooldown.IsReady())
             {
@@ -66,7 +66,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             base.Update();
         }
 
-        public void ToggleRunning(bool isRunning)
+        public override void ToggleRunning(bool isRunning)
         {
             _renderer?.ToggleRunningDisplacement(isRunning);
         }

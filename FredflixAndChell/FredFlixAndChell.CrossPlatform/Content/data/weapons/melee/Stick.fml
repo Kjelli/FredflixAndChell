@@ -1,8 +1,4 @@
 Type: Melee
-BarrelOffset:
-  X: 10.0
-  Y: 0.0
-BulletCount: 1
 DropChance: 0.6
 FireRate: 0.1500000007
 Name: Stick
@@ -12,7 +8,7 @@ Sprite:
   Fire:
     FPS: 30.0
     Frames:
-      - 1
+      - 0
     Loop: false
     Origin:
       X: 10.0
@@ -28,7 +24,7 @@ Sprite:
   Idle:
     FPS: 1.0
     Frames:
-      - 1
+      - 0
     Loop: false
     Origin:
       X: 10.0

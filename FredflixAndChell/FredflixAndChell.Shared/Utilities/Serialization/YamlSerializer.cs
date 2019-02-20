@@ -27,6 +27,14 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             return gunParam;
         }
 
+        public static MeleeParameters DeserializeMeleeParameters(string filename)
+        {
+            var deserializer = new Serializer();
+
+            var meleeParam = deserializer.Deserialize<MeleeParameters>(File.ReadAllText(filename));
+            return meleeParam;
+        }
+
         public static CharacterParameters DeserializeCharacterParameters(string filename)
         {
             var deserializer = new Serializer();

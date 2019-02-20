@@ -1,31 +1,24 @@
 ﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
-using Nez.Textures;
-using System.Collections.Generic;
-using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerTorsoSprite;
-using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprite;
-using System;
 using Nez.Tweens;
+using static FredflixAndChell.Shared.Assets.Constants;
+using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprite;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
-using FredflixAndChell.Shared.Components.Players;
+using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerTorsoSprite;
 
 namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerRenderer : Component, IUpdatable
     {
         private Player _player;
-        private Gun _gun;
+        private Weapon _weapon;
         private PlayerSprite _playerSprite;
         private float _facingDepthOffset;
-
-        private Sprite<HeadAnimation> _head;
         private Sprite<TorsoAnimation> _torso;
         private Sprite<LegsAnimation> _legs;
         private Sprite _light;
@@ -37,12 +30,12 @@ namespace FredflixAndChell.Shared.Components.Players
         private SpriteMime _torsoSilhouette;
         private SpriteMime _legsSilhouette;
 
-        public Sprite<HeadAnimation> Head => _head;
+        public Sprite<HeadAnimation> Head { get; set; }
 
-        public PlayerRenderer(PlayerSprite playerSprite, Gun gun)
+        public PlayerRenderer(PlayerSprite playerSprite, Weapon weapon)
         {
             _playerSprite = playerSprite;
-            _gun = gun;
+            _weapon = weapon;
         }
 
         public override void onAddedToEntity()
@@ -59,7 +52,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
             // Assign renderable shadow component
 
-            _headShadow = entity.addComponent(new SpriteMime(_head));
+            _headShadow = entity.addComponent(new SpriteMime(Head));
             _headShadow.color = new Color(0, 0, 0, 80);
             _headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
             _headShadow.renderLayer = Layers.Shadow;
@@ -79,7 +72,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
             // Assign silhouette component when player is visually blocked
 
-            _headSilhouette = entity.addComponent(new SpriteMime(_head));
+            _headSilhouette = entity.addComponent(new SpriteMime(Head));
             _headSilhouette.color = new Color(0, 0, 0, 80);
             _headSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
             _headSilhouette.renderLayer = Layers.Foreground;
@@ -104,8 +97,8 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             // Assign renderable (animation) component
             var headAnimations = SetupHeadAnimations(_playerSprite.Head);
-            _head = entity.addComponent(headAnimations);
-            _head.renderLayer = Layers.Player;
+            Head = entity.addComponent(headAnimations);
+            Head.renderLayer = Layers.Player;
 
             var torsoAnimations = SetupTorsoAnimations(_playerSprite.Torso);
             _torso = entity.addComponent(torsoAnimations);
@@ -115,7 +108,7 @@ namespace FredflixAndChell.Shared.Components.Players
             _legs = entity.addComponent(legsAnimations);
             _legs.renderLayer = Layers.Player;
 
-            _head.play(HeadAnimation.FrontFacing);
+            Head.play(HeadAnimation.FrontFacing);
             _torso.play(TorsoAnimation.Front);
             _legs.play(LegsAnimation.Idle);
         }
@@ -161,7 +154,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public void TweenColor(Color c, float durationSeconds, EaseType easeType = EaseType.CubicOut)
         {
-            _head.tweenColorTo(c, durationSeconds)
+            Head.tweenColorTo(c, durationSeconds)
                 .setEaseType(easeType)
                 .start();
             _torso.tweenColorTo(c, durationSeconds)
@@ -176,7 +169,7 @@ namespace FredflixAndChell.Shared.Components.Players
         public void update()
         {
             UpdateAnimation();
-            if (float.IsNaN(_player.position.X) || float.IsNaN(_player.position.Y) 
+            if (float.IsNaN(_player.position.X) || float.IsNaN(_player.position.Y)
                 || float.IsNaN(_player.FacingAngle.X) || float.IsNaN(_player.FacingAngle.Y)) return;
             var hit = Physics.linecast(_player.position, _player.position + _player.FacingAngle * 1000f);
             Debug.drawLine(_player.position, _player.position + _player.FacingAngle * 1000f, Color.Gray);
@@ -184,9 +177,9 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public void UpdateRenderLayerDepth()
         {
-            if(_head != null) _head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
-            if(_torso != null) _torso.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
-            if(_legs != null) _legs.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if (Head != null) Head.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y + _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if (_torso != null) _torso.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
+            if (_legs != null) _legs.layerDepth = 1 - (entity.position.Y + _player.FacingAngle.Y - _facingDepthOffset) * Constants.RenderLayerDepthFactor;
         }
 
         private void UpdateAnimation()
@@ -202,8 +195,8 @@ namespace FredflixAndChell.Shared.Components.Players
             // Head
             if (_player.PlayerState == PlayerState.Dead)
             {
-                headAnimation = _head.currentAnimation;
-                _head.pause();
+                headAnimation = Head.currentAnimation;
+                Head.pause();
             }
             else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
@@ -220,7 +213,7 @@ namespace FredflixAndChell.Shared.Components.Players
             if (_player.PlayerState == PlayerState.Dead)
             {
                 torsoAnimation = _torso.currentAnimation;
-                _head.pause();
+                Head.pause();
             }
             else if (_player.VerticalFacing == (int)FacingCode.UP)
             {
@@ -247,9 +240,9 @@ namespace FredflixAndChell.Shared.Components.Players
 
             // Play Animations
 
-            if (!_head.isAnimationPlaying(headAnimation))
+            if (!Head.isAnimationPlaying(headAnimation))
             {
-                _head.play(headAnimation);
+                Head.play(headAnimation);
             }
 
             if (!_torso.isAnimationPlaying(torsoAnimation))
@@ -267,7 +260,7 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             _light.setEnabled(true);
 
-            _head.setEnabled(true);
+            Head.setEnabled(true);
             _headShadow.setEnabled(true);
             _headSilhouette.setEnabled(true);
 
@@ -284,7 +277,7 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             _light.setEnabled(false);
 
-            _head.setEnabled(false);
+            Head.setEnabled(false);
             _headShadow.setEnabled(false);
             _headSilhouette.setEnabled(false);
 
@@ -299,7 +292,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public override void onRemovedFromEntity()
         {
-            _head.removeComponent();
+            Head.removeComponent();
             _headShadow.removeComponent();
             _headSilhouette.removeComponent();
 
@@ -314,7 +307,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public void FlipX(bool isFlipped)
         {
-            if (_head != null) _head.flipX = isFlipped;
+            if (Head != null) Head.flipX = isFlipped;
             if (_torso != null) _torso.flipX = isFlipped;
             if (_legs != null) _legs.flipX = isFlipped;
         }

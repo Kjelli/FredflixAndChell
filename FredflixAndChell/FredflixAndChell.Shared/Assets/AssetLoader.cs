@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
-using System;
 using System.Linq;
 
 namespace FredflixAndChell.Shared.Assets
@@ -40,6 +39,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/pewpew");
             LoadTexture("textures/guns/fidgetspinner");
             LoadTexture("textures/guns/goggles");
+            LoadTexture("textures/guns/stick");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
@@ -74,7 +74,7 @@ namespace FredflixAndChell.Shared.Assets
 
         public static List<KeyValuePair<string, string>> GetMapsWithDisplayName()
         {
-            return _maps.Select(m => new KeyValuePair<string,string>(m.Key, m.Value.properties["name"])).ToList();
+            return _maps.Select(m => new KeyValuePair<string, string>(m.Key, m.Value.properties["name"])).ToList();
         }
 
         private static void LoadPlayerTexture(string playerDirectory)

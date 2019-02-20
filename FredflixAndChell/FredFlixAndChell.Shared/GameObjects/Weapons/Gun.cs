@@ -55,7 +55,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             _bulletSpread = Parameters.BulletSpread;
         }
 
-        public void Fire()
+        public override void Fire()
         {
             CheckAmmo();
             if (Cooldown.IsReady() && Reload.IsReady() && _magazineAmmo >= 0)
@@ -126,7 +126,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             Reload.Update();
         }
 
-        public void ToggleRunning(bool isRunning)
+        public override void ToggleRunning(bool isRunning)
         {
             _renderer?.ToggleRunningDisplacement(isRunning);
         }

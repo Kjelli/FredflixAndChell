@@ -1,19 +1,14 @@
-﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.GameObjects.Weapons;
-using FredflixAndChell.Shared.Utilities.Serialization;
+﻿using FredflixAndChell.Shared.GameObjects.Weapons;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
-    
     public static class Collectibles
     {
         private static bool _isInitialized = false;
-        private static Dictionary<string, CollectibleParameters> _collectibles = 
+        private static Dictionary<string, CollectibleParameters> _collectibles =
             new Dictionary<string, CollectibleParameters>();
-
 
         public static List<CollectibleParameters> All()
         {
@@ -27,7 +22,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         public static List<CollectibleParameters> All(Rarity rarity)
         {
             var list = All();
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 if (item.Rarity != rarity)
                     list.Remove(item);
@@ -44,8 +39,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             return _collectibles[name];
         }
 
-        
-
         public static void LoadFromData()
         {
             foreach (var gun in Guns.All())
@@ -53,10 +46,22 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 _collectibles.Add(gun.Name, new CollectibleParameters
                 {
                     Name = gun.Name,
-                    Gun = gun,
+                    Weapon = gun,
                     Type = CollectibleType.Weapon,
                     DropChance = gun.DropChance,
                     Rarity = gun.Rarity
+                });
+            }
+
+            foreach (var melee in Melees.All())
+            {
+                _collectibles.Add(melee.Name, new CollectibleParameters
+                {
+                    Name = melee.Name,
+                    Weapon = melee,
+                    Type = CollectibleType.Weapon,
+                    DropChance = melee.DropChance,
+                    Rarity = melee.Rarity
                 });
             }
 

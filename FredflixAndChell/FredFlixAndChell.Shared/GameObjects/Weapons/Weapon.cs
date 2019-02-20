@@ -35,5 +35,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             setEnabled(false);
             destroy();
         }
+
+        public virtual void ToggleRunning(bool isRunning)
+        {
+        }
+
+        public virtual void Fire()
+        {
+        }
     }
 }

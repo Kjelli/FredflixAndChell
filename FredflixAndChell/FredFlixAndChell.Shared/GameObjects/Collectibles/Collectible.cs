@@ -1,15 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Interactables;
+using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
+using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
-using System;
 using Nez.Tweens;
 using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.Utilities;
-using Microsoft.Xna.Framework.Graphics;
-using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.Players;
-using FredflixAndChell.Shared.Components.Interactables;
-using FredflixAndChell.Shared.GameObjects.Players;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
@@ -57,9 +57,18 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private void SetupComponents()
         {
             _collisionHandler = addComponent(new CollectibleCollisionHandler());
-            var gunSprite = Preset.Gun.Sprite;
 
-            _sprite = addComponent(new Sprite(gunSprite.Icon.ToSpriteAnimation(gunSprite.Source).frames[0]));
+            WeaponSprite sprite = null;
+            if (Preset.Weapon is GunParameters gunParams)
+            {
+                sprite = gunParams.Sprite;
+            }
+            else if (Preset.Weapon is MeleeParameters meleeParams)
+            {
+                sprite = meleeParams.Sprite;
+            }
+
+            _sprite = addComponent(new Sprite(sprite.Icon.ToSpriteAnimation(sprite.Source).frames[0]));
             _sprite.renderLayer = Layers.Interactables;
             _sprite.material = new Material();
 
@@ -83,7 +92,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             setTag(Tags.Collectible);
 
-            if ( _collectibleState == CollectibleState.Unavailable) return;
+            if (_collectibleState == CollectibleState.Unavailable) return;
 
             _collectibleState = CollectibleState.Available;
             _pickupHitbox = addComponent(new BoxCollider());
@@ -141,7 +150,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private void Hover(float yOffset)
         {
             if (transform == null
-                || !enabled 
+                || !enabled
                 || _collectibleState != CollectibleState.Available) return;
             _hoverTween?.stop(true);
             _hoverTween = this.tweenLocalPositionTo(new Vector2(transform.position.X, transform.position.Y + yOffset), 1f)
@@ -224,8 +233,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             if (_collectibleState != CollectibleState.Available) return;
 
-            player.EquipWeapon(Preset.Gun.Name);
-             
+            player.EquipWeapon(Preset.Weapon.Name);
+
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
