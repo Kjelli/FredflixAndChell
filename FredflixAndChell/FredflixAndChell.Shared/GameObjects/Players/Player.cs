@@ -194,6 +194,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _stamina = Parameters.MaxStamina;
             _maxStamina = Parameters.MaxStamina;
             Speed = Parameters.Speed;
+
+            var playerMetadata = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == PlayerIndex);
+            if (playerMetadata != null)
+            {
+                EquipWeapon(playerMetadata.Weapon.Name);
+            }
         }
 
         public override void Update()
