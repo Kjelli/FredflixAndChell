@@ -42,7 +42,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private static bool DebugToggledRecently { get; set; }
 
-        private WeaponParameters _weaponParameters;
         private Mover _mover;
         private PlayerCollisionHandler _playerCollisionHandler;
         private PlayerRenderer _renderer;
@@ -52,6 +51,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Collider _playerHitbox;
         private BloodEngine _blood;
         private GameSystem _gameSystem;
+
 
         private Weapon _weapon;
         private float _maxHealth;
@@ -63,6 +63,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isRegeneratingStamina = false;
 
         private List<Entity> _entitiesInProximity;
+        private List<Entity> _pitsBelowPlayer;
 
         private bool _isRollingRight;
         private int _numSprintPressed = 0;
@@ -87,18 +88,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public int Stamina => (int)_stamina;
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
+
+
         public int TeamIndex { get; set; }
         public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
         public bool Disarmed { get; set; }
+        public WeaponParameters WeaponParameters { get; set; }
 
         public Player(CharacterParameters characterParameters, WeaponParameters weaponParameters, int x, int y, int playerIndex) : base(x, y)
         {
             Parameters = characterParameters;
-            _entitiesInProximity = new List<Entity>();
-            _weaponParameters = weaponParameters;
+            WeaponParameters = weaponParameters;
             PlayerIndex = playerIndex;
             name = $"Player {PlayerIndex}";
+
+            _entitiesInProximity = new List<Entity>();
+            _pitsBelowPlayer = new List<Entity>();
         }
 
         public override void OnSpawn()
@@ -115,6 +121,26 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 _controller = getComponent<PlayerController>();
             }
+        }
+
+        public void OnPitHitboxEnter(Entity entity)
+        {
+            switch (PlayerState)
+            {
+                case PlayerState.Normal:
+                    break;
+                default:
+                case PlayerState.Dead:
+                case PlayerState.Dying:
+                case PlayerState.Idle:
+                    return;
+            }
+
+            _pitsBelowPlayer.addIfNotPresent(entity);
+        }
+        public void OnPitHitboxExit(Entity entity)
+        {
+            _pitsBelowPlayer.Remove(entity);
         }
 
         //private void SetupDebug()
@@ -144,7 +170,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign gun component
-            EquipWeapon(_weaponParameters.Name);
+            EquipWeapon(WeaponParameters.Name);
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -208,9 +234,26 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public override void Update()
         {
             ReadInputs();
+
             if (PlayerState == PlayerState.Idle) return;
+
             Move();
             SetFacing();
+
+            switch (PlayerMobilityState)
+            {
+                case PlayerMobilityState.Rolling:
+                    break;
+                default: 
+                case PlayerMobilityState.Running:
+                case PlayerMobilityState.Walking:
+                    if (_pitsBelowPlayer.Count > 0)
+                    {
+                        FallIntoPit(_pitsBelowPlayer.randomItem());
+                    }
+                    break;
+            }
+
             if (Time.frameCount % 5 == 0)
             {
                 DebugToggledRecently = false;
@@ -477,12 +520,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void FallIntoPit(Entity pitEntity)
         {
-            if (PlayerState != PlayerState.Normal) return;
-
             Health = 0;
             DisablePlayer(resetVelocity: true);
             DisableHitbox();
             PlayerState = PlayerState.Dying;
+
+            _pitsBelowPlayer.Clear();
+
             var easeType = EaseType.CubicOut;
             var durationSeconds = 2f;
             var targetScale = 0.2f;
@@ -757,6 +801,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters();
             EnableHitbox();
             EnableProximityHitbox();
+
+            // Hack to prevent newly respawned players from being invincible
+            Move();
         }
     }
 
