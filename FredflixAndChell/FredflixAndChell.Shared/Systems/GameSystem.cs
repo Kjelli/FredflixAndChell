@@ -190,14 +190,14 @@ namespace FredflixAndChell.Shared.Systems
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
         public CharacterParameters Character { get; set; }
-        public GunParameters Gun { get; set; }
+        public WeaponParameters Weapon { get; set; }
         public bool IsInitialized { get; set; }
 
         public PlayerMetadata()
         {
             Score = 0;
             Character = Characters.Get("Trump");
-            Gun = Guns.Get("M4");
+            Weapon = Guns.Get("M4");
         }
 
         public int CompareTo(PlayerMetadata other)

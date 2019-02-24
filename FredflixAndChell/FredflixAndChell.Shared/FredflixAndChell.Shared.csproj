@@ -85,12 +85,15 @@
     <Compile Include="GameObjects\Effects\Explosion.cs" />
     <Compile Include="GameObjects\Effects\Smoke.cs" />
     <Compile Include="GameObjects\Props\Flag.cs" />
+    <Compile Include="Components\Weapons\WeaponRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\MeleeParameters.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\MeleeSprite.cs" />
+    <Compile Include="GameObjects\Weapons\Sprites\WeaponSprite.cs" />
     <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\WeaponParameters.cs" />
+    <Compile Include="GameObjects\Weapons\WeaponType.cs" />
     <Compile Include="Maps\Events\ProximityEventEmitter.cs" />
     <Compile Include="Maps\MapBuilders\CameraTrackerBuilder.cs" />
     <Compile Include="Maps\MapBuilders\CollisionZoneBuilder.cs" />

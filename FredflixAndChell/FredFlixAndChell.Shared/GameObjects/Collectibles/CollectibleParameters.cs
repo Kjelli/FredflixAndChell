@@ -20,9 +20,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         public string Name { get; set; }
         internal CollectibleParameters() { }
         public CollectibleType Type { get; set; }
-        public GunParameters Gun { get; set; }
+        public WeaponParameters Weapon { get; set; }
         public float DropChance { get; set; }
         public Rarity Rarity { get; set; }
-
     }
 }

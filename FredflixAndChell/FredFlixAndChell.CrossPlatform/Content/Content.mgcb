@@ -32,23 +32,25 @@
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
-#begin data/guns/Bazooka.fml
-/copy:data/guns/Bazooka.fml
+#begin data/weapons/guns/Fidgetspinner.fml
+/copy:data/weapons/guns/Fidgetspinner.fml
+#begin data/weapons/guns/Bazooka.fml
+/copy:data/weapons/guns/Bazooka.fml
 
-#begin data/guns/Fidgetspinner.fml
-/copy:data/guns/Fidgetspinner.fml
+#begin data/weapons/guns/Fido.fml
+/copy:data/weapons/guns/Fido.fml
 
-#begin data/guns/Fido.fml
-/copy:data/guns/Fido.fml
+#begin data/weapons/guns/Goggles.fml
+/copy:data/weapons/guns/Goggles.fml
 
-#begin data/guns/Goggles.fml
-/copy:data/guns/Goggles.fml
+#begin data/weapons/guns/M4.fml
+/copy:data/weapons/guns/M4.fml
 
-#begin data/guns/M4.fml
-/copy:data/guns/M4.fml
+#begin data/weapons/guns/PewPew.fml
+/copy:data/weapons/guns/PewPew.fml
 
-#begin data/guns/PewPew.fml
-/copy:data/guns/PewPew.fml
+#begin data/weapons/melee/Stick.fml
+/copy:data/weapons/melee/Stick.fml
 
 #begin effects/grayscale_shader.fx
 /importer:EffectImporter
@@ -106,13 +108,13 @@
 /build:maps/ctf_snow.tmx
 
 #begin maps/dungeon_1.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/dungeon_1.tmx
 
 #begin maps/dungeon_2.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/dungeon_2.tmx
 
 #begin maps/dungeon_tileset.png
@@ -128,8 +130,8 @@
 /build:maps/dungeon_tileset.png
 
 #begin maps/fido_fighters.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/fido_fighters.tmx
 
 #begin maps/props_tileset.png
@@ -169,18 +171,18 @@
 /build:maps/spawner_tile.png
 
 #begin maps/winter_1.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_1.tmx
 
 #begin maps/winter_debug.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_debug.tmx
 
 #begin maps/winter_hub.tmx
-/importer:
-/processor:
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
 /build:maps/winter_hub.tmx
 
 #begin textures/bullets/fidgetspinner.png
@@ -482,6 +484,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/pewpew.png
+
+#begin textures/guns/stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/stick.png
 
 #begin textures/particles/blood.png
 /importer:TextureImporter

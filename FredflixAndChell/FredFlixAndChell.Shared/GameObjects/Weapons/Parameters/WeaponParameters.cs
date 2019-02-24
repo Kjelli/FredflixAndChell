@@ -17,5 +17,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
 
         public float DropChance { get; set; }
         public Rarity Rarity { get; set; }
+        public WeaponType Type { get; set; }
     }
 }

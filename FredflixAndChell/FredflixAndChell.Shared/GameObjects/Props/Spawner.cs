@@ -30,7 +30,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
         private Sprite<Animations> _animation;
 
         private System.Random rng = new System.Random();
-        
+
 
         public enum Animations
         {
@@ -38,7 +38,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             Open,
             Close
         }
-        public Spawner(int x, int y, float spawnRate = 0.3f,string onlySpawn = null) : base(x, y)
+        public Spawner(int x, int y, float spawnRate = 0.3f, string onlySpawn = null) : base(x, y)
         {
             _animation = SetupAnimations();
 
@@ -59,20 +59,20 @@ namespace FredflixAndChell.Shared.GameObjects.Props
         private Sprite<Animations> SetupAnimations()
         {
             var animations = new Sprite<Animations>();
-                
+
             var idle = new SpriteAnimationDescriptor
             {
                 Frames = new int[] { 0 },
                 FPS = 1,
                 Loop = true
-            }.ToSpriteAnimation("maps/spawner_tile",  tileWidth : 16, tileHeight : 16);
+            }.ToSpriteAnimation("maps/spawner_tile", tileWidth: 16, tileHeight: 16);
             animations.addAnimation(Animations.Idle, idle);
 
-            
+
 
             var open = new SpriteAnimationDescriptor
             {
-                Frames = new int[] 
+                Frames = new int[]
                 {
                     1,2,3,4
                 },
@@ -80,15 +80,15 @@ namespace FredflixAndChell.Shared.GameObjects.Props
                 Loop = false
             }.ToSpriteAnimation("maps/spawner_tile", tileWidth: 16, tileHeight: 16);
             animations.addAnimation(Animations.Open, open);
-           
+
 
             var close = new SpriteAnimationDescriptor
             {
-                Frames = new int[] { 4,3,2,1 ,0},
+                Frames = new int[] { 4, 3, 2, 1, 0 },
                 FPS = 15,
                 Loop = false,
-                
-                
+
+
             }.ToSpriteAnimation("maps/spawner_tile", tileWidth: 16, tileHeight: 16);
             animations.addAnimation(Animations.Close, close);
             return animations;
@@ -120,7 +120,8 @@ namespace FredflixAndChell.Shared.GameObjects.Props
         {
             if (other == null && local == null) return;
 
-            if(other.entity == CurrentItem) {
+            if (other.entity == CurrentItem)
+            {
                 CurrentItem = null;
             }
         }
@@ -140,7 +141,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             return Rarity.Common;
             //TODO: DONT RETURN COMMON - return picked one brah
 
-            var roll = rng.Next(0,11);
+            var roll = rng.Next(0, 11);
             if (roll == 11)
                 return Rarity.Legendary;
             else if (roll >= 9)
@@ -154,14 +155,14 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             var items = Collectibles.Collectibles.All(DrawRarity());
             ShuffleCollectibleList(items);
             double rand = rng.NextDouble();
-            foreach(var item in items)
+            foreach (var item in items)
             {
-                if(item.DropChance > rand)
+                if (item.DropChance > rand)
                 {
                     return item.Name;
                 }
             }
-            return items[0].Gun.Name;
+            return items[0].Weapon.Name;
         }
 
         public void ShuffleCollectibleList(List<CollectibleParameters> list)
@@ -177,9 +178,6 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             }
         }
 
-
-
-
         public bool ReadyToSpawn()
         {
             if (_spawnTimer.IsReady() && _spawnerState == SpawnerState.Closed)
@@ -192,7 +190,6 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             return false;
         }
 
-
         public override void Update()
         {
             _spawnTimer.Update();
@@ -203,7 +200,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             {
                 //Try to spawn
                 var roll = rng.NextDouble();
-                if(roll < _spawnRate)
+                if (roll < _spawnRate)
                 {
                     _spawnerState = SpawnerState.Opening;
                     _animation.play(Animations.Open);
@@ -216,15 +213,15 @@ namespace FredflixAndChell.Shared.GameObjects.Props
                     _timeChecker.Start();
                 }
             }
-           
 
-            if(_stayOpenTimer.IsReady() && _spawnerState == SpawnerState.Opening)
+
+            if (_stayOpenTimer.IsReady() && _spawnerState == SpawnerState.Opening)
             {
                 _spawnerState = SpawnerState.Closing;
                 _animation.play(Animations.Close);
             }
 
-            if(_animation.isAnimationPlaying(Animations.Close) && !_animation.isPlaying)
+            if (_animation.isAnimationPlaying(Animations.Close) && !_animation.isPlaying)
             {
                 // TODO Don't start unless current spawned item is picked up
                 _animation.play(Animations.Idle);
