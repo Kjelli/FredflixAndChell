@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -81,7 +82,7 @@ namespace FredflixAndChell.Shared.Components.Players
         private void SetupShadow()
         {
             // Assign renderable shadow component
-            _headShadow = entity.addComponent(new SpriteMime(_head));
+            _headShadow = entity.addComponent(new SpriteMime(Head));
             _headShadow.color = new Color(0, 0, 0, 80);
             _headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
             _headShadow.renderLayer = Layers.Shadow;
