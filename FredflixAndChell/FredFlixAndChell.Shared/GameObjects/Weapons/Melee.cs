@@ -2,19 +2,38 @@
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
+using Nez;
+using System;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
+    public enum MeleeState
+    {
+        Idle, Attacking
+    }
+
+    public enum MeleeAttackState
+    {
+        None, Forward, Backward
+    }
+
     public class Melee : Weapon
     {
+        private const float _swingTargetRadians = (float)Math.PI;
+
         private MeleeRenderer _renderer;
-        private Player _player;
+        protected Collider _collider;
+
+        public float SwingRotation { get; set; }
 
         public MeleeParameters Parameters { get; }
+        public Player Player { get; set; }
 
         public Melee(Player player, MeleeParameters meleeParameters) : base(player)
         {
-            _player = player;
+            Player = player;
             Parameters = meleeParameters;
             SetupParameters();
         }
@@ -22,7 +41,14 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public override void OnSpawn()
         {
             base.OnSpawn();
-            _renderer = addComponent(new MeleeRenderer(this, _player));
+            _renderer = addComponent(new MeleeRenderer(this, Player));
+
+            var collider = addComponent<CircleCollider>();
+            collider.radius = 5f;
+            _collider = collider;
+            _collider.setLocalOffset(new Vector2(10, 0));
+
+            Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.Player);
         }
 
         private void SetupParameters()
@@ -64,6 +90,46 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public override void Update()
         {
             base.Update();
+            CheckCollision();
+        }
+
+        private void CheckCollision()
+        {
+            if (_collider.collidesWithAny(out CollisionResult collision))
+            {
+                var collidedWithEntity = collision.collider.entity;
+                if (collidedWithEntity.tag == Tags.Player)
+                {
+                    HitPlayer(collision.collider.entity);
+                }
+
+            }
+        }
+
+        private void HitPlayer(Entity playerEntity)
+        {
+            var player = playerEntity as Player;
+            if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
+
+            OnImpact(player);
+        }
+
+        public virtual void OnImpact(Player player)
+        {
+            if (player != null && player != Player)
+            {
+                DamagePlayer(player);
+            }
+        }
+
+        protected bool DamagePlayer(Player player, bool destroyBullet = true)
+        {
+            //if (player.CanBeDamagedBy(this))
+            //{
+            player.Damage(this);
+            return true;
+            //}
+            //return false;
         }
 
         public override void ToggleRunning(bool isRunning)
