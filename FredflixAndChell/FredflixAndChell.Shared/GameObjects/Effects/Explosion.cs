@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Effects;
+using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -14,15 +15,19 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
     public class Explosion : Entity
     {
         private CircleCollider _collider;
+        private bool _shouldBeDestroyed;
+
+        public Player ExplosionPlayerSource { get; set; }
 
         private enum ExplosionAnimation
         {
             Explode
         }
 
-        public Explosion(Vector2 position)
+        public Explosion(Vector2 position, Player playerSource = null)
         {
             this.position = position;
+            ExplosionPlayerSource = playerSource;
 
             _collider = addComponent(new CircleCollider(Values.ExplosionRadius));
             _collider.isTrigger = true;
@@ -62,12 +67,13 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
             }
 
             spriteAnimator.play(ExplosionAnimation.Explode);
-            Core.schedule(1.0f, _ => destroy());
+            Core.schedule(1.0f, _ => _shouldBeDestroyed = true);
         }
 
         public override void update()
         {
             base.update();
+            if (_shouldBeDestroyed) destroy();
         }
 
         private Sprite<ExplosionAnimation> SetupExplosionAnimation()
