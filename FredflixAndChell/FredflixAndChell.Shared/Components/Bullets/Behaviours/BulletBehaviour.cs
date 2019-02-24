@@ -48,6 +48,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
             Flags.setFlagExclusive(ref _collider.collidesWithLayers, Layers.MapObstacles);
             Flags.setFlag(ref _collider.collidesWithLayers, Layers.Player);
+            Flags.setFlag(ref _collider.collidesWithLayers, Layers.Bullet);
             Flags.setFlagExclusive(ref _collider.physicsLayer, Layers.Bullet);
 
             // Hack to avoid moving without collider and causing nullreference

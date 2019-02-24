@@ -1,28 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-using Nez;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Nez;
 
 namespace FredflixAndChell.Shared.Utilities
 {
-    public class Cooldown 
+    public class Cooldown
     {
         private bool _unscaled;
         private float _duration;
         private float _cooldownTimer;
-
-      
 
         public Cooldown(float duration, bool unscaled = false)
         {
             _unscaled = unscaled;
             _duration = duration;
         }
-
-    
 
         public void Start()
         {
@@ -42,6 +32,11 @@ namespace FredflixAndChell.Shared.Utilities
         public void Reset()
         {
             _cooldownTimer = 0;
+        }
+
+        public float ElapsedNormalized()
+        {
+            return _cooldownTimer / _duration;
         }
 
         public void Update()

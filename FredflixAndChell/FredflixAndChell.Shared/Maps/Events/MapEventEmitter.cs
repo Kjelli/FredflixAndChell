@@ -1,4 +1,6 @@
-﻿using Nez;
+﻿using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Utilities.Events;
+using Nez;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,11 @@ namespace FredflixAndChell.Shared.Maps.Events
 {
     public abstract class MapEventEmitter : Entity
     {
+        private GameSystem _gameSystem;
         protected Map Map { get; set; }
         protected string EventKey { get; set; }
+
+        public bool EmitGlobally { get; set; }
 
         public MapEventEmitter(Map map, string eventKey)
         {
@@ -18,14 +23,16 @@ namespace FredflixAndChell.Shared.Maps.Events
             EventKey = eventKey;
         }
 
-        public void EmitMapEvent()
+        public override void onAddedToScene()
         {
-            var mapEvent = new MapEvent { EventKey = EventKey };
+            _gameSystem = scene.getSceneComponent<GameSystem>();
+        }
 
-            Map.MapEventListeners
-                .Where(listener => listener.EventKey == mapEvent.EventKey)
-                .ToList()
-                .ForEach(listener => listener.EventTriggered(mapEvent));
+        public void EmitMapEvent(object[] parameters = null)
+        {
+            var mapEvent = new MapEvent { EventKey = EventKey, Parameters = parameters };
+
+            Map.EmitMapEvent(mapEvent, EmitGlobally);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using FredflixAndChell.Shared.GameObjects.Weapons;
-using static FredflixAndChell.Shared.GameObjects.Collectibles.Collectibles;
+﻿using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
@@ -21,9 +20,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         public string Name { get; set; }
         internal CollectibleParameters() { }
         public CollectibleType Type { get; set; }
-        public GunParameters Gun { get; set; }
+        public WeaponParameters Weapon { get; set; }
         public float DropChance { get; set; }
         public Rarity Rarity { get; set; }
-        
     }
 }

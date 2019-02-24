@@ -1,0 +1,32 @@
+Type: Melee
+DropChance: 0.6
+FireRate: 0.1500000007
+Name: Stick
+RenderOffset: 7.0
+Rarity: Common
+Sprite:
+  Fire:
+    FPS: 30.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 10.0
+      Y: 16.0
+  Icon:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0
+  Idle:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 10.0
+      Y: 16.0
+  Source: guns/stick

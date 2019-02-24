@@ -1,9 +1,8 @@
 ﻿using FredflixAndChell.Shared.Components.Bullets.Behaviours;
 using FredflixAndChell.Shared.GameObjects.Bullets;
-using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
-using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using SharpYaml.Serialization;
 using System.IO;
 
@@ -23,9 +22,17 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
         public static GunParameters DeserializeGunParameters(string filename)
         {
             var deserializer = new Serializer();
-            
+
             var gunParam = deserializer.Deserialize<GunParameters>(File.ReadAllText(filename));
             return gunParam;
+        }
+
+        public static MeleeParameters DeserializeMeleeParameters(string filename)
+        {
+            var deserializer = new Serializer();
+
+            var meleeParam = deserializer.Deserialize<MeleeParameters>(File.ReadAllText(filename));
+            return meleeParam;
         }
 
         public static CharacterParameters DeserializeCharacterParameters(string filename)
@@ -35,7 +42,6 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             var characterParameters = deserializer.Deserialize<CharacterParameters>(File.ReadAllText(filename));
             return characterParameters;
         }
-
 
         public static void SerializeCharacter(CharacterParameters player)
         {
@@ -53,7 +59,8 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
         public static void Foo()
         {
             var serializer = new Serializer();
-            var yaml = serializer.Serialize(new GunParameters {
+            var yaml = serializer.Serialize(new GunParameters
+            {
                 BulletParameters = new BulletParameters
                 {
                     BulletBehaviour = nameof(StandardBullet)

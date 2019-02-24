@@ -12,6 +12,28 @@ namespace FredflixAndChell.Shared.Assets
         public const int ScreenHeight = 720;
         public const float RenderLayerDepthFactor = 1 / 10000f;
 
+        public class Values
+        {
+            public const float ExplosionDamage = 100f;
+            public const float ExplosionRadius = 80f;
+            public const float ExplosionKnockback = 30f;
+        }
+
+        public class Strings
+        {
+            public const string CollisionMapEventEnter = "enter";
+            public const string CollisionMapEventExit = "exit";
+
+            public const string TiledMapGameModeKey = "mode";
+            public const string TiledMapGameModeDisplayKey = "mode_display";
+            public const string TiledMapTeamsKey = "teams";
+            public const string TiledMapTeamsDisplayKey = "teams_display";
+            public const string TiledMapMapKey = "map";
+            public const string TiledMapMapDisplayKey = "map_display";
+            public const string TiledMapCharacterSelectKey = "character";
+
+            public const string EventReady = "ready";
+        }
 
         public class Assets
         {
@@ -27,6 +49,9 @@ namespace FredflixAndChell.Shared.Assets
             public const string ItemSpawn = "item_spawn";
             public const string Pit = "pit";
             public const string EventEmitter = "event_emitter";
+            public const string CameraTracker = "camera_tracker";
+            public const string Monitor = "monitor";
+            public const string Zone = "zone";
         }
 
         public class TiledProperties
@@ -42,10 +67,13 @@ namespace FredflixAndChell.Shared.Assets
             public const int Collectible = 3;
             public const int EventEmitter = 4;
             public const int Obstacle = 5;
+            public const int ReadyZone = 6;
+            public const int Explosion = 7;
         }
 
         public class Layers
         {
+            public const int Explosion = 18;
             public const int Background = 17;
             public const int MapBackground = 16;
             public const int MapObstacles = 15;

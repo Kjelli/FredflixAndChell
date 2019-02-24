@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FredflixAndChell.Shared.Assets
 {
@@ -14,52 +15,74 @@ namespace FredflixAndChell.Shared.Assets
         private static Dictionary<string, SpriteFont> _fonts = new Dictionary<string, SpriteFont>();
         private static Dictionary<string, TiledMap> _maps = new Dictionary<string, TiledMap>();
 
-        public static void LoadLoadingScene(ContentManager cm)
-        {
-            _content = cm;
-            LoadTexture("textures/effects/rainbow");
-        }
-
         public static void LoadBroScene(ContentManager cm)
         {
             _content = cm;
 
             // Load fonts to be used in the game
             LoadFont("fonts/debug");
+            LoadFont("fonts/monitor");
 
             LoadPlayerTexture("textures/players/trump");
             LoadPlayerTexture("textures/players/doge");
+            LoadPlayerTexture("textures/players/masschin");
+            LoadPlayerTexture("textures/players/kjelli");
+            LoadPlayerTexture("textures/players/tormod");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
             LoadTexture("textures/effects/lightmask");
             LoadTexture("textures/effects/lightmask_sm");
             LoadTexture("textures/effects/lightmask_xs");
+            LoadTexture("textures/effects/inverted_lightmask_xs");
+            LoadTexture("textures/effects/zone_1");
+            LoadTexture("textures/effects/smoke");
+            LoadTexture("textures/effects/explosion");
+            LoadTexture("textures/effects/fireball");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
             LoadTexture("textures/guns/fidgetspinner");
             LoadTexture("textures/guns/goggles");
+            LoadTexture("textures/guns/bazooka");
+            LoadTexture("textures/guns/stick");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
-
+            LoadTexture("textures/bullets/rocket");
             LoadTexture("textures/UI/HUD");
-
+            LoadTexture("textures/UI/screen_bg");
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
+            LoadTexture("textures/statuseffects/slow");
+
+            LoadTexture("maps/spawner_tile");
 
             LoadEffect("effects/shader_flash");
+            LoadEffect("effects/zone_shader");
+            LoadEffect("effects/grayscale_shader");
+            LoadEffect("effects/weapon_hand_color");
 
-            LoadMap("maps/firstlevel");
+            LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
-            LoadTexture("maps/spawner_tile");
+            LoadMap("maps/fido_fighters");
+            LoadMap("maps/ctf_snow");
+        }
+
+        public static List<string> GetMaps()
+        {
+            return _maps.Keys.ToList();
+        }
+
+        public static List<KeyValuePair<string, string>> GetMapsWithDisplayName()
+        {
+            return _maps.Select(m => new KeyValuePair<string, string>(m.Key, m.Value.properties["name"])).ToList();
         }
 
         private static void LoadPlayerTexture(string playerDirectory)

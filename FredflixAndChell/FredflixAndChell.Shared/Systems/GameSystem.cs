@@ -1,17 +1,20 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.GameObjects.Players.Characters;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
+using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
+using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Systems;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FredflixAndChell.Shared.Maps;
-using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.Components.HUD.DebugHud;
 
 namespace FredflixAndChell.Shared.Systems
@@ -44,6 +47,7 @@ namespace FredflixAndChell.Shared.Systems
         public List<DebugLine> DebugLines = new List<DebugLine>();
         public Map Map => _map;
         public GameSettings Settings => _gameSettings;
+        public IGameModeHandler GameModeHandler => _gameHandler;
 
         public GameSystem(GameSettings gameSettings, Map map)
         {
@@ -69,25 +73,34 @@ namespace FredflixAndChell.Shared.Systems
         {
             switch (_gameSettings.GameMode)
             {
-                case GameModeHandlers.GameModes.Rounds:
+                case GameMode.HUB:
+                    _gameHandler = new HubHandler(this);
+                    break;
+                case GameMode.FRAGS:
                     _gameHandler = new RoundsHandler(this);
                     break;
-                case GameModeHandlers.GameModes.Deathmatch:
+                case GameMode.DM:
                     _gameHandler = new DeathmatchHandler(this);
                     break;
-                case GameModeHandlers.GameModes.CaptureTheFlag:
+                case GameMode.CTF:
+                    _gameHandler = new CaptureTheFlagHandler(this);
                     break;
             }
+            (scene as BroScene)?.OnGameHandlerAdded(_gameHandler);
             _gameHandler.Setup(_gameSettings);
         }
 
         public void RegisterPlayer(Player player)
         {
             _players.Add(player);
-            var playerScore = ContextHelper.PlayerScores.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
-            if (playerScore == null)
+            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+            if (playerMeta == null)
             {
-                ContextHelper.PlayerScores.Add(new PlayerScore { PlayerIndex = player.PlayerIndex, Score = 0 });
+                playerMeta = new PlayerMetadata
+                {
+                    PlayerIndex = player.PlayerIndex
+                };
+                ContextHelper.PlayerMetadata.Add(playerMeta);
             }
         }
 
@@ -124,8 +137,8 @@ namespace FredflixAndChell.Shared.Systems
 
         private void EndGame()
         {
-            ContextHelper.PlayerScores = null;
-            Core.scene = new LobbyScene();
+            ContextHelper.PlayerMetadata.ForEach(p => p.Score = 0);
+            Core.startSceneTransition(new CrossFadeTransition(() => new HubScene()));
         }
 
         public void StartRound()
@@ -141,9 +154,10 @@ namespace FredflixAndChell.Shared.Systems
             TweenManager.stopAllTweens();
         }
 
-        private void StartNextRound()
+        public void StartNextRound()
         {
-            Core.startSceneTransition(new CrossFadeTransition(() => new BroScene(_gameSettings)));
+            Core.startSceneTransition(new CrossFadeTransition(
+                () => new BroScene(ContextHelper.GameSettings)));
         }
 
         public void EndRound()
@@ -154,6 +168,10 @@ namespace FredflixAndChell.Shared.Systems
             var sepia = _broScene.addPostProcessor(new VignettePostProcessor(5));
             sepia.effect = new SepiaEffect();
             _camera.SetWinMode(true);
+            if (_gameHandler.WeHaveAWinner())
+            {
+                _broScene.LetterBox.color = Color.White;
+            }
         }
 
         public void Subscribe(GameEvents gameEvent, Action<GameEventParameters> handler)
@@ -167,12 +185,22 @@ namespace FredflixAndChell.Shared.Systems
         }
     }
 
-    public class PlayerScore : IComparable<PlayerScore>
+    public class PlayerMetadata : IComparable<PlayerMetadata>
     {
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
+        public CharacterParameters Character { get; set; }
+        public WeaponParameters Weapon { get; set; }
+        public bool IsInitialized { get; set; }
 
-        public int CompareTo(PlayerScore other)
+        public PlayerMetadata()
+        {
+            Score = 0;
+            Character = Characters.Get("Trump");
+            Weapon = Guns.Get("M4");
+        }
+
+        public int CompareTo(PlayerMetadata other)
         {
             return Score.CompareTo(other.Score);
         }

@@ -1,13 +1,14 @@
-﻿using FredflixAndChell.Shared.Components.Interactables;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Effects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Maps.Events;
+using FredflixAndChell.Shared.Utilities;
 using Nez;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Components.Players
@@ -46,33 +47,64 @@ namespace FredflixAndChell.Shared.Components.Players
 
         private void ProximityTriggerEnter(Collider other, Collider local)
         {
+
             if (other == null || other.entity == null) return;
-            if (_entitiesInProximity.Contains(other.entity)) return;
+            if (other.entity.tag == Tags.Explosion)
+            {
+                HandleCollisionWithExplosion(other.entity as Explosion);
+                return;
+            }
+
+            if (other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[] { true });
+                return;
+            }
+
+            if (other.entity is Collectible collectible && collectible.CanBeCollected())
+            {
+                collectible?.Highlight();
+            }
 
             var interactable = other.entity.getComponent<InteractableComponent>();
-            if (interactable != null)
+            if (interactable == null) return;
+
+            if (_entitiesInProximity.Contains(other.entity)) return;
+            _entitiesInProximity.Add(other.entity);
+        }
+
+        private void HandleCollisionWithExplosion(Explosion explosion)
+        {
+            var player = entity as Player;
+            var distanceToCenter = (explosion.position - player.position).Length();
+            var damagePercentage = Math.Max((Values.ExplosionRadius - distanceToCenter) / Values.ExplosionRadius, 0);
+            var damage = damagePercentage * Constants.Values.ExplosionDamage;
+
+            var directionalDamage = new DirectionalDamage
             {
-                _entitiesInProximity.Add(other.entity);
-                if (other.entity is Collectible collectible && collectible.CanBeCollected())
-                {
-                    collectible?.Highlight();
-                }
-            }
+                Damage = damage,
+                Direction = -(explosion.position - player.position),
+                Knockback = damagePercentage * Values.ExplosionKnockback
+            };
+            player.Damage(directionalDamage);
         }
 
         private void HitboxTriggerEnter(Collider other, Collider local)
         {
-            if (other.entity.tag == Tags.Pit)
+            var player = entity as Player;
+            switch (other.entity.tag)
             {
-                var player = entity as Player;
-                if (player.PlayerMobilityState != PlayerMobilityState.Rolling)
-                {
-                    player.FallIntoPit(other.entity);
-                }
-            }
-            else if (other.entity.tag == Tags.EventEmitter)
-            {
-                (other.entity as CollisionEventEmitter).EmitMapEvent();
+                case Tags.Pit:
+                    if (player.PlayerMobilityState != PlayerMobilityState.Rolling)
+                    {
+                        player.FallIntoPit(other.entity);
+                    }
+                    break;
+
+                case Tags.EventEmitter:
+                    (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventEnter });
+                    break;
             }
         }
 
@@ -90,19 +122,31 @@ namespace FredflixAndChell.Shared.Components.Players
 
         private void HitboxTriggerExit(Collider other, Collider local)
         {
+            if (other.entity?.tag == Tags.EventEmitter)
+            {
+                (other.entity as CollisionEventEmitter).EmitMapEvent(
+                    new string[] { Strings.CollisionMapEventExit });
+            }
         }
 
         private void ProximityTriggerExit(Collider other, Collider local)
         {
             if (other == null || other.entity == null) return;
-            if (!_entitiesInProximity.Contains(other.entity)) return;
-
-            _entitiesInProximity.Remove(other.entity);
 
             if (other.entity is Collectible collectible)
             {
                 collectible?.Unhighlight();
             }
+
+            if (other.entity is ProximityEventEmitter pee) // wee
+            {
+                pee.EmitMapEvent(new object[] { false });
+                Console.WriteLine("Emitting proximity exit event " + pee.name);
+            }
+
+            if (!_entitiesInProximity.Contains(other.entity)) return;
+            _entitiesInProximity.Remove(other.entity);
+            
         }
 
         public void InteractWithNearestEntity()
@@ -112,7 +156,11 @@ namespace FredflixAndChell.Shared.Components.Players
             var closestEntity = _entitiesInProximity.Aggregate((other1, other2) =>
             ((other2.position - entity.position).Length() < (other1.position - entity.position).Length() ? other2 : other1));
 
+            Console.WriteLine("Attempting to interact with " + closestEntity);
+
             var interactable = closestEntity.getComponent<InteractableComponent>();
+            if (interactable == null) return;
+
             interactable.OnInteract(_player);
 
             if (closestEntity is Collectible collectible)

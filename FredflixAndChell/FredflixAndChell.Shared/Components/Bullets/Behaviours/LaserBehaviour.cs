@@ -44,7 +44,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         {
             _bullet.Renderer.Sprite.renderLayer = Layers.Player;
             _bullet.Velocity = Vector2.Zero;
-            _bullet.Owner.SlownessFactor = 0.5f;
+            _bullet.Owner.AimingSlownessFactor = 0.5f;
             _bullet.position = _bullet.Owner.position;
 
             var direction = _bullet.Owner.FacingAngle;

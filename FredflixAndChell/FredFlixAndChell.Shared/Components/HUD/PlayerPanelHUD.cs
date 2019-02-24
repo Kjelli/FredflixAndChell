@@ -1,19 +1,11 @@
 ﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.PlayerComponents;
+using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Players;
-using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Nez.Textures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
-using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerHeadSprite;
 
 namespace FredflixAndChell.Shared.Components.HUD
 {
@@ -70,13 +62,13 @@ namespace FredflixAndChell.Shared.Components.HUD
             _healthBarFade.origin = new Vector2(0, 0);
 
             _staminaBar = new ScalableSprite(bar);
-            _staminaBar.color = Color.Red;
+            _staminaBar.color = Color.Yellow;
             _staminaBar.localOffset = _panel.localOffset + new Vector2(80, 44);
             _staminaBar.renderLayer = Layers.HUD;
             _staminaBar.origin = new Vector2(0, 0);
 
             _staminaBarFade = new ScalableSprite(bar);
-            _staminaBarFade.color = Color.OrangeRed;
+            _staminaBarFade.color = Color.Gold;
             _staminaBarFade.localOffset = _panel.localOffset + new Vector2(80, 44);
             _staminaBarFade.renderLayer = Layers.HUD;
             _staminaBarFade.layerDepth = 0.5f;
@@ -111,7 +103,7 @@ namespace FredflixAndChell.Shared.Components.HUD
         public override void update()
         {
             base.update();
-
+            if (_player.PlayerState == PlayerState.Idle) return;
             if (_firstFrame)
             {
                 _firstFrame = false;

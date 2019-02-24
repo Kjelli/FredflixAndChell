@@ -1,0 +1,76 @@
+Ammo: 300
+Accuracy: 1
+BarrelOffset:
+  X: 0.0
+  Y: 0.0
+BulletCount: 1
+BulletParameters:
+  BulletBehaviour: LaserBehaviour
+  BulletType: Line
+  Damage: 0.45
+  Knockback: 2.0
+  LifeSpanSeconds: 0.01
+  RotateWithGun: true
+  Scale: 1
+  Speed: 150.0
+  Sprite:
+    Bullet:
+      FPS: 1.0
+      Frames:
+        - 0
+      Loop: false
+      Origin:
+        X: 0.0
+        Y: 0.0
+      TileWidth: 16
+      TileHeight: 3
+    Source: bullets/laser
+BulletSpread: 0.0
+DropChance: 0.8
+FireRate: 0.02
+MagazineAmmo: 75
+MagazineSize: 75
+MaxAmmo: 750
+Name: Goggles
+ReloadTime: 2.0
+RenderOffset: 0.0
+Rarity: Common
+RotatesWithPlayer: false
+AlwaysAbovePlayer: true
+FlipXWithPlayer: true
+FlipYWithPlayer: false
+Scale: 1.0
+Sprite:
+  Fire:
+    FPS: 30.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 16.0
+      Y: 18.0
+  Icon:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 16.0
+      Y: 18.0
+  Idle:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 16.0
+      Y: 18.0
+  Reload:
+    FPS: 15.0
+    Frames:
+      - 1
+    Loop: true
+    Origin:
+      X: 16.0
+      Y: 18.0
+  Source: guns/goggles

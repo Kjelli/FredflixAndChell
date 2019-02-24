@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Scenes;
+using FredflixAndChell.Shared.Utilities.Serialization;
 using Nez;
 
 namespace FredflixAndChell.Shared
@@ -9,12 +10,12 @@ namespace FredflixAndChell.Shared
         protected override void Initialize()
         {
             base.Initialize();
+            exitOnEscapeKeypress = false;
 
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
-
-            scene = new LobbyScene();
+            scene = new HubScene();
         }
     }
 }

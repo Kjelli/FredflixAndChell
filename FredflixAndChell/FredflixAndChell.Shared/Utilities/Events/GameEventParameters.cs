@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Maps.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,9 @@ namespace FredflixAndChell.Shared.Utilities.Events
     {
         public Player Killed { get; set; }
         public Player Killer { get; set; }
+    }
+    public class GlobalMapEventParameters : GameEventParameters
+    {
+        public MapEvent MapEvent { get; set; }
     }
 }

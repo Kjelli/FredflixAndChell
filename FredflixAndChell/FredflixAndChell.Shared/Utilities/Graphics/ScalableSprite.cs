@@ -10,19 +10,42 @@ namespace FredflixAndChell.Shared.Utilities.Graphics
 {
     public class ScalableSprite : Sprite
     {
-        public ScalableSprite() : base(){ }
-        public ScalableSprite(Texture2D texture) : base(texture){ }
-        public ScalableSprite(Subtexture subtexture) : base(subtexture) { }
+        public ScalableSprite() : base() {
+            _scaledBounds = new RectangleF(bounds.location, bounds.size);
+        }
+        public ScalableSprite(Texture2D texture) : base(texture) {
+            _scaledBounds = new RectangleF(bounds.location, bounds.size);
+        }
+        public ScalableSprite(Subtexture subtexture) : base(subtexture) {
+            _scaledBounds = new RectangleF(bounds.location, bounds.size);
+        }
 
         private Vector2 _scale = Vector2.One;
+        private bool _shouldRecalculateBounds;
+        private RectangleF _scaledBounds;
+
         public override void render(Nez.Graphics graphics, Camera camera)
         {
             graphics.batcher.draw(_subtexture, entity.transform.position + localOffset, color, entity.transform.rotation, origin, entity.transform.scale * _scale, spriteEffects, _layerDepth);
         }
 
+        public override RectangleF bounds
+        {
+            get
+            {
+                if (_shouldRecalculateBounds)
+                {
+                    _scaledBounds = new RectangleF(base.bounds.location, base.bounds.size * _scale);
+                    _shouldRecalculateBounds = false;
+                }
+                return _scaledBounds;
+            }
+        }
+
         public void SetScale(Vector2 scale)
         {
             _scale = scale;
+            _shouldRecalculateBounds = true;
         }
     }
 

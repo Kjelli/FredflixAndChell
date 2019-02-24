@@ -4,7 +4,9 @@ using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.HUD;
 using FredflixAndChell.Shared.Maps;
 using FredflixAndChell.Shared.Systems;
+using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Textures;
@@ -17,6 +19,8 @@ namespace FredflixAndChell.Shared.Scenes
     {
         private readonly GameSettings _gameSettings;
         private ScreenSpaceRenderer _screenSpaceRenderer;
+        private ReflectionRenderer _reflectionRenderer;
+        private RenderLayerRenderer _lightRenderer;
 
         public CinematicLetterboxPostProcessor LetterBox { get; private set; }
 
@@ -35,14 +39,16 @@ namespace FredflixAndChell.Shared.Scenes
             SetupRenderering();
         }
 
-        public void Setup()
+        public virtual void Setup()
         {
             InitializePlayerScores();
 
             var map = addEntity(new Map());
             map.Setup(_gameSettings.Map);
 
-            addSceneComponent(new SmoothCamera());
+            _lightRenderer.renderTargetClearColor = map.AmbientLightingColor;
+
+            addSceneComponent(new SmoothCamera(_reflectionRenderer.camera));
             addSceneComponent(new HUD());
             var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
 #if DEBUG
@@ -59,23 +65,34 @@ namespace FredflixAndChell.Shared.Scenes
 
         private void InitializePlayerScores()
         {
-            if (ContextHelper.PlayerScores == null)
+            if (ContextHelper.PlayerMetadata == null)
             {
-                ContextHelper.PlayerScores = new List<PlayerScore>();
+                ContextHelper.PlayerMetadata = new List<PlayerMetadata>();
             }
         }
+
+        public virtual void OnGameHandlerAdded(IGameModeHandler gameModeHandler)
+        {
+        }
+
 
         public override void unload()
         {
             base.unload();
         }
 
-
+        #region Rendering Setup
         private void SetupRenderering()
         {
             camera.setMinimumZoom(4);
             camera.setMaximumZoom(6);
             camera.setZoom(4);
+
+            // Render reflective surfaces
+            _reflectionRenderer = ReflectionRenderer.createAndSetupScene(this, -1,
+                new int[] { Layers.Player, Layers.Bullet, Layers.Interactables });
+
+            Materials.ReflectionMaterial = new ReflectionMaterial(_reflectionRenderer);
 
             // Rendering all layers but lights and screenspace
             var renderLayerExcludeRenderer = addRenderer(new RenderLayerExcludeRenderer(0,
@@ -83,13 +100,13 @@ namespace FredflixAndChell.Shared.Scenes
             renderLayerExcludeRenderer.renderTargetClearColor = new Color(0, 0, 0);
 
             // Rendering lights
-            var lightRenderer = addRenderer(new RenderLayerRenderer(1,
+            _lightRenderer = addRenderer(new RenderLayerRenderer(1,
                 Layers.Lights, Layers.Lights2));
-            lightRenderer.renderTexture = new RenderTexture();
-            lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
+            _lightRenderer.renderTexture = new RenderTexture();
+            _lightRenderer.renderTargetClearColor = new Color(80, 80, 80, 255);
 
             // Postprocessor effects for lighting
-            var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, lightRenderer.renderTexture));
+            var spriteLightPostProcessor = addPostProcessor(new SpriteLightPostProcessor(2, _lightRenderer.renderTexture));
 
             // Render screenspace
             _screenSpaceRenderer = new ScreenSpaceRenderer(100, Layers.HUD);
@@ -98,6 +115,12 @@ namespace FredflixAndChell.Shared.Scenes
 
             // Letterbox effect when a winner is determined
             LetterBox = addPostProcessor(new CinematicLetterboxPostProcessor(3));
+        }
+        #endregion
+
+        public override void update()
+        {
+            base.update();
         }
     }
 }

@@ -22,21 +22,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private Cooldown _leakInterval;
         private Texture2D _bloodTexture;
 
-        private int _bloodId = 0;
         private bool _leak = false;
         private int _particlesPrLeakage;
 
-        public BloodEngine()
+        public BloodEngine(Color bloodColor)
         {
             _rng = new System.Random();
             _leakInterval = new Cooldown(1f);
             _bloodTexture = new Texture2D(Core.graphicsDevice, 1, 1);
-            _bloodTexture.SetData(new[] { Color.DarkRed });
+            _bloodTexture.SetData(new[] { bloodColor });
         }
 
         public void Sprinkle(float damage, Vector2 direction)
         {
-            var particlesCount = Math.Max(Math.Ceiling(damage), 0);
+            var particlesCount = Math.Max(Math.Ceiling(damage / 4), 0);
 
             for (int i = 0; i < particlesCount; i++)
             {
@@ -112,15 +111,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 //_sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
                 _sprite = addComponent(new Sprite(_bloodTexture));
                 _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
-                _sprite.material = new Material();
+                _sprite.material = new Material(blendState: BlendState.NonPremultiplied);
+                _sprite.material.samplerState = SamplerState.PointClamp;
                 _mover = addComponent(new Mover());
 
                 _bloodHitbox = addComponent(new CircleCollider(0.1f));
                 Flags.setFlagExclusive(ref _bloodHitbox.collidesWithLayers, Layers.MapObstacles);
                 _bloodHitbox.physicsLayer = 0;
+                
                 //Scale
-
-                //float random_scale = ((float)rng.range(-20, 20) / 100);
                 float random_scale = ((float)rng.range(-20, 20) / 100);
                 scale = new Vector2(1f + random_scale, 1f + random_scale);
 
@@ -132,7 +131,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             public override void Update()
             {
-                if (Velocity.Length() == 0) return;
+                if (Velocity.Length() == 0) {
+                    _sprite.color.A -= 2;
+                    if (_sprite.color.A <= 2)
+                    {
+                        destroy();
+                    }
+                    return;
+                }
+
                 Velocity = (0.878f * Velocity);
                 var isColliding = _mover.move(Velocity, out CollisionResult result);
                 if (isColliding && result.collider?.entity?.tag == Tags.Pit) destroy();
@@ -141,13 +148,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 {
                     Velocity = Vector2.Zero;
                     _bloodHitbox.unregisterColliderWithPhysicsSystem();
-                    updateInterval = 30;
+                    updateInterval = 15;
                 }
             }
 
             private void UpdateRenderLayerDepth()
             {
                 _sprite.renderLayer = Layers.MapObstacles;
+                _sprite.layerDepth = 0.9f;
             }
         }
 

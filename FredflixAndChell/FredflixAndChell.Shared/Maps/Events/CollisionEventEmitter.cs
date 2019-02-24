@@ -12,6 +12,7 @@ namespace FredflixAndChell.Shared.Maps.Events
     {
         public CollisionEventEmitter(Map map, string eventKey, RectangleF rectangle, int physicsLayer) : base(map, eventKey)
         {
+            name = "CollisionEventEmitter_" + eventKey;
             tag = Tags.EventEmitter;
 
             var collider = addComponent(new BoxCollider(rectangle));
