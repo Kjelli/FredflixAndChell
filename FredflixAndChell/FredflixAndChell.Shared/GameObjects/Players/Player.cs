@@ -617,6 +617,19 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Damage(directionalDamage);
         }
 
+        public void Damage(Melee melee)
+        {
+            //if (!CanBeDamagedBy(bullet)) return;
+            var directionalDamage = new DirectionalDamage
+            {
+                Damage = melee.Parameters.Damage,
+                Knockback = melee.Parameters.Knockback,
+                Direction = melee.Velocity,
+            };
+            _lastHitByPlayer = melee.Player;
+            Damage(directionalDamage);
+        }
+
         public void Damage(DirectionalDamage dd)
         {
             var scaledDamage = dd.Damage * _gameSystem.Settings.DamageMultiplier;
