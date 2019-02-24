@@ -15,6 +15,7 @@ using System;
 using Nez.Tweens;
 using static FredflixAndChell.Shared.GameObjects.Players.Sprites.PlayerLegsSprite;
 using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.Components.Effects;
 
 namespace FredflixAndChell.Shared.Components.Players
 {
@@ -28,7 +29,7 @@ namespace FredflixAndChell.Shared.Components.Players
         private Sprite<HeadAnimation> _head;
         private Sprite<TorsoAnimation> _torso;
         private Sprite<LegsAnimation> _legs;
-        private Sprite _light;
+        private LightSource _light;
 
         private SpriteMime _headShadow;
         private SpriteMime _torsoShadow;
@@ -50,35 +51,21 @@ namespace FredflixAndChell.Shared.Components.Players
             _player = entity as Player;
 
             SetupPlayerSprites();
+            SetupShadow();
+            SetupSilhouette();
+            SetupLightsource();
 
-            // Assign faint glow to player
-            _light = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
-            _light.material = Material.blendScreen();
-            _light.color = Color.White;
-            _light.renderLayer = Layers.Lights;
+            UpdateRenderLayerDepth();
+        }
 
-            // Assign renderable shadow component
+        private void SetupLightsource()
+        {
+            _light = _player.addComponent(new LightSource(Color.White));
+        }
 
-            _headShadow = entity.addComponent(new SpriteMime(_head));
-            _headShadow.color = new Color(0, 0, 0, 80);
-            _headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            _headShadow.renderLayer = Layers.Shadow;
-            _headShadow.localOffset = new Vector2(1, 2);
-
-            _torsoShadow = entity.addComponent(new SpriteMime(_torso));
-            _torsoShadow.color = new Color(0, 0, 0, 80);
-            _torsoShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            _torsoShadow.renderLayer = Layers.Shadow;
-            _torsoShadow.localOffset = new Vector2(1, 2);
-
-            _legsShadow = entity.addComponent(new SpriteMime(_legs));
-            _legsShadow.color = new Color(0, 0, 0, 80);
-            _legsShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
-            _legsShadow.renderLayer = Layers.Shadow;
-            _legsShadow.localOffset = new Vector2(1, 2);
-
+        private void SetupSilhouette()
+        {
             // Assign silhouette component when player is visually blocked
-
             _headSilhouette = entity.addComponent(new SpriteMime(_head));
             _headSilhouette.color = new Color(0, 0, 0, 80);
             _headSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
@@ -96,8 +83,28 @@ namespace FredflixAndChell.Shared.Components.Players
             _legsSilhouette.material = Material.stencilRead(Stencils.HiddenEntityStencil);
             _legsSilhouette.renderLayer = Layers.Foreground;
             _legsSilhouette.localOffset = new Vector2(0, 0);
+        }
 
-            UpdateRenderLayerDepth();
+        private void SetupShadow()
+        {
+            // Assign renderable shadow component
+            _headShadow = entity.addComponent(new SpriteMime(_head));
+            _headShadow.color = new Color(0, 0, 0, 80);
+            _headShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _headShadow.renderLayer = Layers.Shadow;
+            _headShadow.localOffset = new Vector2(1, 2);
+
+            _torsoShadow = entity.addComponent(new SpriteMime(_torso));
+            _torsoShadow.color = new Color(0, 0, 0, 80);
+            _torsoShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _torsoShadow.renderLayer = Layers.Shadow;
+            _torsoShadow.localOffset = new Vector2(1, 2);
+
+            _legsShadow = entity.addComponent(new SpriteMime(_legs));
+            _legsShadow.color = new Color(0, 0, 0, 80);
+            _legsShadow.material = Material.stencilRead(Stencils.EntityShadowStencil);
+            _legsShadow.renderLayer = Layers.Shadow;
+            _legsShadow.localOffset = new Vector2(1, 2);
         }
 
         private void SetupPlayerSprites()
@@ -310,6 +317,8 @@ namespace FredflixAndChell.Shared.Components.Players
             _legs.removeComponent();
             _legsShadow.removeComponent();
             _legsSilhouette.removeComponent();
+
+            _light.removeComponent();
         }
 
         public void FlipX(bool isFlipped)

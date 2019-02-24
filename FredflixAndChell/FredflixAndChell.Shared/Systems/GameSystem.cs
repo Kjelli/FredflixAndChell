@@ -83,6 +83,7 @@ namespace FredflixAndChell.Shared.Systems
                     _gameHandler = new DeathmatchHandler(this);
                     break;
                 case GameMode.CTF:
+                    _gameHandler = new CaptureTheFlagHandler(this);
                     break;
             }
             (scene as BroScene)?.OnGameHandlerAdded(_gameHandler);

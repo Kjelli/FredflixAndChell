@@ -52,6 +52,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
             base.onEnabled();
             _camera = scene.camera;
             _map = scene.findEntity(TiledObjects.TiledMapEntity).getComponent<TiledMapComponent>();
+            _camera.position = new Vector2(_map.width / 2, _map.height / 2);
         }
 
         public override void update()

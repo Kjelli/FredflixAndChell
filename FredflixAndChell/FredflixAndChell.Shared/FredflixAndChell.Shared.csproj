@@ -59,12 +59,14 @@
     <Compile Include="Components\Bullets\Behaviours\BulletBehaviour.cs" />
     <Compile Include="Components\Bullets\Behaviours\AndyBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\ReturningBullet.cs" />
+    <Compile Include="Components\Bullets\Behaviours\Rocket.cs" />
     <Compile Include="Components\Bullets\Behaviours\RotatingReturningBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\SlowingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\StandardBullet.cs" />
     <Compile Include="Components\Bullets\BulletRenderer.cs" />
     <Compile Include="Components\Cameras\CameraTracker.cs" />
     <Compile Include="Components\Collectibles\CollectibleCollisionHandler.cs" />
+    <Compile Include="Components\Effects\LightSource.cs" />
     <Compile Include="Components\Effects\Weather\DungeonGloom.cs" />
     <Compile Include="Components\Effects\Weather\IAtmosphere.cs" />
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
@@ -79,6 +81,9 @@
     <Compile Include="Components\StatusEffects\SlowEffect.cs" />
     <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
+    <Compile Include="GameObjects\Effects\Fireball.cs" />
+    <Compile Include="GameObjects\Effects\Explosion.cs" />
+    <Compile Include="GameObjects\Effects\Smoke.cs" />
     <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
@@ -125,6 +130,7 @@
     <Compile Include="Maps\Events\TimedEventEmitter.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Scenes\LobbyScene.cs" />
+    <Compile Include="Systems\GameModeHandlers\CaptureTheFlagHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\GameModeHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\GameModes.cs" />
     <Compile Include="Systems\GameModeHandlers\HubHandler.cs" />
@@ -135,6 +141,7 @@
     <Compile Include="Systems\GameSystem.cs" />
     <Compile Include="Particles\ParticleEngine.cs" />
     <Compile Include="Utilities\Activator\ObjectActivatorHelper.cs" />
+    <Compile Include="Utilities\DirectionalDamage.cs" />
     <Compile Include="Utilities\Events\GameEventParameters.cs" />
     <Compile Include="Utilities\Events\GameEvents.cs" />
     <Compile Include="Utilities\Extensions.cs" />

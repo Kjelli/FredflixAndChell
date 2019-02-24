@@ -26,12 +26,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public static List<CollectibleParameters> All(Rarity rarity)
         {
-            var list = All();
-            foreach(var item in list)
-            {
-                if (item.Rarity != rarity)
-                    list.Remove(item);
-            }
+            var list = All().Where(w => w.Rarity == rarity).ToList();
             return list;
         }
 
@@ -43,8 +38,6 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
             return _collectibles[name];
         }
-
-        
 
         public static void LoadFromData()
         {

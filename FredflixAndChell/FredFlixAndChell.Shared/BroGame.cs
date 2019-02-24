@@ -10,11 +10,11 @@ namespace FredflixAndChell.Shared
         protected override void Initialize()
         {
             base.Initialize();
+            exitOnEscapeKeypress = false;
 
             Window.AllowUserResizing = true;
             Window.Title = "Ultimate Brodown";
             Screen.setSize(Constants.ScreenWidth, Constants.ScreenHeight);
-
             scene = new HubScene();
         }
     }

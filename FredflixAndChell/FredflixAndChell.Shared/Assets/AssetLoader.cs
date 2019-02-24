@@ -27,6 +27,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadPlayerTexture("textures/players/trump");
             LoadPlayerTexture("textures/players/doge");
             LoadPlayerTexture("textures/players/masschin");
+            LoadPlayerTexture("textures/players/kjelli");
+            LoadPlayerTexture("textures/players/tormod");
 
             LoadTexture("textures/effects/lava1");
             LoadTexture("textures/effects/lava2");
@@ -35,17 +37,22 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/lightmask_xs");
             LoadTexture("textures/effects/inverted_lightmask_xs");
             LoadTexture("textures/effects/zone_1");
+            LoadTexture("textures/effects/smoke");
+            LoadTexture("textures/effects/explosion");
+            LoadTexture("textures/effects/fireball");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
             LoadTexture("textures/guns/fidgetspinner");
             LoadTexture("textures/guns/goggles");
+            LoadTexture("textures/guns/bazooka");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
+            LoadTexture("textures/bullets/rocket");
             LoadTexture("textures/UI/HUD");
             LoadTexture("textures/UI/screen_bg");
             LoadTexture("textures/particles/blood");

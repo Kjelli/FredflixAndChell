@@ -129,7 +129,7 @@
   <object id="570" name="team_red_zone" type="zone" x="464" y="568" width="32.25" height="31.5">
    <properties>
     <property name="color" type="color" value="#ffff0000"/>
-    <property name="ctf_only" type="bool" value="false"/>
+    <property name="ctf_only" type="bool" value="true"/>
     <property name="glow" type="bool" value="true"/>
     <property name="key" value="red_zone"/>
    </properties>

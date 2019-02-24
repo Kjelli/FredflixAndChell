@@ -9,6 +9,7 @@ namespace FredflixAndChell.Shared.Components.Players
 {
     public class PlayerController : Component, IUpdatable
     {
+        private VirtualButton _exitGameButton;
         private VirtualJoystick _leftStick;
         private VirtualJoystick _rightStick;
         private VirtualButton _fireButton;
@@ -25,6 +26,7 @@ namespace FredflixAndChell.Shared.Components.Players
         private GamePadData _gp;
         private bool _inputEnabled = true;
 
+        public bool ExitGameButtonPressed => _exitGameButton?.isPressed ?? false;
         public float XLeftAxis => _leftStick?.value.X ?? _gp.getLeftStick().X;
         public float YLeftAxis => -1 * _leftStick?.value.Y ?? -1 * _gp.getLeftStick().Y;
         public float XRightAxis => _rightStick?.value.X ?? _gp.getRightStick().X;
@@ -59,6 +61,7 @@ namespace FredflixAndChell.Shared.Components.Players
                 _rightStick = new VirtualJoystick(true);
 
                 // Buttons
+                _exitGameButton = new VirtualButton();
                 _fireButton = new VirtualButton();
                 _reloadButton = new VirtualButton();
                 _dropGunButton = new VirtualButton();
@@ -67,6 +70,7 @@ namespace FredflixAndChell.Shared.Components.Players
                 _switchWeaponButton = new VirtualButton();
                 _sprintButton = new VirtualButton();
 
+                _exitGameButton.addKeyboardKey(Keys.Escape);
                 _leftStick.addKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.A, Keys.D, Keys.S, Keys.W);
                 _rightStick.nodes.Add(_mouseJoystick);
                 _fireButton.addMouseLeftButton();

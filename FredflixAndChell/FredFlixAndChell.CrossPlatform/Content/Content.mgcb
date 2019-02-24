@@ -20,11 +20,20 @@
 #begin data/characters/Doge.fml
 /copy:data/characters/Doge.fml
 
+#begin data/characters/Kjelli.fml
+/copy:data/characters/Kjelli.fml
+
 #begin data/characters/Masschin.fml
 /copy:data/characters/Masschin.fml
 
+#begin data/characters/Tormod.fml
+/copy:data/characters/Tormod.fml
+
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
+
+#begin data/guns/Bazooka.fml
+/copy:data/guns/Bazooka.fml
 
 #begin data/guns/Fidgetspinner.fml
 /copy:data/guns/Fidgetspinner.fml
@@ -210,6 +219,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/bullets/laser.png
 
+#begin textures/bullets/rocket.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/rocket.png
+
 #begin textures/bullets/shockwave.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -245,6 +266,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/standard.png
+
+#begin textures/effects/explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/explosion.png
+
+#begin textures/effects/fireball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/fireball.png
 
 #begin textures/effects/inverted_lightmask_xs.png
 /importer:TextureImporter
@@ -342,6 +387,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/effects/rainbow.png
 
+#begin textures/effects/smoke.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/smoke.png
+
 #begin textures/effects/zone_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -353,6 +410,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/effects/zone_1.png
+
+#begin textures/guns/bazooka.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/bazooka.png
 
 #begin textures/guns/fidgetspinner.png
 /importer:TextureImporter
@@ -479,7 +548,7 @@
 /processorParam:TextureFormat=Color
 /build:textures/players/doge/torso.png
 
-#begin textures/players/kjelli_body.png
+#begin textures/players/kjelli/head.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -489,9 +558,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/kjelli_body.png
+/build:textures/players/kjelli/head.png
 
-#begin textures/players/kjelli_head.png
+#begin textures/players/kjelli/legs.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -501,7 +570,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/kjelli_head.png
+/build:textures/players/kjelli/legs.png
+
+#begin textures/players/kjelli/torso.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/kjelli/torso.png
 
 #begin textures/players/masschin/head.png
 /importer:TextureImporter
@@ -539,7 +620,7 @@
 /processorParam:TextureFormat=Color
 /build:textures/players/masschin/torso.png
 
-#begin textures/players/tormod_body.png
+#begin textures/players/tormod/head.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -549,9 +630,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/tormod_body.png
+/build:textures/players/tormod/head.png
 
-#begin textures/players/tormod_head.png
+#begin textures/players/tormod/legs.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -561,7 +642,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:textures/players/tormod_head.png
+/build:textures/players/tormod/legs.png
+
+#begin textures/players/tormod/torso.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/players/tormod/torso.png
 
 #begin textures/players/trump/head.png
 /importer:TextureImporter

@@ -22,7 +22,9 @@ namespace FredflixAndChell.Shared.Scenes
             KnockbackMultiplier = 0.0f
         })
         {
+#if !DEBUG
             _grayscaleDelay = new Cooldown(2, true);
+#endif
         }
 
         public override void initialize()
@@ -30,7 +32,7 @@ namespace FredflixAndChell.Shared.Scenes
             base.initialize();
             if (ContextHelper.IsGameInitialized)
                 return;
-
+#if !DEBUG
             Console.WriteLine("Initializing HubScene");
             var transition = new FadeTransition
             {
@@ -45,6 +47,7 @@ namespace FredflixAndChell.Shared.Scenes
             _grayscalePostProcessor.effect.Parameters["intensity"].SetValue((float)1);
 
             ContextHelper.IsGameInitialized = true;
+#endif
         }
 
         public override void Setup()
@@ -56,15 +59,17 @@ namespace FredflixAndChell.Shared.Scenes
         public override void update()
         {
             base.update();
+#if !DEBUG
             _grayscaleDelay.Update();
             if (!_grayscaleDelay.IsReady())
             {
-                Console.WriteLine("Reducing grayscale...");
                 var delta = _grayscaleDelay.ElapsedNormalized();
                 _grayscalePostProcessor.effect.Parameters["intensity"].SetValue(delta);
             }
+#endif
         }
 
+#if !DEBUG
         private void ShowTitleOverlay()
         {
             // create our canvas and put it on the screen space render layer
@@ -85,5 +90,6 @@ namespace FredflixAndChell.Shared.Scenes
                 _grayscaleDelay.Start();
             });
         }
+#endif
     }
 }

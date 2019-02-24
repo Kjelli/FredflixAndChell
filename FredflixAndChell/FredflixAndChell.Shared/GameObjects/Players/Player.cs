@@ -7,6 +7,7 @@ using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
+using FredflixAndChell.Shared.Scenes;
 using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
@@ -69,6 +70,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
         private Vector2 _initialRollingDirection;
+        private Player _lastHitByPlayer;
 
         public int PlayerIndex { get; set; }
         public PlayerMobilityState PlayerMobilityState { get; set; }
@@ -162,6 +164,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assign proximity interaction hitbox
             _proximityHitbox = addComponent(new CircleCollider(20f));
             Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Interactables);
+            Flags.setFlag(ref _proximityHitbox.collidesWithLayers, Layers.Explosion);
             Flags.setFlagExclusive(ref _proximityHitbox.physicsLayer, 0);
             _proximityHitbox.isTrigger = true;
 
@@ -190,7 +193,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_renderer != null)
             {
                 _renderer.setEnabled(false);
-                _renderer.removeComponent();
+                removeComponent(_renderer);
             }
             SetupRenderer(playerSprite);
         }
@@ -238,6 +241,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 Core.debugRenderEnabled = !Core.debugRenderEnabled;
                 DebugToggledRecently = true;
+            }
+
+            if (_controller.ExitGameButtonPressed)
+            {
+                Core.scene = new HubScene();
             }
 
             HandleDodgeRollGracePeriod();
@@ -423,7 +431,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             Acceleration *= Speed * deltaTime;
             Velocity = Velocity + CalculateAcceleration();
-            
+
 
             if (Velocity.Length() < 0.001f) Velocity = Vector2.Zero;
             if (Velocity.Length() > 0) _renderer.UpdateRenderLayerDepth();
@@ -443,7 +451,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (PlayerState != PlayerState.Normal) return;
 
             Health = 0;
-            DisablePlayer();
+            DisablePlayer(resetVelocity: true);
             DisableHitbox();
             PlayerState = PlayerState.Dying;
             var easeType = EaseType.CubicOut;
@@ -474,6 +482,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void EnableProximityHitbox()
         {
             Flags.setFlagExclusive(ref _proximityHitbox.collidesWithLayers, Layers.Interactables);
+            Flags.setFlag(ref _proximityHitbox.collidesWithLayers, Layers.Explosion);
             _proximityHitbox.registerColliderWithPhysicsSystem();
             _proximityHitbox.setEnabled(true);
         }
@@ -509,17 +518,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _cameraTracker.setEnabled(false);
         }
 
-        public void DisablePlayer()
+        public void DisablePlayer(bool resetVelocity)
         {
             _controller.SetInputEnabled(false);
             DropGun();
-            Velocity = Vector2.Zero;
+            if (resetVelocity)
+            {
+                Velocity = Vector2.Zero;
+            }
             Acceleration = Vector2.Zero;
-            //_mover.setEnabled(false);
-            //_playerHitbox.unregisterColliderWithPhysicsSystem();
-            //_playerHitbox.collidesWithLayers = 0;
-            //_playerHitbox.setEnabled(false);
-            DisableProximityHitbox();
         }
 
         public void Attack()
@@ -571,24 +578,36 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public void Damage(Bullet bullet)
         {
             if (!CanBeDamagedBy(bullet)) return;
+            var directionalDamage = new DirectionalDamage
+            {
+                Damage = bullet.Parameters.Damage,
+                Knockback = bullet.Parameters.Knockback,
+                Direction = bullet.Velocity,
+            };
+            _lastHitByPlayer = bullet.Owner;
+            Damage(directionalDamage);
+        }
 
-            var damage = bullet.Parameters.Damage * _gameSystem.Settings.DamageMultiplier;
-            Health -= damage;
-            _blood.Sprinkle(damage, bullet.Velocity);
+        public void Damage(DirectionalDamage dd)
+        {
+            var scaledDamage = dd.Damage * _gameSystem.Settings.DamageMultiplier;
+            var scaledKnockback = dd.Knockback * _gameSystem.Settings.KnockbackMultiplier;
 
-            var knockback = bullet.Parameters.Knockback * _gameSystem.Settings.KnockbackMultiplier;
-            Velocity += bullet.Velocity * knockback * Time.deltaTime;
+            Health -= scaledDamage;
+            Velocity += dd.Direction * scaledKnockback * Time.deltaTime;
+
+            _blood.Sprinkle(scaledDamage, dd.Direction);
 
             if (Health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
                 PlayerState = PlayerState.Dying;
                 DropDead();
-                DisablePlayer();
+                DisablePlayer(resetVelocity: false);
 
                 _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
                 {
                     Killed = this,
-                    Killer = bullet.Owner
+                    Killer = _lastHitByPlayer
                 });
             }
         }

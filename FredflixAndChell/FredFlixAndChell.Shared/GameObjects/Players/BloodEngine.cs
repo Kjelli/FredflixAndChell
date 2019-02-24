@@ -35,7 +35,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Sprinkle(float damage, Vector2 direction)
         {
-            var particlesCount = Math.Max(Math.Ceiling(damage), 0);
+            var particlesCount = Math.Max(Math.Ceiling(damage / 4), 0);
 
             for (int i = 0; i < particlesCount; i++)
             {
@@ -111,15 +111,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 //_sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("particles/blood")));
                 _sprite = addComponent(new Sprite(_bloodTexture));
                 _sprite.renderLayer = _drawAbovePlayer ? Layers.PlayerFrontest : Layers.MapObstacles;
-                _sprite.material = new Material();
+                _sprite.material = new Material(blendState: BlendState.NonPremultiplied);
+                _sprite.material.samplerState = SamplerState.PointClamp;
                 _mover = addComponent(new Mover());
 
                 _bloodHitbox = addComponent(new CircleCollider(0.1f));
                 Flags.setFlagExclusive(ref _bloodHitbox.collidesWithLayers, Layers.MapObstacles);
                 _bloodHitbox.physicsLayer = 0;
+                
                 //Scale
-
-                //float random_scale = ((float)rng.range(-20, 20) / 100);
                 float random_scale = ((float)rng.range(-20, 20) / 100);
                 scale = new Vector2(1f + random_scale, 1f + random_scale);
 
@@ -131,7 +131,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             public override void Update()
             {
-                if (Velocity.Length() == 0) return;
+                if (Velocity.Length() == 0) {
+                    _sprite.color.A -= 2;
+                    if (_sprite.color.A <= 2)
+                    {
+                        destroy();
+                    }
+                    return;
+                }
+
                 Velocity = (0.878f * Velocity);
                 var isColliding = _mover.move(Velocity, out CollisionResult result);
                 if (isColliding && result.collider?.entity?.tag == Tags.Pit) destroy();
@@ -140,7 +148,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 {
                     Velocity = Vector2.Zero;
                     _bloodHitbox.unregisterColliderWithPhysicsSystem();
-                    updateInterval = 30;
+                    updateInterval = 15;
                 }
             }
 
