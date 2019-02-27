@@ -1,4 +1,4 @@
-Ammo: 60
+Ammo: 3
 Accuracy: 0.85
 BarrelOffset:
   X: 6.0
@@ -29,7 +29,7 @@ DropChance: 0.8
 FireRate: 0.0500000007
 MagazineAmmo: 1
 MagazineSize: 1
-MaxAmmo: 60
+MaxAmmo: 3
 Name: Bazooka
 ReloadTime: 3.0
 RenderOffset: 7.0
@@ -60,6 +60,16 @@ Sprite:
     Frames:
       - 1
     Loop: false
+    Origin:
+      X: 42.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Empty:
+    FPS: 1.0
+    Frames:
+      - 2
+    Loop: true
     Origin:
       X: 42.0
       Y: 16.0  

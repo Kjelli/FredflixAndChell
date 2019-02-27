@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Props;
+﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Props;
 using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
@@ -25,6 +26,12 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                     {
                         continue;
                     }
+
+                    var position = zoneObject.position;
+                    var collectible = new Collectible(position.X, position.Y, "flag", false);
+
+                    // TODO
+                    collectible.OnPickupEvent += _ => { };
                 }
 
                 var color = new Color();

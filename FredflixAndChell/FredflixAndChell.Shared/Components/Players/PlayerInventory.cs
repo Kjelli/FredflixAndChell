@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
@@ -28,7 +29,7 @@ namespace FredflixAndChell.Shared.Components.Players
             EquipWeapon(_weaponParameters.Name);
         }
 
-        public void EquipWeapon(string name)
+        public void EquipWeapon(string name, CollectibleMetadata metadata = null)
         {
             if (Weapon != null)
             {
@@ -38,7 +39,8 @@ namespace FredflixAndChell.Shared.Components.Players
             var gunParams = Guns.Get(name);
             if (gunParams != null)
             {
-                Weapon = entity.scene.addEntity(new Gun(_player, gunParams));
+                var gunMetadata = (GunMetadata)metadata;
+                Weapon = entity.scene.addEntity(new Gun(_player, gunParams, gunMetadata));
 
                 var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
                 if (meta != null)
@@ -106,7 +108,9 @@ namespace FredflixAndChell.Shared.Components.Players
                 Collectible throwedItem = null;
                 if (Weapon is Gun gun)
                 {
-                    throwedItem = entity.scene.addEntity(new Collectible(transform.position.X, transform.position.Y, gun.Parameters.Name, true));
+                    var gunCollectible = new Collectible(transform.position.X, transform.position.Y, 
+                        gun.Parameters.Name, true, new GunMetadata(gun.Ammo, gun.MagazineAmmo));
+                    throwedItem = entity.scene.addEntity(gunCollectible);
 
                 }
                 else if (Weapon is Melee melee)

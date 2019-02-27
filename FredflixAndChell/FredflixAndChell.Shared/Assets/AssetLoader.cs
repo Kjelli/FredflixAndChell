@@ -46,6 +46,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/goggles");
             LoadTexture("textures/guns/bazooka");
             LoadTexture("textures/guns/stick");
+            LoadTexture("textures/guns/flag");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");

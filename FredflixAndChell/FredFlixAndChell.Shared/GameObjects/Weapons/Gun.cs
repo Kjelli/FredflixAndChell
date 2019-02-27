@@ -1,5 +1,7 @@
 ﻿using FredflixAndChell.Shared.Components.Weapons;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
@@ -12,13 +14,9 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
     {
         private GunRenderer _renderer;
         private Player _player;
-
-        private int _ammo;
         private int _maxAmmo;
-        private int _magazineAmmo;
         private int _magazineSize;
         private int _bulletCount;
-
         private float _accuracy;
         private float _bulletSpread;
 
@@ -26,12 +24,14 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public Cooldown Reload { get; set; }
         public GunParameters Parameters { get; }
+        public int Ammo { get; set; }
+        public int MagazineAmmo { get; set; }
 
-        public Gun(Player player, GunParameters gunParameters) : base(player)
+        public Gun(Player player, GunParameters gunParameters, GunMetadata metadata = null) : base(player)
         {
             _player = player;
             Parameters = gunParameters;
-            SetupParameters();
+            SetupParameters(metadata);
         }
 
         public override void OnSpawn()
@@ -40,12 +40,12 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             _renderer = addComponent(new GunRenderer(this, _player));
         }
 
-        private void SetupParameters()
+        private void SetupParameters(GunMetadata metadata = null)
         {
             _accuracy = Parameters.Accuracy;
-            _ammo = Parameters.Ammo;
+            Ammo = metadata?.GetAmmo() ?? Parameters.Ammo;
+            MagazineAmmo = metadata?.GetMagazineAmmo() ?? Parameters.MagazineAmmo;
             _maxAmmo = Parameters.MaxAmmo;
-            _magazineAmmo = Parameters.MagazineAmmo;
             _magazineSize = Parameters.MagazineSize;
             _barrelOffset = Parameters.BarrelOffset;
             Cooldown = new Cooldown(Parameters.FireRate);
@@ -58,7 +58,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         public override void Fire()
         {
             CheckAmmo();
-            if (Cooldown.IsReady() && Reload.IsReady() && _magazineAmmo >= 0)
+            if (Cooldown.IsReady() && Reload.IsReady() && MagazineAmmo > 0)
             {
                 //Functionality
                 Cooldown.Start();
@@ -77,7 +77,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
                     Bullet.Create(_player, x, y, direction, Parameters.BulletParameters);
                 }
-                _magazineAmmo--;
+                MagazineAmmo--;
 
                 //Animation
                 _renderer?.Fire();
@@ -86,12 +86,12 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void CheckAmmo()
         {
-            if (_magazineAmmo == 0)
+            if (MagazineAmmo == 0)
             {
-                if (_ammo <= 0)
+                if (Ammo <= 0)
                 {
                     //Totally out of ammo? 
-                    //TODO: Throw away this
+                    _renderer.Empty();
                 }
                 else
                 {
@@ -103,13 +103,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public void ReloadMagazine()
         {
-            if (!Reload.IsOnCooldown() && _magazineAmmo != _magazineSize)
+            if (!Reload.IsOnCooldown() && MagazineAmmo != _magazineSize)
             {
                 //Function
                 Reload.Start();
-                int newBullets = Math.Min(_magazineSize - _magazineAmmo, _ammo);
-                _ammo = _ammo - newBullets;
-                _magazineAmmo = _magazineAmmo + newBullets;
+                int newBullets = Math.Min(_magazineSize - MagazineAmmo, Ammo);
+                Ammo = Ammo - newBullets;
+                MagazineAmmo = MagazineAmmo + newBullets;
 
                 //Animation
                 _renderer.Reload();

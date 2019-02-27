@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.Components.Players;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Tweens;
+using System;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
@@ -35,8 +37,16 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private bool _isHighlighted;
         private int _numberOfPlayersInProximity;
 
+        public Action<Collectible> OnPickupEvent;
+
         public CollectibleState CollectibleState => _collectibleState;
         public CollectibleParameters Preset { get; set; }
+        public CollectibleMetadata Metadata { get; set; }
+
+        public Collectible(float x, float y, string name, bool dropped, CollectibleMetadata Metadata) : this(x, y, name, dropped)
+        {
+            this.Metadata = Metadata;
+        }
 
         public Collectible(float x, float y, string name, bool dropped) : base(x, y)
         {
@@ -233,11 +243,14 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         {
             if (_collectibleState != CollectibleState.Available) return;
 
-            player.EquipWeapon(Preset.Weapon.Name);
+            player.EquipWeapon(Preset.Weapon.Name, Metadata);
 
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
+
+            OnPickupEvent?.Invoke(this);
+
             destroy();
         }
 

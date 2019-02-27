@@ -2,6 +2,8 @@
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.Components.StatusEffects;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -443,9 +445,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             PlayerMobilityState = PlayerMobilityState.Running;
         }
 
-        public void EquipWeapon(string name)
+        public void EquipWeapon(string name, CollectibleMetadata metadata = null)
         {
-            _inventory.EquipWeapon(name);
+            _inventory.EquipWeapon(name, metadata);
         }
 
         private void Move()
