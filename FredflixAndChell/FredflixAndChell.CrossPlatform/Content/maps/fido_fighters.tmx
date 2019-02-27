@@ -3,6 +3,7 @@
  <properties>
   <property name="ambient_lighting" type="color" value="#ff000053"/>
   <property name="name" value="Fido"/>
+  <property name="start_weapon" value="Fido"/>
   <property name="weather" value="snowstorm"/>
  </properties>
  <tileset firstgid="1" source="tileset_winter.tsx"/>

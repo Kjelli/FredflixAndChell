@@ -66,6 +66,7 @@ namespace FredflixAndChell.Shared.Assets
             public const string SpawnerMaxIntervalSeconds = "max_interval_seconds";
             public const string SpawnerMaxSpawns = "max_spawns";
             public const string SpawnerCameraTracking = "camera_tracking";
+            public const string MapStartWeapon = "start_weapon";
         }
 
         public class Tags

@@ -726,6 +726,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             position = furthestSpawn;
             PlayerState = PlayerState.Normal;
+            PlayerMobilityState = PlayerMobilityState.Walking;
 
             localRotation = 0;
             scale = new Vector2(1.0f, 1.0f);
@@ -740,6 +741,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters();
             EnableHitbox();
             EnableProximityHitbox();
+
+            var weapon = ContextHelper.PlayerMetadataByIndex(PlayerIndex).Weapon.Name;
+            EquipWeapon(weapon);
 
             // Hack to prevent newly respawned players from being invincible
             Move();

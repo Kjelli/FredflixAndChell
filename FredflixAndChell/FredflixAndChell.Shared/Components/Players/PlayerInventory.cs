@@ -79,6 +79,8 @@ namespace FredflixAndChell.Shared.Components.Players
                 var nextGun = Guns.GetNextAfter(gun.Parameters.Name ?? "M4").Name;
                 EquipWeapon(nextGun);
             }
+#else
+            DropWeapon();
 #endif
         }
 
