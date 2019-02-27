@@ -665,6 +665,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 meta.Character = nextCharacter;
             }
         }
+
         private void DropDead()
         {
             var easeType = EaseType.BounceOut;
@@ -730,6 +731,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller.SetInputEnabled(true);
             _cameraTracker.setEnabled(true);
             _blood.StopLeaking();
+
+            _lastHitPlayerSource = null;
+            _lastHitTime = -1;
 
             SetupParameters();
             EnableHitbox();
