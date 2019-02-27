@@ -1,61 +1,84 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Effects;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
+using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
+using Random = Nez.Random;
 
 namespace FredflixAndChell.Shared.GameObjects.Props
 {
     public enum SpawnerState
     {
-        Closed, Opening, Closing
+        Initial, Closed, Opening, Closing, Exhausted
     }
-    public class Spawner : GameObject, ITriggerListener
+    public class Spawner : Entity
     {
-        private SpawnerState _spawnerState;
-        public Collectible CurrentItem;
-        private int _registerOffset { get; } = 20;
-        private float _spawnRate { get; set; }
-
-        private Cooldown _spawnTimer { get; set; }
-        private Cooldown _stayOpenTimer { get; set; }
-
-        private Cooldown _timeChecker { get; set; }
-
-        private bool _unoccupied { get; set; } = true;
+        private const float FromOpeningToSpawnDelaySeconds = 4f;
+        private const float FromSpawnToClosedDelaySeconds = 2f;
 
         private Sprite<Animations> _animation;
+        private readonly SpawnerParameters _parameters;
+        private List<CollectibleParameters> _allowedCollectibles;
 
-        private System.Random rng = new System.Random();
+        private SpawnerState _spawnerState;
+        private Cooldown _timer;
 
+        private int _spawnCount;
+        private CollectibleParameters _nextItemToSpawn;
+        private bool _blocked;
+        private bool _addedToScene;
 
-        public enum Animations
+        private enum Animations
         {
             Idle,
             Open,
             Close
         }
-        public Spawner(int x, int y, float spawnRate = 0.3f, string onlySpawn = null) : base(x, y)
+
+        public Spawner(int x, int y, SpawnerParameters parameters)
         {
+            position = new Vector2(x, y);
             _animation = SetupAnimations();
+            _animation.renderLayer = Layers.MapObstacles;
+            _animation.play(Animations.Idle);
+            addComponent(_animation);
 
-            //Time from "announced spawn" to actual spawning (color, show rarity etc)
-            _spawnTimer = new Cooldown(4f);
-            //Animation
-            _stayOpenTimer = new Cooldown(3.5f);
-
-            _spawnRate = spawnRate;
-
-            //How often the spawner might spawn
-            //Spawn rate is percentage of that happending
-            //5 in spawnrate and 3 in timechecker, gives 5% chance every 3 second to spawn 
-            _timeChecker = new Cooldown(3f);
-
+            _parameters = parameters;
+            _allowedCollectibles = FilterAllowedCollectibles();
         }
 
+        private List<CollectibleParameters> FilterAllowedCollectibles()
+        {
+            var items = Collectibles.Collectibles.All().AsEnumerable();
+
+            // If set, include whitelisted weapons by rarity
+            if (_parameters.RarityWhitelist?.Count() > 0)
+                items = items.Where(i => _parameters.RarityWhitelist.contains(i.Rarity.ToString()));
+
+            // If set, exclude blacklisted weapons by rarity
+            if (_parameters.RarityBlacklist?.Count() > 0)
+                items = items.Where(i => !_parameters.RarityBlacklist.contains(i.Rarity.ToString()));
+
+            // If set, include whitelisted weapons by name
+            if (_parameters.WeaponWhitelist?.Count() > 0)
+                items = items.Where(i => _parameters.WeaponWhitelist.contains(i.Name));
+
+            // If set, exclude blacklisted weapons by name
+            if (_parameters.WeaponBlacklist?.Count() > 0)
+                items = items.Where(i => !_parameters.WeaponBlacklist.contains(i.Name));
+
+            return items.ToList();
+        }
+
+       
         private Sprite<Animations> SetupAnimations()
         {
             var animations = new Sprite<Animations>();
@@ -67,8 +90,6 @@ namespace FredflixAndChell.Shared.GameObjects.Props
                 Loop = true
             }.ToSpriteAnimation("maps/spawner_tile", tileWidth: 16, tileHeight: 16);
             animations.addAnimation(Animations.Idle, idle);
-
-
 
             var open = new SpriteAnimationDescriptor
             {
@@ -94,144 +115,160 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             return animations;
         }
 
-        public override void OnDespawn()
+        public override void onAddedToScene()
         {
+            addComponent(new CameraTracker(() =>
+                _parameters.CameraTracking && _spawnerState != SpawnerState.Closed && _spawnerState != SpawnerState.Initial
+            ));
+
+            _addedToScene = true;
         }
-
-        public override void OnSpawn()
+        private void StartTimer()
         {
-            var sprite = addComponent(_animation);
-            sprite.renderLayer = Layers.MapObstacles;
-
-            addComponent(new CameraTracker(() => _spawnerState != SpawnerState.Closed));
-
-            _animation.play(Animations.Idle);
-            _spawnTimer.Start();
-
-            var hitbox = addComponent(new CircleCollider(4f));
-
-            Flags.setFlagExclusive(ref hitbox.collidesWithLayers, Layers.Interactables);
-            Flags.setFlagExclusive(ref hitbox.physicsLayer, 0);
-            hitbox.isTrigger = true;
-
-        }
-
-        public void onTriggerExit(Collider other, Collider local)
-        {
-            if (other == null && local == null) return;
-
-            if (other.entity == CurrentItem)
+            if (_parameters.MaxSpawns > 0 && _spawnCount >= _parameters.MaxSpawns)
             {
-                CurrentItem = null;
+                Console.WriteLine("Reached maximum spawn count");
+                _spawnerState = SpawnerState.Exhausted;
+                return;
             }
+
+            var timeUntilNextSpawn = Random.range(_parameters.MinIntervalSeconds, _parameters.MaxIntervalSeconds);
+            _timer = new Cooldown(timeUntilNextSpawn);
+            _timer.Start();
+            Console.WriteLine("Between " + _parameters.MinIntervalSeconds + " and " + _parameters.MaxIntervalSeconds);
+            Console.WriteLine("  This should wait " + timeUntilNextSpawn + " seconds until next spawn...");
         }
 
-
-
-        public void SpawnItem()
+        private void SpawnItem()
         {
-            CurrentItem = new Collectible((int)position.X, (int)position.Y, GetRandomItem(), false);
-            var col = scene.addEntity(CurrentItem);
-            col.transform.setScale(0.3f);
-            _unoccupied = false;
+            var collectible = new Collectible(position.X, position.Y, _nextItemToSpawn.Name, false);
+            collectible.OnPickupEvent += _ => _blocked = false;
+
+            scene.addEntity(collectible);
+            _blocked = true;
         }
 
-        public Rarity DrawRarity()
+        private Rarity DrawRarity()
         {
-            return Rarity.Common;
-            //TODO: DONT RETURN COMMON - return picked one brah
+            var roll = Random.range(0, 12);
 
-            var roll = rng.Next(0, 11);
             if (roll == 11)
                 return Rarity.Legendary;
             else if (roll >= 9)
                 return Rarity.Epic;
             else if (roll >= 5)
                 return Rarity.Rare;
+            else
+                return Rarity.Common;
         }
 
-        public string GetRandomItem()
+        private CollectibleParameters GetRandomCollectible()
         {
-            var items = Collectibles.Collectibles.All(DrawRarity());
-            ShuffleCollectibleList(items);
-            double rand = rng.NextDouble();
-            foreach (var item in items)
+            if (_allowedCollectibles.Count == 0) throw new System.Exception("No allowed collectibles, nothing could spawn!");
+
+            CollectibleParameters item = null;
+
+            do
             {
-                if (item.DropChance > rand)
-                {
-                    return item.Name;
-                }
-            }
-            return items[0].Weapon.Name;
+                var rarity = DrawRarity();
+                var potentialItems = _allowedCollectibles
+                    .Where(w => w.Rarity == rarity)
+                    .ToList();
+                if (potentialItems.Count == 0) continue;
+
+                item = potentialItems.randomItem();
+            } while (item == null);
+
+            return item;
         }
 
-        public void ShuffleCollectibleList(List<CollectibleParameters> list)
+        public override void update()
         {
-            int n = list.Count;
-            while (n > 1)
+            base.update();
+
+            if (_blocked) return;
+
+            _timer?.Update();
+
+            switch (_spawnerState)
             {
-                n--;
-                int k = rng.Next(n + 1);
-                var value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                case SpawnerState.Initial:
+                    if (!_addedToScene) break;
+                    Console.WriteLine("Initializing spawner");
+                    StartTimer();
+                    _spawnerState = SpawnerState.Closed;
+                    break;
+                case SpawnerState.Closed:
+                    if (_timer.IsReady())
+                    {
+                        _nextItemToSpawn = GetRandomCollectible();
+                        Console.WriteLine("Spawning " + _nextItemToSpawn.Name + " in " + FromOpeningToSpawnDelaySeconds + " seconds" );
+
+                        // TODO: Light effects? Color indicating rarity?
+                        _animation.play(Animations.Open);
+                        _spawnerState = SpawnerState.Opening;
+                        _timer = new Cooldown(FromOpeningToSpawnDelaySeconds);
+                        _timer.Start();
+                    }
+                    break;
+                case SpawnerState.Opening:
+
+                    if (Time.checkEvery(0.5f))
+                    {
+                        scene.addEntity(new SpawnRing(position, ResolveRarityColor(_nextItemToSpawn)));
+                    }
+
+                    if (_timer.IsReady())
+                    {
+                        Console.WriteLine("Spawned " + _nextItemToSpawn.Name + "!");
+
+                        SpawnItem();
+                        _spawnCount++;
+                        _spawnerState = SpawnerState.Closing;
+                        _animation.play(Animations.Close);
+                        _timer = new Cooldown(FromSpawnToClosedDelaySeconds);
+                        _timer.Start();
+                    }
+                    break;
+                case SpawnerState.Closing:
+                    if (_timer.IsReady() && !_blocked)
+                    {
+                        Console.WriteLine("Item picked up! Counting down to next spawn...");
+
+                        _spawnerState = SpawnerState.Closed;
+                        _animation.play(Animations.Idle);
+                        StartTimer();
+                    }
+                    break;
             }
         }
 
-        public bool ReadyToSpawn()
+        private Color ResolveRarityColor(CollectibleParameters collectible)
         {
-            if (_spawnTimer.IsReady() && _spawnerState == SpawnerState.Closed)
+            switch (collectible.Rarity)
             {
-                if (CurrentItem == null)
-                    return true;
-                else
-                    return CurrentItem == null ? true : false;
-            }
-            return false;
-        }
-
-        public override void Update()
-        {
-            _spawnTimer.Update();
-            _stayOpenTimer.Update();
-            _timeChecker.Update();
-
-            if (_timeChecker.IsReady() && ReadyToSpawn())
-            {
-                //Try to spawn
-                var roll = rng.NextDouble();
-                if (roll < _spawnRate)
-                {
-                    _spawnerState = SpawnerState.Opening;
-                    _animation.play(Animations.Open);
-                    _stayOpenTimer.Start();
-
-                    SpawnItem();
-                }
-                else
-                {
-                    _timeChecker.Start();
-                }
-            }
-
-
-            if (_stayOpenTimer.IsReady() && _spawnerState == SpawnerState.Opening)
-            {
-                _spawnerState = SpawnerState.Closing;
-                _animation.play(Animations.Close);
-            }
-
-            if (_animation.isAnimationPlaying(Animations.Close) && !_animation.isPlaying)
-            {
-                // TODO Don't start unless current spawned item is picked up
-                _animation.play(Animations.Idle);
-                _spawnerState = SpawnerState.Closed;
-                _spawnTimer.Start();
+                default:
+                case Rarity.Common:
+                    return new Color(Color.White, 0.5f);
+                case Rarity.Rare:
+                    return new Color(Color.Blue, 0.5f);
+                case Rarity.Epic:
+                    return new Color(Color.Purple, 0.5f);
+                case Rarity.Legendary:
+                    return new Color(Color.Orange, 0.5f);
             }
         }
 
-        public void onTriggerEnter(Collider other, Collider local)
+        public class SpawnerParameters
         {
+            public int MaxSpawns { get; set; } = -1;
+            public float MinIntervalSeconds { get; set; } = 5.0f;
+            public float MaxIntervalSeconds { get; set; } = 15.0f;
+            public string[] WeaponWhitelist { get; set; }
+            public string[] WeaponBlacklist { get; set; }
+            public string[] RarityWhitelist { get; set; }
+            public string[] RarityBlacklist { get; set; }
+            public bool CameraTracking { get; set; } = true;
         }
     }
 }

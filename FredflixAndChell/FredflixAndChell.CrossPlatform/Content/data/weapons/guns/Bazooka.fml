@@ -33,7 +33,7 @@ MaxAmmo: 3
 Name: Bazooka
 ReloadTime: 3.0
 RenderOffset: 7.0
-Rarity: Rare
+Rarity: Epic
 Sprite:
   Fire:
     FPS: 0.5

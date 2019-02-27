@@ -87,6 +87,7 @@
     <Compile Include="GameObjects\Effects\Fireball.cs" />
     <Compile Include="GameObjects\Effects\Explosion.cs" />
     <Compile Include="GameObjects\Effects\Smoke.cs" />
+    <Compile Include="GameObjects\Effects\SpawnRing.cs" />
     <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="Components\Weapons\WeaponRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />

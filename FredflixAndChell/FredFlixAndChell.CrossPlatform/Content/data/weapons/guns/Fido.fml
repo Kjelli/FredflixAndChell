@@ -34,7 +34,7 @@ MaxAmmo: 300
 Name: Fido
 ReloadTime: 0.800000012
 RenderOffset: 5.0
-Rarity: Common
+Rarity: Rare
 Sprite:
   Fire:
     FPS: 15.0

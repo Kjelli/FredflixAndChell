@@ -34,7 +34,7 @@ MaxAmmo: 750
 Name: Goggles
 ReloadTime: 2.0
 RenderOffset: 0.0
-Rarity: Common
+Rarity: Rare
 RotatesWithPlayer: false
 AlwaysAbovePlayer: true
 FlipXWithPlayer: true

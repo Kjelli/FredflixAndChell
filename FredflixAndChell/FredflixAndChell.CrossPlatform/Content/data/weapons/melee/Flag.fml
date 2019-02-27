@@ -12,7 +12,9 @@ Sprite:
     Loop: false
     Origin:
       X: 10.0
-      Y: 16.0
+      Y: 16.0  
+    TileWidth: 16
+    TileHeight: 16
   Icon:
     FPS: 1.0
     Frames:
@@ -20,7 +22,9 @@ Sprite:
     Loop: false
     Origin:
       X: 0.0
-      Y: 0.0
+      Y: 0.0  
+    TileWidth: 16
+    TileHeight: 16
   Idle:
     FPS: 1.0
     Frames:
@@ -28,5 +32,7 @@ Sprite:
     Loop: false
     Origin:
       X: 10.0
-      Y: 16.0
+      Y: 16.0  
+    TileWidth: 16
+    TileHeight: 16
   Source: guns/flag

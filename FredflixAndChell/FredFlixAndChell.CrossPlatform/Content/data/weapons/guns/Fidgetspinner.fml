@@ -33,7 +33,7 @@ MagazineSize: 30
 MaxAmmo: 300
 Name: Fidgetspinner
 RenderOffset: 7.0
-Rarity: Common
+Rarity: Rare
 Sprite:
   Fire:
     FPS: 30.0

@@ -9,6 +9,7 @@ using FredflixAndChell.Shared.Utilities.Activator;
 using System.Reflection;
 using static FredflixAndChell.Shared.Utilities.Activator.ObjectActivatorHelper;
 using System.Collections.Generic;
+using FredflixAndChell.Shared.Components.Effects;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
@@ -23,6 +24,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         private BulletParameters _params;
         private BulletRenderer _renderer;
         private BulletBehaviour _behaviour;
+        private LightSource _lightSource;
         private Player _owner;
 
         private float _direction;
@@ -63,6 +65,7 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             if (Parameters.BulletType == BulletType.Entity)
             {
                 Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
+                _lightSource = addComponent(new LightSource(_params.BulletColor, this));
             }
             if (_params.LifeSpanSeconds >= 0)
             {
