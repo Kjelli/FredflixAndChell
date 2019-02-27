@@ -185,21 +185,19 @@ namespace FredflixAndChell.Shared.GameObjects.Props
         public override void update()
         {
             base.update();
-
-            if (_blocked) return;
-
             _timer?.Update();
 
             switch (_spawnerState)
             {
                 case SpawnerState.Initial:
-                    if (!_addedToScene) break;
-                    Console.WriteLine("Initializing spawner");
-                    StartTimer();
+                    if (!_addedToScene || _blocked) break;
+                    Console.WriteLine("Counting down spawner");
+
                     _spawnerState = SpawnerState.Closed;
+                    StartTimer();
                     break;
                 case SpawnerState.Closed:
-                    if (_timer.IsReady())
+                    if (_timer.IsReady() && !_blocked)
                     {
                         _nextItemToSpawn = GetRandomCollectible();
                         Console.WriteLine("Spawning " + _nextItemToSpawn.Name + " in " + FromOpeningToSpawnDelaySeconds + " seconds" );
@@ -231,13 +229,10 @@ namespace FredflixAndChell.Shared.GameObjects.Props
                     }
                     break;
                 case SpawnerState.Closing:
-                    if (_timer.IsReady() && !_blocked)
+                    if (_timer.IsReady())
                     {
-                        Console.WriteLine("Item picked up! Counting down to next spawn...");
-
-                        _spawnerState = SpawnerState.Closed;
+                        _spawnerState = SpawnerState.Initial;
                         _animation.play(Animations.Idle);
-                        StartTimer();
                     }
                     break;
             }

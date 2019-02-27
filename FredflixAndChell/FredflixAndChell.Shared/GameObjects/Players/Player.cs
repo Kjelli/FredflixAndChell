@@ -563,7 +563,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Attack()
         {
-            if (Disarmed) return;
+            if (Disarmed || PlayerState == PlayerState.Idle) return;
 
             _inventory.Attack();
         }
