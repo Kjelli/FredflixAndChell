@@ -39,7 +39,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             var pkParams = parameters as PlayerKilledEventParameters;
             if (pkParams.Killer != null && pkParams.Killed != pkParams.Killer)
             {
-                var playerScore = ContextHelper.PlayerMetadata?.First(s => s.PlayerIndex == pkParams.Killer.PlayerIndex);
+                var playerScore = ContextHelper.PlayerMetadataByIndex(pkParams.Killer.PlayerIndex);
                 if (playerScore != null)
                 {
                     playerScore.Score++;

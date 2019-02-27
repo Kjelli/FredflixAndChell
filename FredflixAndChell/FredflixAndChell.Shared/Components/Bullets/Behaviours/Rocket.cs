@@ -54,7 +54,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         private void OnAnyImpact()
         {
-            entity.scene.addEntity(new Explosion(_bullet.position));
+            entity.scene.addEntity(new Explosion(_bullet.position, _bullet.Owner));
             _bullet.destroy();
         }
 

@@ -2,7 +2,6 @@
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.Components.StatusEffects;
 using FredflixAndChell.Shared.GameObjects.Bullets;
-using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -16,7 +15,6 @@ using Nez;
 using Nez.Tweens;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Players
@@ -33,12 +31,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
     public class Player : GameObject
     {
-        private const float ThrowSpeed = 0.5f;
         private const float WalkAcceleration = 0.25f;
         private const float SprintAcceleration = 0.40f;
         private const float RollAcceleration = 1.20f;
         private const float BaseSlownessFactor = 20f;
         private const int DodgeRollStaminaCost = 50;
+        private const float LastHitTimeoutSeconds = 3.0f;
 
         private static bool DebugToggledRecently { get; set; }
 
@@ -47,17 +45,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private PlayerRenderer _renderer;
         private CameraTracker _cameraTracker;
         private PlayerController _controller;
+        private PlayerInventory _inventory;
         private Collider _proximityHitbox;
         private Collider _playerHitbox;
         private BloodEngine _blood;
         private GameSystem _gameSystem;
 
-
-        private Weapon _weapon;
-        private float _maxHealth;
-        private float _stamina;
-
-        private float _maxStamina;
         private float _accelerationPlayerFactor;
         private float _deaccelerationPlayerFactor = 0.2f;
         private bool _isRegeneratingStamina = false;
@@ -70,7 +63,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
         private Vector2 _initialRollingDirection;
-        private Player _lastHitByPlayer;
+        private Player _lastHitPlayerSource;
+        private float _lastHitTime;
 
         public int PlayerIndex { get; set; }
         public PlayerMobilityState PlayerMobilityState { get; set; }
@@ -83,15 +77,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public float DeaccelerationExternalFactor { get; set; } = 1f;
         public float AccelerationExternalFactor { get; set; } = 1f;
         public float Health { get; set; }
-        public float MaxHealth => _maxHealth;
-        public float MaxStamina => _maxStamina;
-        public int Stamina => (int)_stamina;
+        public float MaxHealth { get; private set; }
+        public float MaxStamina { get; private set; }
+        public float Stamina { get; private set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
 
 
         public int TeamIndex { get; set; }
-        public bool IsArmed { get; set; } = true;
         public bool FlipGun { get; set; }
         public bool Disarmed { get; set; }
         public WeaponParameters WeaponParameters { get; set; }
@@ -109,7 +102,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnSpawn()
         {
-            var metadata = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == PlayerIndex);
+            var metadata = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
             if (metadata != null)
             {
                 if (metadata.IsInitialized)
@@ -169,8 +162,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Assigned by player connector
             _controller = getComponent<PlayerController>();
 
-            // Assign gun component
-            EquipWeapon(WeaponParameters.Name);
+            // Assign inventory component
+            _inventory = addComponent(new PlayerInventory(WeaponParameters));
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -201,9 +194,24 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetWalkingState();
         }
 
+        private void JoinGame()
+        {
+            SetupParameters();
+            SetupComponents();
+            //SetupDebug();
+
+            addComponent(new RegenEffect());
+
+            _gameSystem.RegisterPlayer(this);
+            updateOrder = 0;
+
+            PlayerState = PlayerState.Normal;
+            ContextHelper.PlayerMetadataByIndex(PlayerIndex).IsInitialized = true;
+        }
+
         private void SetupRenderer(PlayerSprite playerSprite)
         {
-            _renderer = addComponent(new PlayerRenderer(playerSprite, _weapon));
+            _renderer = addComponent(new PlayerRenderer(playerSprite, _inventory.Weapon));
         }
 
         public void ChangePlayerSprite(PlayerSprite playerSprite)
@@ -219,16 +227,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetupParameters()
         {
             Health = Parameters.MaxHealth;
-            _maxHealth = Parameters.MaxHealth;
-            _stamina = Parameters.MaxStamina;
-            _maxStamina = Parameters.MaxStamina;
+            MaxHealth = Parameters.MaxHealth;
+            Stamina = Parameters.MaxStamina;
+            MaxStamina = Parameters.MaxStamina;
             Speed = Parameters.Speed;
+        }
 
-            var playerMetadata = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == PlayerIndex);
-            if (playerMetadata != null)
-            {
-                EquipWeapon(playerMetadata.Weapon.Name);
-            }
+        public bool IsArmed()
+        {
+            return _inventory.IsArmed;
         }
 
         public override void Update()
@@ -240,11 +247,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Move();
             SetFacing();
 
+            // State specific updates
             switch (PlayerMobilityState)
             {
                 case PlayerMobilityState.Rolling:
                     break;
-                default: 
+                default:
                 case PlayerMobilityState.Running:
                 case PlayerMobilityState.Walking:
                     if (_pitsBelowPlayer.Count > 0)
@@ -252,6 +260,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                         FallIntoPit(_pitsBelowPlayer.randomItem());
                     }
                     break;
+            }
+
+            if(_lastHitTime > 0 && Time.time > _lastHitTime + LastHitTimeoutSeconds)
+            {
+                _lastHitTime = -1;
+                _lastHitPlayerSource = null;
             }
 
             if (Time.frameCount % 5 == 0)
@@ -270,10 +284,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 AimingSlownessFactor = BaseSlownessFactor;
             if (_controller.ReloadPressed)
                 Reload();
-            if (_controller.DropGunPressed)
-                DropGun();
+            if (_controller.DropWeaponPressed)
+                _inventory.DropWeapon();
             if (_controller.SwitchWeaponPressed)
-                SwitchWeapon();
+                _inventory.SwitchWeapon();
             if (_controller.InteractPressed)
                 Interact();
             if (_controller.SprintPressed)
@@ -334,12 +348,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void PerformDodgeRoll()
         {
-            if (_numSprintPressed == 2 && _controller.SprintPressed && _stamina > DodgeRollStaminaCost && (Acceleration.X != 0 || Acceleration.Y != 0))
+            if (_numSprintPressed == 2 && _controller.SprintPressed && Stamina > DodgeRollStaminaCost && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
                 SetRollingState();
                 _isRollingRight = FacingAngle.X > 0 ? true : false;
                 _numSprintPressed = 0;
-                _stamina -= DodgeRollStaminaCost * _gameSystem.Settings.StaminaMultiplier;
+                Stamina -= DodgeRollStaminaCost * _gameSystem.Settings.StaminaMultiplier;
 
                 _initialRollingDirection = 1f * Velocity + CalculateAcceleration();
             }
@@ -376,10 +390,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (!_isRegeneratingStamina)
                 return;
 
-            _stamina += 25 * Time.deltaTime;
-            if (_stamina >= _maxStamina)
+            Stamina += 25 * Time.deltaTime;
+            if (Stamina >= MaxStamina)
             {
-                _stamina = _maxStamina;
+                Stamina = MaxStamina;
                 _isRegeneratingStamina = false;
             }
         }
@@ -390,20 +404,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             if (_controller.SprintDown && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
-                if (_stamina <= 0)
+                if (Stamina <= 0)
                 {
                     SetWalkingState();
                 }
                 else
                 {
                     SetRunningState();
-                    _stamina -= 50 * _gameSystem.Settings.StaminaMultiplier * Time.deltaTime;
+                    Stamina -= 50 * _gameSystem.Settings.StaminaMultiplier * Time.deltaTime;
                     _isRegeneratingStamina = false;
                 }
             }
             else
             {
-                if (_stamina >= Parameters.MaxStamina) return;
+                if (Stamina >= Parameters.MaxStamina) return;
                 _isRegeneratingStamina = true;
                 SetWalkingState();
             }
@@ -418,82 +432,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void SetWalkingState()
         {
             _accelerationPlayerFactor = WalkAcceleration;
-            _weapon?.ToggleRunning(false);
+            _inventory?.Weapon?.ToggleRunning(false);
             PlayerMobilityState = PlayerMobilityState.Walking;
         }
 
         private void SetRunningState()
         {
             _accelerationPlayerFactor = SprintAcceleration;
-            _weapon?.ToggleRunning(true);
+            _inventory?.Weapon?.ToggleRunning(true);
             PlayerMobilityState = PlayerMobilityState.Running;
         }
 
         public void EquipWeapon(string name)
         {
-            if (_weapon != null)
-            {
-#if DEBUG
-                DropGun();
-#else
-                UnEquipGun();
-#endif
-            }
-
-            var gunParams = Guns.Get(name);
-            if (gunParams != null)
-            {
-                _weapon = scene.addEntity(new Gun(this, gunParams));
-                IsArmed = true;
-
-                var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
-                if (meta != null)
-                {
-                    meta.Weapon = gunParams;
-                }
-            }
-            else
-            {
-                var meleeParams = Melees.Get(name);
-                if (meleeParams != null)
-                {
-                    _weapon = scene.addEntity(new Melee(this, meleeParams));
-                    IsArmed = true;
-
-                    var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
-                    if (meta != null)
-                    {
-                        meta.Weapon = meleeParams;
-                    }
-                }
-            }
-        }
-
-        public void UnEquipGun()
-        {
-            IsArmed = false;
-            _weapon.destroy();
-            _weapon = null;
-        }
-
-        private void SwitchWeapon()
-        {
-#if DEBUG
-
-            if (_weapon != null)
-            {
-                if (_weapon is Melee melee)
-                {
-                    var nextMelee = Melees.GetNextAfter(melee.Parameters.Name ?? "Stick").Name;
-                    EquipWeapon(nextMelee);
-                }
-                else if (_weapon is Gun gun)
-                {
-                    var nextGun = Guns.GetNextAfter(gun.Parameters.Name ?? "M4").Name;
-                    EquipWeapon(nextGun);
-                }
-            }
-#endif
+            _inventory.EquipWeapon(name);
         }
 
         private void Move()
@@ -523,8 +475,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Health = 0;
             DisablePlayer(resetVelocity: true);
             DisableHitbox();
-            PlayerState = PlayerState.Dying;
 
+            _inventory.DropWeapon();
             _pitsBelowPlayer.Clear();
 
             var easeType = EaseType.CubicOut;
@@ -546,10 +498,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 .start();
             _renderer.TweenColor(targetColor, durationSeconds, easeType);
 
-            _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
+            if (PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
-                Killed = this
-            });
+                _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
+                {
+                    Killed = this,
+                    Killer = _lastHitPlayerSource
+                });
+
+                PlayerState = PlayerState.Dying;
+            }
         }
 
         private void EnableProximityHitbox()
@@ -594,7 +552,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public void DisablePlayer(bool resetVelocity)
         {
             _controller.SetInputEnabled(false);
-            DropGun();
             if (resetVelocity)
             {
                 Velocity = Vector2.Zero;
@@ -606,14 +563,12 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         {
             if (Disarmed) return;
 
-            if (_weapon != null)
-                _weapon.Fire();
+            _inventory.Attack();
         }
 
         public void Reload()
         {
-            if (_weapon != null && _weapon is Gun _gun)
-                _gun.ReloadMagazine();
+            _inventory.Reload();
         }
 
         public void Interact()
@@ -628,20 +583,6 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             }
         }
 
-        private void JoinGame()
-        {
-            SetupComponents();
-            SetupParameters();
-            //SetupDebug();
-
-            addComponent(new RegenEffect());
-
-            _gameSystem.RegisterPlayer(this);
-            updateOrder = 0;
-
-            PlayerState = PlayerState.Normal;
-            ContextHelper.PlayerMetadata.First(x => x.PlayerIndex == PlayerIndex).IsInitialized = true;
-        }
 
         private void InteractWithNearestEntity()
         {
@@ -656,8 +597,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Damage = bullet.Parameters.Damage,
                 Knockback = bullet.Parameters.Knockback,
                 Direction = bullet.Velocity,
+                SourceOfDamage = bullet.Owner
             };
-            _lastHitByPlayer = bullet.Owner;
             Damage(directionalDamage);
         }
 
@@ -669,8 +610,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Damage = melee.Parameters.Damage,
                 Knockback = melee.Parameters.Knockback,
                 Direction = melee.Velocity,
+                SourceOfDamage = melee.Player
             };
-            _lastHitByPlayer = melee.Player;
             Damage(directionalDamage);
         }
 
@@ -684,6 +625,10 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
             _blood.Sprinkle(scaledDamage, dd.Direction);
 
+            // Override last-hit-by player if directionaldamage came from a player (used for pushing into pit)
+            _lastHitPlayerSource = dd.SourceOfDamage ?? _lastHitPlayerSource;
+            _lastHitTime = Time.time;
+
             if (Health <= 0 && PlayerState != PlayerState.Dying && PlayerState != PlayerState.Dead)
             {
                 PlayerState = PlayerState.Dying;
@@ -693,7 +638,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
                 {
                     Killed = this,
-                    Killer = _lastHitByPlayer
+                    Killer = _lastHitPlayerSource
                 });
             }
         }
@@ -714,7 +659,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Parameters = nextCharacter;
             SetupParameters();
             ChangePlayerSprite(nextCharacter.PlayerSprite);
-            var meta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == PlayerIndex);
+            var meta = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
             if (meta != null)
             {
                 meta.Character = nextCharacter;
@@ -736,34 +681,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _blood.Leak();
         }
 
-        public void DropGun()
-        {
-            if (_weapon != null)
-            {
-                Collectible throwedItem = null;
-                if (_weapon is Gun gun)
-                {
-                    //Throw out a new gunz
-                    throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, gun.Parameters.Name, true));
-
-                }
-                else if (_weapon is Melee melee)
-                {
-                    //Throw out a new gunz
-                    throwedItem = scene.addEntity(new Collectible(transform.position.X, transform.position.Y, melee.Parameters.Name, true));
-                }
-
-                throwedItem.Velocity = new Vector2(
-                        FacingAngle.X * ThrowSpeed,
-                        FacingAngle.Y * ThrowSpeed)
-                        + Velocity * 2f;
-                UnEquipGun();
-            }
-        }
-
         public override void OnDespawn()
         {
-            _weapon?.Destroy();
+            _inventory?.Weapon?.Destroy();
         }
 
         private void SetFacing()
@@ -782,7 +702,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 VerticalFacing = (int)FacingCode.UP;
             }
-            //Prioritizing "horizontal" sprites
+
             if (FacingAngle.X > 0)
             {
                 _renderer.FlipX(false);

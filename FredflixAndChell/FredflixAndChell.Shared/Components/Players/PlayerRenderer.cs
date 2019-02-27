@@ -193,7 +193,7 @@ namespace FredflixAndChell.Shared.Components.Players
         private void UpdateAnimation()
         {
             //Todo: Fix check of unmarmed. A gun type called unarmed?
-            bool armed = _player.IsArmed;
+            bool armed = _player.IsArmed();
 
             // Select Animations (Idle initially)
             HeadAnimation headAnimation = HeadAnimation.FrontFacing;

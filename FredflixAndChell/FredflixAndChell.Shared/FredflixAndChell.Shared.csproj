@@ -70,6 +70,7 @@
     <Compile Include="Components\Effects\Weather\DungeonGloom.cs" />
     <Compile Include="Components\Effects\Weather\IAtmosphere.cs" />
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
+    <Compile Include="Components\Players\PlayerInventory.cs" />
     <Compile Include="Components\Weapons\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
     <Compile Include="Components\HUD\PlayerPanelHUD.cs" />
