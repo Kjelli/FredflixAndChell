@@ -21,7 +21,7 @@ namespace FredflixAndChell.Shared.Components.StatusEffects
         protected override void Effect(Player player)
         {
             player.Speed = _initialSpeed * 0.25f;
-            player.DeaccelerationExternalFactor = 0.5f;
+            player.DeaccelerationExternalFactor = 0.25f;
             player.AccelerationExternalFactor = 0.5f;
             _effectEntity.position = player.position;
             _effectEntity.rotation += 0.1f;

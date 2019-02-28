@@ -8,7 +8,7 @@ BulletCount: 5
 BulletParameters:
   BulletBehaviour: SlowingBullet
   Damage: 0.0
-  Knockback: 1.25
+  Knockback: 1.75
   LifeSpanSeconds: 0.85
   RotateWithGun: true
   Scale: 0.25
@@ -27,12 +27,12 @@ BulletParameters:
     Source: bullets/shockwave_sm
 BulletSpread: 0.392699093
 DropChance: 0.4
-FireRate: 0.300000012
+FireRate: 0.6
 MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300
 Name: Fido
-ReloadTime: 0.800000012
+ReloadTime: 0.8
 RenderOffset: 5.0
 Rarity: Rare
 Sprite:

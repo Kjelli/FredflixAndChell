@@ -37,8 +37,8 @@ namespace FredflixAndChell.Shared.Components.Players
         public bool InteractPressed => _interactButton?.isPressed ?? _gp.isButtonPressed(Buttons.A);
         public bool DebugModePressed => _debugButton?.isPressed ?? _gp.isButtonPressed(Buttons.Start);
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? _gp.isButtonPressed(Buttons.Y);
-        public bool SprintPressed => _sprintButton?.isPressed ?? _gp.isButtonPressed(Buttons.B);
-        public bool SprintDown => _sprintButton?.isDown ?? _gp.isButtonDown(Buttons.B);
+        public bool SprintPressed => _sprintButton?.isPressed ?? _gp.isButtonPressed(Buttons.LeftShoulder);
+        public bool SprintDown => _sprintButton?.isDown ?? _gp.isButtonDown(Buttons.LeftShoulder);
         public bool InputEnabled => _inputEnabled;
 
         public PlayerController(GamePadData gamePadData)

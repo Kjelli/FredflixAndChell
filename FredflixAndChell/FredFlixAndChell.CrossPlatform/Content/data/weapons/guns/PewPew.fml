@@ -1,16 +1,16 @@
 Ammo: 300
-Accuracy: 0.85
+Accuracy: 0.80
 BarrelOffset:
   X: 10.0
   Y: 0.0
 BulletCount: 1
 BulletParameters:
-  Damage: 5.0
+  Damage: 10.0
   Knockback: 0.05
   LifeSpanSeconds: -1.0
   RotateWithGun: false
   Scale: 0.125
-  Speed: 200.0
+  Speed: 210.0
   Sprite:
     Bullet:
       FPS: 1.0
@@ -30,7 +30,7 @@ MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300
 Name: PewPew
-ReloadTime: 2.0
+ReloadTime: 1.0
 RenderOffset: 7.0
 Rarity: Common
 Sprite:

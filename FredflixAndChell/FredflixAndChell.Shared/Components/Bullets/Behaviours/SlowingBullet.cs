@@ -21,7 +21,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             }
             else
             {
-                player.addComponent(new SlowEffect(2f));
+                player.addComponent(new SlowEffect(1f));
             }
 
             var existingDisarmEffect = player.getComponent<DisarmEffect>();

@@ -74,6 +74,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/dungeon_1");
             LoadMap("maps/dungeon_2");
             LoadMap("maps/fido_fighters");
+            LoadMap("maps/fido_fighters2");
             LoadMap("maps/ctf_snow");
         }
 

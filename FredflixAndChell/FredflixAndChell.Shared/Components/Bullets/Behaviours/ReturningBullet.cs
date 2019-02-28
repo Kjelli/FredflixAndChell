@@ -12,7 +12,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 {
     public class ReturningBullet : BulletBehaviour
     {
-        private const float _returnSpeed = 250f;
+        private const float _returnSpeed = 200f;
         private const float _accelerationFactor = 0.25f;
 
         private Player _owner;
@@ -31,9 +31,9 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             }
             else
             {
-                _bullet.Parameters.Damage /= 2;
+                _bullet.Parameters.Damage /= 4;
                 DamagePlayer(player);
-                _bullet.Parameters.Damage *= 2;
+                _bullet.Parameters.Damage *= 4;
             }
         }
 

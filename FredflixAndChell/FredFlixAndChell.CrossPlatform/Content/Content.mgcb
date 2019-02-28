@@ -138,6 +138,11 @@
 /processor:TiledMapProcessor
 /build:maps/fido_fighters.tmx
 
+#begin maps/fido_fighters2.tmx
+/importer:
+/processor:
+/build:maps/fido_fighters2.tmx
+
 #begin maps/props_tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor

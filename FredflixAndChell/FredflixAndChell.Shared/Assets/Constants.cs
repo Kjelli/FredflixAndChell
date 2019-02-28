@@ -14,7 +14,7 @@ namespace FredflixAndChell.Shared.Assets
 
         public class Values
         {
-            public const float ExplosionDamage = 100f;
+            public const float ExplosionDamage = 80f;
             public const float ExplosionRadius = 80f;
             public const float ExplosionKnockback = 30f;
         }

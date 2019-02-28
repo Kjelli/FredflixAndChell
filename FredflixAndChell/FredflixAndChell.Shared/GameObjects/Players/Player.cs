@@ -202,7 +202,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupComponents();
             //SetupDebug();
 
-            addComponent(new RegenEffect());
+            //addComponent(new RegenEffect());
 
             _gameSystem.RegisterPlayer(this);
             updateOrder = 0;
