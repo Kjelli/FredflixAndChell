@@ -33,7 +33,7 @@ namespace FredflixAndChell.Shared.Components.Players
         public float YRightAxis => -1 * _rightStick?.value.Y ?? -1 * _gp.getRightStick().Y;
         public bool FirePressed => _fireButton?.isDown ?? _gp.isButtonDown(Buttons.RightTrigger);
         public bool ReloadPressed => _reloadButton?.isPressed ?? _gp.isButtonPressed(Buttons.X);
-        public bool DropGunPressed => _dropGunButton?.isPressed ?? _gp.isButtonPressed(Buttons.DPadUp);
+        public bool DropWeaponPressed => _dropGunButton?.isPressed ?? _gp.isButtonPressed(Buttons.DPadUp);
         public bool InteractPressed => _interactButton?.isPressed ?? _gp.isButtonPressed(Buttons.A);
         public bool DebugModePressed => _debugButton?.isPressed ?? _gp.isButtonPressed(Buttons.Start);
         public bool SwitchWeaponPressed => _switchWeaponButton?.isPressed ?? _gp.isButtonPressed(Buttons.Y);

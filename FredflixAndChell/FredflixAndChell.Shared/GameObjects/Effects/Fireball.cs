@@ -1,6 +1,4 @@
-﻿using System;
-using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.Effects;
+﻿using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -19,6 +17,7 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
         private float _timeAlive;
         private float _lifespan = 1.1f;
         private float _speed = 30f;
+        private bool _shouldBeDestroyed;
 
         private enum FireballAnimation
         {
@@ -38,12 +37,18 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
         public override void onAddedToScene()
         {
             SetupVisuals();
-            Core.schedule(_lifespan, _ => destroy());
+            Core.schedule(_lifespan, _ => _shouldBeDestroyed = true);
         }
 
         public override void update()
         {
             base.update();
+
+            if (_shouldBeDestroyed)
+            {
+                destroy();
+                return;
+            }
 
             var progress = _timeAlive / (_lifespan * 0.5f);
 
@@ -88,5 +93,5 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
         }
     }
 
-    
+
 }

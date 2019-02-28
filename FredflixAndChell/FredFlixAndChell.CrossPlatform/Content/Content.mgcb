@@ -32,10 +32,11 @@
 #begin data/characters/Trump.fml
 /copy:data/characters/Trump.fml
 
-#begin data/weapons/guns/Fidgetspinner.fml
-/copy:data/weapons/guns/Fidgetspinner.fml
 #begin data/weapons/guns/Bazooka.fml
 /copy:data/weapons/guns/Bazooka.fml
+
+#begin data/weapons/guns/Fidgetspinner.fml
+/copy:data/weapons/guns/Fidgetspinner.fml
 
 #begin data/weapons/guns/Fido.fml
 /copy:data/weapons/guns/Fido.fml
@@ -48,6 +49,9 @@
 
 #begin data/weapons/guns/PewPew.fml
 /copy:data/weapons/guns/PewPew.fml
+
+#begin data/weapons/melee/Flag.fml
+/copy:data/weapons/melee/Flag.fml
 
 #begin data/weapons/melee/Stick.fml
 /copy:data/weapons/melee/Stick.fml
@@ -401,6 +405,18 @@
 /processorParam:TextureFormat=Color
 /build:textures/effects/smoke.png
 
+#begin textures/effects/spawn_ring.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/effects/spawn_ring.png
+
 #begin textures/effects/zone_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -448,6 +464,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/fido.png
+
+#begin textures/guns/flag.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/flag.png
 
 #begin textures/guns/goggles.png
 /importer:TextureImporter

@@ -39,6 +39,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/smoke");
             LoadTexture("textures/effects/explosion");
             LoadTexture("textures/effects/fireball");
+            LoadTexture("textures/effects/spawn_ring");
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
@@ -46,6 +47,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/goggles");
             LoadTexture("textures/guns/bazooka");
             LoadTexture("textures/guns/stick");
+            LoadTexture("textures/guns/flag");
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");

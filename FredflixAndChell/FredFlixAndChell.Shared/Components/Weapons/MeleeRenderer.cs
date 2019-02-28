@@ -87,7 +87,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
                 Player.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
             if (_melee.Parameters.RotatesWithPlayer)
             {
-                entity.localRotation = (float)Math.Atan2(Player.FacingAngle.Y, Player.FacingAngle.X);
+                entity.localRotation = (float)Math.Atan2(Player.FacingAngle.Y, Player.FacingAngle.X) + (float)(Math.PI) + _melee.SwingRotation;
             }
 
             if (IsPlayerRunning)

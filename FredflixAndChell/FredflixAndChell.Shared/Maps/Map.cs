@@ -3,6 +3,8 @@ using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects.Weather;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Maps.MapBuilders;
 using FredflixAndChell.Shared.Systems;
@@ -71,8 +73,26 @@ namespace FredflixAndChell.Shared.Maps
             tiledMapDetailsComponent.renderLayer = Layers.MapForeground;
             tiledMapDetailsComponent.setMaterial(Material.stencilWrite(Stencils.HiddenEntityStencil));
 
-            ApplyWeather(_tiledMap);
-            ApplyAmbientLighting(_tiledMap);
+            SetupMapProperties(_tiledMap);
+        }
+
+        private void SetupMapProperties(TiledMap tiledMap)
+        {
+
+            ApplyWeather(tiledMap);
+            ApplyAmbientLighting(tiledMap);
+
+            if(tiledMap.properties.ContainsKey(TiledProperties.MapStartWeapon)
+                && !string.IsNullOrWhiteSpace(tiledMap.properties[TiledProperties.MapStartWeapon]))
+            {
+                var weaponName = tiledMap.properties[TiledProperties.MapStartWeapon];
+                var collectible = Collectibles.Get(weaponName);
+                foreach(var meta in ContextHelper.PlayerMetadata)
+                {
+                    meta.Weapon = collectible.Weapon;
+                }
+            }
+
         }
 
         private void SetupMapObjects()

@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Components.Bullets;
 using FredflixAndChell.Shared.Components.Bullets.Behaviours;
 using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
@@ -18,6 +19,6 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         public float Knockback { get; set; } = 3.0f;
         public float LifeSpanSeconds { get; set; } = -1f;
         public bool RotateWithGun { get; set; } = true;
-
+        public Color BulletColor { get; set; } = Color.White;
     }
 }

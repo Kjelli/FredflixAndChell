@@ -49,7 +49,7 @@ namespace FredflixAndChell.Components.Players
             Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
-            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == index);
+            var playerMeta = ContextHelper.PlayerMetadataByIndex(index);
             if (playerMeta == null)
             {
                 playerMeta = new PlayerMetadata
@@ -70,7 +70,7 @@ namespace FredflixAndChell.Components.Players
             Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
             var spawnX = (int)spawnLocation.X;
             var spawnY = (int)spawnLocation.Y;
-            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(p => p.PlayerIndex == index);
+            var playerMeta = ContextHelper.PlayerMetadataByIndex(index);
             if (playerMeta == null)
             {
                 playerMeta = new PlayerMetadata

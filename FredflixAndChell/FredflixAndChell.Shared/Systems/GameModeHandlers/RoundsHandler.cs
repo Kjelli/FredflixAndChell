@@ -51,7 +51,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             var player = alivePlayersLeft.FirstOrDefault();
             if (player != null)
             {
-                var playerScore = ContextHelper.PlayerMetadata?.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+                var playerScore = ContextHelper.PlayerMetadataByIndex(player.PlayerIndex);
                 if (playerScore == null) return;
 
                 playerScore.Score++;

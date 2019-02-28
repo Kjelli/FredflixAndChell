@@ -93,7 +93,7 @@ namespace FredflixAndChell.Shared.Systems
         public void RegisterPlayer(Player player)
         {
             _players.Add(player);
-            var playerMeta = ContextHelper.PlayerMetadata.FirstOrDefault(x => x.PlayerIndex == player.PlayerIndex);
+            var playerMeta = ContextHelper.PlayerMetadataByIndex(player.PlayerIndex);
             if (playerMeta == null)
             {
                 playerMeta = new PlayerMetadata

@@ -32,6 +32,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
             animations.addAnimation(GunAnimations.Held_Fired, gunSprite.Fire.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Reload, gunSprite.Reload.ToSpriteAnimation(sprite.Source));
             animations.addAnimation(GunAnimations.Held_Idle, gunSprite.Idle.ToSpriteAnimation(sprite.Source));
+            animations.addAnimation(GunAnimations.Held_Empty, gunSprite.Empty.ToSpriteAnimation(sprite.Source));
             return animations;
         }
 
@@ -62,12 +63,26 @@ namespace FredflixAndChell.Shared.Components.Weapons
             silhouette.renderLayer = Layers.Foreground;
             silhouette.localOffset = new Vector2(0, 0);
 
-            _animation.play(GunAnimations.Held_Idle);
+            if (_gun.Ammo + _gun.MagazineAmmo > 0)
+            {
+                _animation.play(GunAnimations.Held_Idle);
+            }
+            else
+            {
+                _animation.play(GunAnimations.Held_Empty);
+            }
         }
 
         public override void Fire()
         {
-            _animation?.play(GunAnimations.Held_Fired);
+            if (_gun.Ammo + _gun.MagazineAmmo == 0)
+            {
+                _animation?.play(GunAnimations.Held_Empty);
+            }
+            else
+            {
+                _animation?.play(GunAnimations.Held_Fired);
+            }
         }
 
         public override void update()
@@ -103,8 +118,20 @@ namespace FredflixAndChell.Shared.Components.Weapons
 
             if (!_animation.isPlaying)
             {
-                _animation.play(GunAnimations.Held_Idle);
+                if (_gun.Ammo + _gun.MagazineAmmo > 0)
+                {
+                    _animation.play(GunAnimations.Held_Idle);
+                }
+                else
+                {
+                    _animation.play(GunAnimations.Held_Empty);
+                }
             }
+        }
+
+        public void Empty()
+        {
+            _animation?.play(GunAnimations.Held_Empty);
         }
 
         public void Reload()

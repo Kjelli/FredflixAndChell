@@ -58,6 +58,15 @@ namespace FredflixAndChell.Shared.Assets
         {
             public const string BulletPassable = "bullet_passable";
             public const string EmitsLight = "emits_light";
+            public const string SpawnerWeaponBlacklist = "weapon_blacklist";
+            public const string SpawnerWeaponWhitelist = "weapon_whitelist";
+            public const string SpawnerRarityBlacklist = "rarity_blacklist";
+            public const string SpawnerRarityWhitelist = "rarity_whitelist";
+            public const string SpawnerMinIntervalSeconds = "min_interval_seconds";
+            public const string SpawnerMaxIntervalSeconds = "max_interval_seconds";
+            public const string SpawnerMaxSpawns = "max_spawns";
+            public const string SpawnerCameraTracking = "camera_tracking";
+            public const string MapStartWeapon = "start_weapon";
         }
 
         public class Tags

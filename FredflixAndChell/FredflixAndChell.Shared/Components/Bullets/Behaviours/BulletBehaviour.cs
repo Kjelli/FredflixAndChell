@@ -1,9 +1,8 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Bullets;
-using Nez;
-using System;
 using FredflixAndChell.Shared.GameObjects.Players;
-using static FredflixAndChell.Shared.Assets.Constants;
 using Microsoft.Xna.Framework;
+using Nez;
+using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 {
@@ -64,7 +63,10 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 
         public virtual void OnNonPlayerImpact(CollisionResult collision)
         {
-            entity.destroy();
+            if (!(collision.collider?.entity is Bullet))
+            {
+                entity.destroy();
+            }
         }
         public virtual void OnImpact(Player player)
         {

@@ -9,6 +9,8 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
 {
     public class Smoke : Entity
     {
+        private bool _shouldBeDestroyed;
+
         public Smoke(Vector2 spawnPosition, bool startSmall = true)
         {
             position = spawnPosition;
@@ -37,10 +39,15 @@ namespace FredflixAndChell.Shared.GameObjects.Effects
                 .start();
             TweenExt.tweenRotationDegreesTo(this, 180, 0.5f)
                 .setEaseType(EaseType.Linear)
-                .setCompletionHandler(_ => destroy())
+                .setCompletionHandler(_ => _shouldBeDestroyed = true)
                 .start();
 
             addComponent(sprite);
+        }
+        public override void update()
+        {
+            base.update();
+            if (_shouldBeDestroyed) destroy();
         }
     }
 }

@@ -70,6 +70,8 @@
     <Compile Include="Components\Effects\Weather\DungeonGloom.cs" />
     <Compile Include="Components\Effects\Weather\IAtmosphere.cs" />
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
+    <Compile Include="Components\Players\PlayerInventory.cs" />
+    <Compile Include="GameObjects\Collectibles\Metadata\CollectibleMetadata.cs" />
     <Compile Include="Components\Weapons\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
     <Compile Include="Components\HUD\PlayerPanelHUD.cs" />
@@ -81,9 +83,11 @@
     <Compile Include="Components\StatusEffects\SlowEffect.cs" />
     <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
+    <Compile Include="GameObjects\Collectibles\Metadata\GunMetadata.cs" />
     <Compile Include="GameObjects\Effects\Fireball.cs" />
     <Compile Include="GameObjects\Effects\Explosion.cs" />
     <Compile Include="GameObjects\Effects\Smoke.cs" />
+    <Compile Include="GameObjects\Effects\SpawnRing.cs" />
     <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="Components\Weapons\WeaponRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />

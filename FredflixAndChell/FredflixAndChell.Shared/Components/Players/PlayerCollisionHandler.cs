@@ -84,7 +84,8 @@ namespace FredflixAndChell.Shared.Components.Players
             {
                 Damage = damage,
                 Direction = -(explosion.position - player.position),
-                Knockback = damagePercentage * Values.ExplosionKnockback
+                Knockback = damagePercentage * Values.ExplosionKnockback,
+                SourceOfDamage = explosion.ExplosionPlayerSource
             };
             player.Damage(directionalDamage);
         }
@@ -95,10 +96,7 @@ namespace FredflixAndChell.Shared.Components.Players
             switch (other.entity.tag)
             {
                 case Tags.Pit:
-                    if (player.PlayerMobilityState != PlayerMobilityState.Rolling)
-                    {
-                        player.FallIntoPit(other.entity);
-                    }
+                    player.OnPitHitboxEnter(other.entity);
                     break;
 
                 case Tags.EventEmitter:
@@ -127,6 +125,11 @@ namespace FredflixAndChell.Shared.Components.Players
                 (other.entity as CollisionEventEmitter).EmitMapEvent(
                     new string[] { Strings.CollisionMapEventExit });
             }
+
+            if(other.entity?.tag == Tags.Pit)
+            {
+                (entity as Player).OnPitHitboxExit(other.entity);
+            }
         }
 
         private void ProximityTriggerExit(Collider other, Collider local)
@@ -146,7 +149,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
             if (!_entitiesInProximity.Contains(other.entity)) return;
             _entitiesInProximity.Remove(other.entity);
-            
+
         }
 
         public void InteractWithNearestEntity()

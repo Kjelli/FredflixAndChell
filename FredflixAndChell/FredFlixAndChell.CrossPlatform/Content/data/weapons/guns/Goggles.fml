@@ -34,7 +34,7 @@ MaxAmmo: 750
 Name: Goggles
 ReloadTime: 2.0
 RenderOffset: 0.0
-Rarity: Common
+Rarity: Rare
 RotatesWithPlayer: false
 AlwaysAbovePlayer: true
 FlipXWithPlayer: true
@@ -65,6 +65,14 @@ Sprite:
     Origin:
       X: 16.0
       Y: 18.0
+  Empty:
+    FPS: 1.0
+    Frames:
+      - 1
+    Loop: true
+    Origin:
+      X: 10.0
+      Y: 16.0 
   Reload:
     FPS: 15.0
     Frames:
