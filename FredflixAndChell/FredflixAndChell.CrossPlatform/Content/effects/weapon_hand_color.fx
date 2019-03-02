@@ -1,6 +1,7 @@
 ﻿sampler s0;
 float4 hand_color;
 float4 hand_border_color;
+float4 replace_color;
 
 float4 PixelShaderFunction(float2 coords: TEXCOORD0) : COLOR0
 {
@@ -11,6 +12,9 @@ float4 PixelShaderFunction(float2 coords: TEXCOORD0) : COLOR0
 	}
 	if(color.r == 0.0 && color.g == 0.0 && color.b == 1.0) {
 		return hand_color;
+	}
+	if(color.r == 1.0 && color.g == 1.0 && color.b == 1.0) {
+		return replace_color;
 	}
 	return color;
 }

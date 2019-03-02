@@ -31,8 +31,12 @@ namespace FredflixAndChell.Shared.Assets
             public const string TiledMapMapKey = "map";
             public const string TiledMapMapDisplayKey = "map_display";
             public const string TiledMapCharacterSelectKey = "character";
+            public const string TiledMapBlueTeamKey = "team_blue";
+            public const string TiledMapRedTeamKey = "team_red";
 
             public const string EventReady = "ready";
+
+            public const string DefaultStartCharacter = "Trump";
         }
 
         public class Assets

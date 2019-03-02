@@ -1,11 +1,15 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Props;
 using FredflixAndChell.Shared.Maps.Events;
+using FredflixAndChell.Shared.Systems;
 using FredflixAndChell.Shared.Systems.GameModeHandlers;
 using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
+using System;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Maps.MapBuilders
@@ -26,12 +30,9 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                     {
                         continue;
                     }
-
-                    var position = zoneObject.position;
-                    var collectible = new Collectible(position.X, position.Y, "flag", false);
-
-                    // TODO
-                    collectible.OnPickupEvent += _ => { };
+                    var team = zoneObject.name == "team_blue_zone" ? 1 :
+                               zoneObject.name == "team_red_zone" ? 2 : -1;
+                    SpawnCTFFlagForTeam(map, zoneObject, team);
                 }
 
                 var color = new Color();
@@ -71,6 +72,29 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
 
                 map.scene.addEntity(zone);
             }
+        }
+
+        private static void SpawnCTFFlagForTeam(Map map, TiledObject zoneObject, int team)
+        {
+            var position = zoneObject.position;
+            var metadata = new MeleeMetadata
+            {
+                OnDropEvent = (c, p) => map.scene.getSceneComponent<GameSystem>().Publish(GameEvents.FlagDropped, new FlagDroppedEventParameters
+                {
+                    DroppingPlayer = p
+                }),
+                OnPickupEvent = (c, p) => map.scene.getSceneComponent<GameSystem>().Publish(GameEvents.FlagPickedUp, new FlagPickedUpEventParameters
+                {
+                    CapturingPlayer = p
+                }),
+                OnDestroyEvent = _ => SpawnCTFFlagForTeam(map, zoneObject, team)
+            };
+            metadata.CanCollectRules.Add(p => p.TeamIndex != team);
+            metadata.Color = team == 1 ? Color.Blue 
+                           : team == 2 ? Color.Red
+                           : Color.White;
+            var collectible = new Collectible(position.X + zoneObject.width / 2, position.Y + zoneObject.height / 2, "Flag", false, metadata);
+            map.scene.addEntity(collectible);
         }
     }
 }

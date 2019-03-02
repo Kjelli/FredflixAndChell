@@ -42,6 +42,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
             var handColorizer = AssetLoader.GetEffect("weapon_hand_color");
             handColorizer.Parameters["hand_color"].SetValue(PlayerSkinColor.ToVector4());
             handColorizer.Parameters["hand_border_color"].SetValue(PlayerSkinColor.subtract(new Color(0.1f, 0.1f, 0.1f, 0.0f)).ToVector4());
+            handColorizer.Parameters["replace_color"].SetValue(_melee.Metadata.Color.ToVector4());
 
             _animation = entity.addComponent(SetupAnimations(_melee.Parameters.Sprite));
             _animation.renderLayer = Layers.Player;

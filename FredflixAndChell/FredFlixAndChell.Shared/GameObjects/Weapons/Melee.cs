@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Components.Weapons;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
@@ -30,11 +31,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public MeleeParameters Parameters { get; }
         public Player Player { get; set; }
+        public MeleeMetadata Metadata { get; set; }
 
-        public Melee(Player player, MeleeParameters meleeParameters) : base(player)
+        public Melee(Player player, MeleeParameters meleeParameters, MeleeMetadata metadata = null) : base(player)
         {
             Player = player;
             Parameters = meleeParameters;
+            Metadata = metadata ?? new MeleeMetadata();
             SetupParameters();
         }
 

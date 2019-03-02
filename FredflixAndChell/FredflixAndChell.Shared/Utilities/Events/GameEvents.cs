@@ -8,6 +8,9 @@ namespace FredflixAndChell.Shared.Utilities.Events
 {
     public enum GameEvents
     {
-        PlayerKilled, FlagCaptured, GlobalMapEvent
+        PlayerKilled,
+        GlobalMapEvent,
+        FlagPickedUp,
+        FlagDropped,
     }
 }

@@ -23,7 +23,7 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                 entity.setScale(new Vector2(lightSource.width / 16, lightSource.height / 16) * 0.5f);
                 var sprite = entity.addComponent(new Sprite(AssetLoader.GetTexture("effects/lightmask_xs")));
                 sprite.material = Material.blendLinearDodge();
-                sprite.color = ColorExt.hexToColor("#" + lightSource.properties["color"].Substring(2));
+                sprite.color = ColorExt.hexToColor(lightSource.properties["color"].Substring(3));
                 sprite.renderLayer = Layers.Lights;
 
                 var props = lightSource.properties;

@@ -77,6 +77,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public float AimingSlownessFactor { get; set; }
         public float Speed { get; set; } = 50f;
         public float DeaccelerationExternalFactor { get; set; } = 1f;
+
+
         public float AccelerationExternalFactor { get; set; } = 1f;
         public float Health { get; set; }
         public float MaxHealth { get; private set; }
@@ -104,6 +106,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public override void OnSpawn()
         {
+            _gameSystem = scene.getSceneComponent<GameSystem>();
+
             var metadata = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
             if (metadata != null)
             {
@@ -192,23 +196,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             // Blood
             _blood = addComponent(new BloodEngine(Parameters.BloodColor));
 
-            _gameSystem = scene.getSceneComponent<GameSystem>();
             SetWalkingState();
         }
 
         private void JoinGame()
         {
-            SetupParameters();
+            _gameSystem.RegisterPlayer(this);
             SetupComponents();
+            var metadata = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
+            SetupParameters(metadata);
             //SetupDebug();
 
             //addComponent(new RegenEffect());
 
-            _gameSystem.RegisterPlayer(this);
             updateOrder = 0;
 
             PlayerState = PlayerState.Normal;
-            ContextHelper.PlayerMetadataByIndex(PlayerIndex).IsInitialized = true;
+            metadata.IsInitialized = true;
         }
 
         private void SetupRenderer(PlayerSprite playerSprite)
@@ -226,8 +230,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupRenderer(playerSprite);
         }
 
-        private void SetupParameters()
+        private void SetupParameters(PlayerMetadata metadata)
         {
+            TeamIndex = metadata.TeamIndex;
             Health = Parameters.MaxHealth;
             MaxHealth = Parameters.MaxHealth;
             Stamina = Parameters.MaxStamina;
@@ -656,16 +661,25 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 || !isFriendlyFire;
         }
 
-        public void SetParameters(CharacterParameters nextCharacter)
+        public void SetParameters(CharacterParameters characterParams)
         {
-            Parameters = nextCharacter;
-            SetupParameters();
-            ChangePlayerSprite(nextCharacter.PlayerSprite);
+            Parameters = characterParams;
             var meta = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
+            SetupParameters(meta);
+            ChangePlayerSprite(characterParams.PlayerSprite);
             if (meta != null)
             {
-                meta.Character = nextCharacter;
+                meta.Character = characterParams;
             }
+        }
+
+        public void SetTeamIndex(int teamIndex)
+        {
+            TeamIndex = teamIndex;
+            _renderer.UpdateTeamIndex(teamIndex);
+
+            var meta = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
+            meta.TeamIndex = teamIndex;
         }
 
         private void DropDead()
@@ -738,11 +752,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _lastHitPlayerSource = null;
             _lastHitTime = -1;
 
-            SetupParameters();
+            var meta = ContextHelper.PlayerMetadataByIndex(PlayerIndex);
+
+            SetupParameters(meta);
             EnableHitbox();
             EnableProximityHitbox();
 
-            var weapon = ContextHelper.PlayerMetadataByIndex(PlayerIndex).Weapon.Name;
+            
+            var weapon = meta.Weapon.Name;
             EquipWeapon(weapon);
 
             // Hack to prevent newly respawned players from being invincible

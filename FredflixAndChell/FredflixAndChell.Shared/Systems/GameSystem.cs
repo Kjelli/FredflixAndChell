@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.Components.Cameras;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -187,6 +188,7 @@ namespace FredflixAndChell.Shared.Systems
 
     public class PlayerMetadata : IComparable<PlayerMetadata>
     {
+        public int TeamIndex { get; set; }
         public int Score { get; set; }
         public int PlayerIndex { get; set; }
         public CharacterParameters Character { get; set; }
@@ -196,8 +198,9 @@ namespace FredflixAndChell.Shared.Systems
         public PlayerMetadata()
         {
             Score = 0;
-            Character = Characters.Get("Trump");
-            Weapon = Melees.Get("Flag");
+            Character = Characters.Get(Constants.Strings.DefaultStartCharacter);
+            // TODO Make a constant of default start weapon
+            Weapon = Guns.Get("M4");
         }
 
         public int CompareTo(PlayerMetadata other)

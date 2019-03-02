@@ -39,7 +39,7 @@ namespace FredflixAndChell.Shared.Components.Players
             var gunParams = Guns.Get(name);
             if (gunParams != null)
             {
-                var gunMetadata = (GunMetadata)metadata;
+                var gunMetadata = metadata != null ? (GunMetadata)metadata : null;
                 Weapon = entity.scene.addEntity(new Gun(_player, gunParams, gunMetadata));
 
                 var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
@@ -53,7 +53,8 @@ namespace FredflixAndChell.Shared.Components.Players
                 var meleeParams = Melees.Get(name);
                 if (meleeParams != null)
                 {
-                    Weapon = entity.scene.addEntity(new Melee(_player, meleeParams));
+                    var meleeMetadata = metadata != null ? (MeleeMetadata) metadata : null;
+                    Weapon = entity.scene.addEntity(new Melee(_player, meleeParams, meleeMetadata));
 
                     var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
                     if (meta != null)
@@ -110,15 +111,16 @@ namespace FredflixAndChell.Shared.Components.Players
                 Collectible throwedItem = null;
                 if (Weapon is Gun gun)
                 {
-                    var gunCollectible = new Collectible(transform.position.X, transform.position.Y, 
-                        gun.Parameters.Name, true, new GunMetadata(gun.Ammo, gun.MagazineAmmo));
-                    throwedItem = entity.scene.addEntity(gunCollectible);
-
+                    throwedItem = entity.scene.addEntity(new Collectible(transform.position.X, transform.position.Y,
+                        gun.Parameters.Name, true, gun.Metadata));
                 }
                 else if (Weapon is Melee melee)
                 {
-                    throwedItem = entity.scene.addEntity(new Collectible(transform.position.X, transform.position.Y, melee.Parameters.Name, true));
+                    throwedItem = entity.scene.addEntity(new Collectible(transform.position.X, transform.position.Y,
+                        melee.Parameters.Name, true, melee.Metadata));
                 }
+
+                throwedItem.Metadata?.OnDropEvent?.Invoke(throwedItem, _player);
 
                 throwedItem.Velocity = new Vector2(
                         _player.FacingAngle.X * ThrowSpeed,

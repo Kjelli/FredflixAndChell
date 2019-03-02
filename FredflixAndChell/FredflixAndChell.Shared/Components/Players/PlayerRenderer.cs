@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.Assets;
+﻿using System;
+using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
@@ -119,6 +120,8 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.play(HeadAnimation.FrontFacing);
             _torso.play(TorsoAnimation.Front);
             _legs.play(LegsAnimation.Idle);
+
+            UpdateTeamIndex(_player.TeamIndex);
         }
 
         private Sprite<HeadAnimation> SetupHeadAnimations(PlayerHeadSprite headSprite)
@@ -320,6 +323,22 @@ namespace FredflixAndChell.Shared.Components.Players
             if (Head != null) Head.flipX = isFlipped;
             if (_torso != null) _torso.flipX = isFlipped;
             if (_legs != null) _legs.flipX = isFlipped;
+        }
+
+        public void UpdateTeamIndex(int teamIndex)
+        {
+            if(teamIndex == 1)
+            {
+                _torso.color = Color.Blue;
+            }
+            else if(teamIndex == 2)
+            {
+                _torso.color = Color.Red;
+            }
+            else
+            {
+                _torso.color = Color.White;
+            }
         }
     }
 }

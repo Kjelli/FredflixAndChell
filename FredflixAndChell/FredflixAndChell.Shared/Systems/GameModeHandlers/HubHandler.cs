@@ -57,15 +57,28 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
                     ToggleTeamMode(_nextGameSettings.TeamMode.Next());
                     break;
                 case Strings.TiledMapCharacterSelectKey:
-                    var player = mapEventParameters.MapEvent.Parameters[0] as Player;
-                    SelectCharacter(player);
+                    var characterPlayer = mapEventParameters.MapEvent.Parameters[0] as Player;
+                    SelectCharacter(characterPlayer);
+                    break;
+                case Strings.TiledMapBlueTeamKey:
+                    var teamBluePlayer = mapEventParameters.MapEvent.Parameters[0] as Player;
+                    SetTeam(teamBluePlayer, 1);
+                    break;
+                case Strings.TiledMapRedTeamKey:
+                    var teamRedPlayer = mapEventParameters.MapEvent.Parameters[0] as Player;
+                    SetTeam(teamRedPlayer, 2);
                     break;
                 case Strings.TiledMapMapKey:
                     ToggleMap();
                     break;
             }
         }
-      
+
+        private void SetTeam(Player player, int teamIndex)
+        {
+            player.SetTeamIndex(teamIndex);
+        }
+
         private void SelectCharacter(Player player)
         {
             var currentCharacter = player.Parameters.CharacterName;

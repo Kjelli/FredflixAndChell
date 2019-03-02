@@ -1,7 +1,9 @@
 ﻿using FredflixAndChell.Shared.Components.Cameras;
-using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Effects;
+using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Graphics.Animations;
 using Microsoft.Xna.Framework;
@@ -78,7 +80,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             return items.ToList();
         }
 
-       
+
         private Sprite<Animations> SetupAnimations()
         {
             var animations = new Sprite<Animations>();
@@ -141,8 +143,27 @@ namespace FredflixAndChell.Shared.GameObjects.Props
 
         private void SpawnItem()
         {
-            var collectible = new Collectible(position.X, position.Y, _nextItemToSpawn.Name, false);
-            collectible.OnPickupEvent += _ => _blocked = false;
+            CollectibleMetadata meta = null;
+            if(Guns.Get(_nextItemToSpawn.Name) != null)
+            {
+                var gp = _nextItemToSpawn.Weapon as GunParameters;
+                meta = new GunMetadata(gp.Ammo, gp.MagazineAmmo);
+            } else if (Melees.Get(_nextItemToSpawn.Name) != null)
+            {
+                var gp = _nextItemToSpawn.Weapon as MeleeParameters;
+                meta = new MeleeMetadata();
+            }
+
+            meta.OnPickupEvent = (c, p) =>
+            {
+                // Unblock the spawner upon pickup
+                _blocked = false;
+
+                // Prevent additional pickups to unblock the spawner
+                c.Metadata.OnPickupEvent = null;
+            };
+
+            var collectible = new Collectible(position.X, position.Y, _nextItemToSpawn.Name, false, meta);
 
             scene.addEntity(collectible);
             _blocked = true;

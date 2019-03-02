@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Utilities.Events;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 {
@@ -10,6 +7,35 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
     {
         public CaptureTheFlagHandler(GameSystem gameSystem) : base(gameSystem)
         {
+        }
+
+        public override void Setup(GameSettings settings)
+        {
+            base.Setup(settings);
+            GameSystem.Subscribe(GameEvents.GlobalMapEvent, HandleCTFMapEvent);
+        }
+
+        private void HandleCTFMapEvent(GameEventParameters ev)
+        {
+            if (!(ev is GlobalMapEventParameters globalMapEvent)) return;
+            var mapEvent = globalMapEvent.MapEvent;
+            int teamIndex = -1;
+            switch (mapEvent.EventKey)
+            {
+                case "ctf_red":
+                    teamIndex = 1;
+                    break;
+                case "ctf_blue":
+                    teamIndex = 2;
+                    break;
+                default:
+                    return;
+            }
+
+            if ((string)mapEvent.Parameters[0] != Constants.Strings.CollisionMapEventEnter) return;
+
+
+
         }
 
         public override bool WeHaveAWinner()

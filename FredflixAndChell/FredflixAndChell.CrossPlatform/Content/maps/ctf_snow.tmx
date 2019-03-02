@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="90" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="582">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="90" tilewidth="8" tileheight="8" infinite="0" nextlayerid="17" nextobjectid="586">
  <properties>
   <property name="ambient_lighting" type="color" value="#ff000053"/>
   <property name="mode_ctf" type="bool" value="true"/>
@@ -112,12 +112,14 @@
   <object id="558" name="pit" x="232" y="280" width="40.25" height="16"/>
   <object id="559" name="pit" x="688" y="280" width="40.25" height="16"/>
   <object id="560" name="pit" x="688" y="440" width="40.25" height="16"/>
-  <object id="561" name="player_spawn" x="472" y="176" width="16" height="16"/>
   <object id="562" name="player_spawn" x="472" y="536" width="16" height="16"/>
   <object id="563" name="player_spawn" x="416" y="552" width="16" height="16"/>
   <object id="564" name="player_spawn" x="528" y="552" width="16" height="16"/>
-  <object id="565" name="player_spawn" x="416" y="160" width="16" height="16"/>
-  <object id="566" name="player_spawn" x="528" y="160" width="16" height="16"/>
+  <object id="565" name="player_spawn" x="416" y="160" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
   <object id="569" name="team_blue_zone" type="zone" x="464" y="128" width="32.25" height="31.75">
    <properties>
     <property name="color" type="color" value="#ff5500ff"/>
@@ -197,6 +199,32 @@
     <property name="toggle_key" value="t2"/>
    </properties>
    <ellipse/>
+  </object>
+  <object id="582" name="event_emitter" x="472" y="576" width="16" height="16">
+   <properties>
+    <property name="global" type="bool" value="true"/>
+    <property name="key" value="ctf_red"/>
+    <property name="physics_layer" type="int" value="9"/>
+    <property name="type" value="collision"/>
+   </properties>
+  </object>
+  <object id="583" name="event_emitter" x="472" y="136" width="16" height="16">
+   <properties>
+    <property name="global" type="bool" value="true"/>
+    <property name="key" value="ctf_blue"/>
+    <property name="physics_layer" type="int" value="9"/>
+    <property name="type" value="collision"/>
+   </properties>
+  </object>
+  <object id="584" name="player_spawn" x="472" y="176" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="585" name="player_spawn" x="528" y="160" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

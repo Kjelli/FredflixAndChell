@@ -23,4 +23,14 @@ namespace FredflixAndChell.Shared.Utilities.Events
     {
         public MapEvent MapEvent { get; set; }
     }
+
+    public class FlagPickedUpEventParameters : GameEventParameters
+    {
+        public Player CapturingPlayer { get; set; }
+    }
+
+    public class FlagDroppedEventParameters : GameEventParameters
+    {
+        public Player DroppingPlayer { get; set; }
+    }
 }

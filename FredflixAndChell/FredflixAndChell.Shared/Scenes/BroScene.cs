@@ -55,8 +55,7 @@ namespace FredflixAndChell.Shared.Scenes
             //connector.SpawnDebugPlayer();
             connector.SpawnDebugPlayer();
 #endif
-            var gameSystem = new GameSystem(_gameSettings, map);
-            addSceneComponent(gameSystem);
+            addSceneComponent(new GameSystem(_gameSettings, map));
             addSceneComponent(new ControllerSystem());
 
             // TODO turn back on for sweet details. Sweetails.

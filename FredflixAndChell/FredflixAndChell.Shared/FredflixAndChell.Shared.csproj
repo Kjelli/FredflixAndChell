@@ -83,6 +83,7 @@
     <Compile Include="Components\StatusEffects\SlowEffect.cs" />
     <Compile Include="Components\StatusEffects\StatusEffect.cs" />
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
+    <Compile Include="GameObjects\Collectibles\Metadata\MeleeMetadata.cs" />
     <Compile Include="GameObjects\Collectibles\Metadata\GunMetadata.cs" />
     <Compile Include="GameObjects\Effects\Fireball.cs" />
     <Compile Include="GameObjects\Effects\Explosion.cs" />

@@ -1,4 +1,5 @@
 ﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.Components.Interactables;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
@@ -11,6 +12,7 @@ using Nez;
 using Nez.Sprites;
 using Nez.Tweens;
 using System;
+using System.Linq;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
@@ -37,22 +39,16 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         private bool _isHighlighted;
         private int _numberOfPlayersInProximity;
 
-        public Action<Collectible> OnPickupEvent;
-
         public CollectibleState CollectibleState => _collectibleState;
         public CollectibleParameters Preset { get; set; }
         public CollectibleMetadata Metadata { get; set; }
 
-        public Collectible(float x, float y, string name, bool dropped, CollectibleMetadata Metadata) : this(x, y, name, dropped)
-        {
-            this.Metadata = Metadata;
-        }
-
-        public Collectible(float x, float y, string name, bool dropped) : base(x, y)
+        public Collectible(float x, float y, string name, bool dropped, CollectibleMetadata Metadata = null) : base(x, y)
         {
             Preset = Collectibles.Get(name);
             _dropped = dropped;
             _acceleration = new Vector2();
+            this.Metadata = Metadata;
         }
 
         public override void OnDespawn()
@@ -62,6 +58,10 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         public override void OnSpawn()
         {
             SetupComponents();
+            if(Preset.Name == "Flag")
+            {
+                addComponent(new LightSource(Metadata.Color, this));
+            }
         }
 
         private void SetupComponents()
@@ -81,6 +81,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _sprite = addComponent(new Sprite(sprite.Icon.ToSpriteAnimation(sprite.Source).frames[0]));
             _sprite.renderLayer = Layers.Interactables;
             _sprite.material = new Material();
+            _sprite.color = Metadata?.Color ?? Color.White;
 
             scale = new Vector2(0.5f, 0.5f);
             _hoverTween = this.tweenLocalScaleTo(0.5f, 0.5f)
@@ -155,6 +156,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _sprite.tweenColorTo(targetColor, durationSeconds)
                 .setEaseType(easeType)
                 .start();
+
+            Metadata?.OnDestroyEvent?.Invoke(this);
         }
 
         private void Hover(float yOffset)
@@ -183,7 +186,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         private void UpdateHighlightRendering()
         {
-            if (CanBeCollected() && _numberOfPlayersInProximity > 0 && !_isHighlighted)
+            if (CollectibleState == CollectibleState.Available && _numberOfPlayersInProximity > 0 && !_isHighlighted)
             {
                 _isHighlighted = true;
 
@@ -194,13 +197,13 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 flashEffect.Parameters["flashRate"].SetValue(0f);
                 flashEffect.Parameters["flashOffset"].SetValue(1f);
                 flashEffect.Parameters["scrollSpeed"].SetValue(new Vector2(0.45f, 0.45f));
+                flashEffect.Parameters["replace_color"].SetValue(Metadata.Color.ToVector4());
 
                 _flashEffect = flashEffect;
                 _sprite.material.effect = _flashEffect;
             }
-            else if (!CanBeCollected() || (_numberOfPlayersInProximity == 0 && _isHighlighted))
+            else if (CollectibleState != CollectibleState.Available || (_numberOfPlayersInProximity == 0 && _isHighlighted))
             {
-
                 _isHighlighted = false;
 
                 _sprite.material.effect = null;
@@ -234,14 +237,19 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _sprite.layerDepth = 1 - (position.Y) * Constants.RenderLayerDepthFactor;
         }
 
-        public bool CanBeCollected()
+        public bool CanBeCollectedByPlayer(Player p)
         {
+            if(Metadata?.CanCollectRules.Any(r => r.Invoke(p) == false) == true)
+            {
+                return false;
+            }
             return _collectibleState == CollectibleState.Available;
         }
 
         public void OnPickup(Player player)
         {
             if (_collectibleState != CollectibleState.Available) return;
+            if (!CanBeCollectedByPlayer(player)) return;
 
             player.EquipWeapon(Preset.Weapon.Name, Metadata);
 
@@ -249,7 +257,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             _pickupHitbox.setEnabled(false);
             _collisionHitbox.setEnabled(false);
 
-            OnPickupEvent?.Invoke(this);
+            Metadata?.OnPickupEvent?.Invoke(this, player);
 
             destroy();
         }

@@ -61,7 +61,7 @@ namespace FredflixAndChell.Shared.Components.Players
                 return;
             }
 
-            if (other.entity is Collectible collectible && collectible.CanBeCollected())
+            if (other.entity is Collectible collectible && collectible.CanBeCollectedByPlayer(_player))
             {
                 collectible?.Highlight();
             }
@@ -101,7 +101,7 @@ namespace FredflixAndChell.Shared.Components.Players
 
                 case Tags.EventEmitter:
                     (other.entity as CollisionEventEmitter).EmitMapEvent(
-                    new string[] { Strings.CollisionMapEventEnter });
+                    new object[] { Strings.CollisionMapEventEnter, _player });
                     break;
             }
         }
@@ -123,7 +123,7 @@ namespace FredflixAndChell.Shared.Components.Players
             if (other.entity?.tag == Tags.EventEmitter)
             {
                 (other.entity as CollisionEventEmitter).EmitMapEvent(
-                    new string[] { Strings.CollisionMapEventExit });
+                    new object[] { Strings.CollisionMapEventExit, _player });
             }
 
             if(other.entity?.tag == Tags.Pit)
