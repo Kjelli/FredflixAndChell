@@ -12,7 +12,8 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
         Common,
         Rare,
         Epic,
-        Legendary
+        Legendary,
+        Special
     }
 
     public class CollectibleParameters

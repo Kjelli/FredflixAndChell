@@ -3,7 +3,7 @@ DropChance: 0.6
 FireRate: 0.15
 Name: Flag
 RenderOffset: 7.0
-Rarity: Common
+Rarity: Special
 Sprite:
   Fire:
     FPS: 30.0
@@ -11,8 +11,8 @@ Sprite:
       - 1
     Loop: false
     Origin:
-      X: 10.0
-      Y: 16.0  
+      X: 8.0
+      Y: 8.0
     TileWidth: 16
     TileHeight: 16
   Icon:
@@ -31,8 +31,8 @@ Sprite:
       - 1
     Loop: false
     Origin:
-      X: 10.0
-      Y: 16.0  
+      X: 8.0
+      Y: 8.0
     TileWidth: 16
     TileHeight: 16
   Source: guns/flag

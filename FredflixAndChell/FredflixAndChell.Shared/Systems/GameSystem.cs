@@ -197,7 +197,7 @@ namespace FredflixAndChell.Shared.Systems
         {
             Score = 0;
             Character = Characters.Get("Trump");
-            Weapon = Guns.Get("M4");
+            Weapon = Melees.Get("Flag");
         }
 
         public int CompareTo(PlayerMetadata other)

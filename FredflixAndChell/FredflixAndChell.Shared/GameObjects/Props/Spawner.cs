@@ -150,13 +150,13 @@ namespace FredflixAndChell.Shared.GameObjects.Props
 
         private Rarity DrawRarity()
         {
-            var roll = Random.range(0, 12);
+            var roll = Random.range(0, 100);
 
-            if (roll == 11)
+            if (roll >= 95)
                 return Rarity.Legendary;
-            else if (roll >= 9)
+            else if (roll >= 90)
                 return Rarity.Epic;
-            else if (roll >= 5)
+            else if (roll >= 50)
                 return Rarity.Rare;
             else
                 return Rarity.Common;
@@ -191,7 +191,6 @@ namespace FredflixAndChell.Shared.GameObjects.Props
             {
                 case SpawnerState.Initial:
                     if (!_addedToScene || _blocked) break;
-                    Console.WriteLine("Counting down spawner");
 
                     _spawnerState = SpawnerState.Closed;
                     StartTimer();
@@ -200,9 +199,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
                     if (_timer.IsReady() && !_blocked)
                     {
                         _nextItemToSpawn = GetRandomCollectible();
-                        Console.WriteLine("Spawning " + _nextItemToSpawn.Name + " in " + FromOpeningToSpawnDelaySeconds + " seconds" );
 
-                        // TODO: Light effects? Color indicating rarity?
                         _animation.play(Animations.Open);
                         _spawnerState = SpawnerState.Opening;
                         _timer = new Cooldown(FromOpeningToSpawnDelaySeconds);
@@ -218,9 +215,8 @@ namespace FredflixAndChell.Shared.GameObjects.Props
 
                     if (_timer.IsReady())
                     {
-                        Console.WriteLine("Spawned " + _nextItemToSpawn.Name + "!");
-
                         SpawnItem();
+
                         _spawnCount++;
                         _spawnerState = SpawnerState.Closing;
                         _animation.play(Animations.Close);

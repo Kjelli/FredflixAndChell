@@ -127,7 +127,7 @@
     <Compile Include="GameObjects\Players\Sprites\PlayerSpritePresets.cs" />
     <Compile Include="GameObjects\Props\Spawner.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\GunParameters.cs" />
-    <Compile Include="GameObjects\Weapons\Guns.cs" />
+    <Compile Include="GameObjects\Weapons\Weapons.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\GunSprite.cs" />
     <Compile Include="Maps\Events\InteractEventEmitter.cs" />
     <Compile Include="Maps\Events\CollisionEventEmitter.cs" />
