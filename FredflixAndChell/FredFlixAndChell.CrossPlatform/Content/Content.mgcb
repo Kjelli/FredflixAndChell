@@ -111,6 +111,11 @@
 /processor:
 /build:maps/ctf_snow.tmx
 
+#begin maps/ctf_snow2.tmx
+/importer:
+/processor:
+/build:maps/ctf_snow2.tmx
+
 #begin maps/dungeon_1.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

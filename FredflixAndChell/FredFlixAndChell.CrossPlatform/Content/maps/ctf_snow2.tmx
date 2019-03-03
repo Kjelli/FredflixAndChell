@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="27" nextobjectid="607">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="27" nextobjectid="611">
  <properties>
   <property name="ambient_lighting" type="color" value="#ff296f9a"/>
   <property name="mode_ctf" type="bool" value="true"/>
@@ -92,9 +92,9 @@
     <property name="team_index" type="int" value="1"/>
    </properties>
   </object>
-  <object id="590" name="team_blue_zone" type="zone" x="704" y="184" width="32.25" height="31.75">
+  <object id="590" name="team_red_zone" type="zone" x="704" y="184" width="32.25" height="31.75">
    <properties>
-    <property name="color" type="color" value="#ff5500ff"/>
+    <property name="color" type="color" value="#ffff0004"/>
     <property name="ctf_only" type="bool" value="true"/>
     <property name="glow" type="bool" value="true"/>
    </properties>
@@ -133,8 +133,8 @@
     <property name="max_spawns" type="int" value="-1"/>
     <property name="min_interval_seconds" type="float" value="5"/>
     <property name="rarity_blacklist" value=""/>
-    <property name="rarity_whitelist" value="common"/>
-    <property name="weapon_blacklist" value=""/>
+    <property name="rarity_whitelist" value="Common"/>
+    <property name="weapon_blacklist" value="Stick"/>
     <property name="weapon_whitelist" value=""/>
    </properties>
   </object>
@@ -145,18 +145,18 @@
     <property name="max_spawns" type="int" value="-1"/>
     <property name="min_interval_seconds" type="float" value="5"/>
     <property name="rarity_blacklist" value=""/>
-    <property name="rarity_whitelist" value="common"/>
-    <property name="weapon_blacklist" value=""/>
+    <property name="rarity_whitelist" value="Common"/>
+    <property name="weapon_blacklist" value="Stick"/>
     <property name="weapon_whitelist" value=""/>
    </properties>
   </object>
   <object id="605" name="item_spawn" x="472" y="144" width="16" height="16">
    <properties>
-    <property name="camera_tracking" type="bool" value="false"/>
+    <property name="camera_tracking" type="bool" value="true"/>
     <property name="max_interval_seconds" type="float" value="15"/>
     <property name="max_spawns" type="int" value="-1"/>
     <property name="min_interval_seconds" type="float" value="4"/>
-    <property name="rarity_blacklist" value="common"/>
+    <property name="rarity_blacklist" value="Common"/>
     <property name="rarity_whitelist" value=""/>
     <property name="weapon_blacklist" value=""/>
     <property name="weapon_whitelist" value=""/>
@@ -164,15 +164,19 @@
   </object>
   <object id="606" name="item_spawn" x="472" y="240" width="16" height="16">
    <properties>
-    <property name="camera_tracking" type="bool" value="false"/>
+    <property name="camera_tracking" type="bool" value="true"/>
     <property name="max_interval_seconds" type="float" value="15"/>
     <property name="max_spawns" type="int" value="-1"/>
     <property name="min_interval_seconds" type="float" value="4"/>
-    <property name="rarity_blacklist" value="common"/>
+    <property name="rarity_blacklist" value="Common"/>
     <property name="rarity_whitelist" value=""/>
     <property name="weapon_blacklist" value=""/>
     <property name="weapon_whitelist" value=""/>
    </properties>
   </object>
+  <object id="607" name="pit" x="528.25" y="136.25" width="16" height="40"/>
+  <object id="608" name="pit" x="528" y="224" width="16" height="40"/>
+  <object id="609" name="pit" x="416" y="136" width="16" height="40"/>
+  <object id="610" name="pit" x="423" y="221.25" width="16" height="40"/>
  </objectgroup>
 </map>
