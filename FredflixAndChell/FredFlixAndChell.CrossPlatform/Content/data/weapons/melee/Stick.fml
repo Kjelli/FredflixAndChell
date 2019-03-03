@@ -2,8 +2,9 @@ Type: Melee
 DropChance: 0.6
 FireRate: 0.1500000007
 Name: Stick
-Damage: 10.0
-Knockback: 300.0
+Damage: 25
+Knockback: 150.0
+AerialKnockback: 300.0
 RenderOffset: 7.0
 HitboxOffset:
   X: 10.0

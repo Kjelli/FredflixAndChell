@@ -19,7 +19,7 @@ namespace FredflixAndChell.Shared.Scenes
             GameMode = GameMode.HUB,
             Map = "winter_hub",
             DamageMultiplier = 0.0f,
-            KnockbackMultiplier = 0.0f
+            KnockbackMultiplier = 1.0f
         })
         {
 #if !DEBUG

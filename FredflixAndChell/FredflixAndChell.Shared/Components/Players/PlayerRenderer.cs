@@ -180,6 +180,10 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public void update()
         {
+            Head.localOffset = new Vector2(0, _player.Altitude);
+            _torso.localOffset = new Vector2(0, _player.Altitude);
+            _legs.localOffset = new Vector2(0, _player.Altitude);
+
             UpdateAnimation();
             if (float.IsNaN(_player.position.X) || float.IsNaN(_player.position.Y)
                 || float.IsNaN(_player.FacingAngle.X) || float.IsNaN(_player.FacingAngle.Y)) return;

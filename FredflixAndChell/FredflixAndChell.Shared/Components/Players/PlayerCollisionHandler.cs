@@ -86,7 +86,8 @@ namespace FredflixAndChell.Shared.Components.Players
                 Direction = -(explosion.position - player.position),
                 Knockback = damagePercentage * Values.ExplosionKnockback,
                 SourceOfDamage = explosion.ExplosionPlayerSource,
-                CanHitSelf = true
+                AerialKnockback = damagePercentage * Values.ExplosionAerialKnockback,
+                CanHitSelf = true,
             };
             player.Damage(directionalDamage);
         }

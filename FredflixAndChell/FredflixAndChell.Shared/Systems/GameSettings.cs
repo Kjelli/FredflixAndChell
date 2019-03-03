@@ -24,6 +24,7 @@ namespace FredflixAndChell.Shared.Systems
         public bool FriendlyFire { get; set; }
         public float DamageMultiplier { get; set; } = 1.0f;
         public float KnockbackMultiplier { get; set; } = 1.0f;
+        public float AerialKnockbackMultiplier { get; set; } = 1.0f;
         public float StaminaMultiplier { get; set; } = 1.0f;
     }
 

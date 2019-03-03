@@ -1,9 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Players;
-using FredflixAndChell.Shared.Components.StatusEffects;
 using FredflixAndChell.Shared.GameObjects.Bullets;
-using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
@@ -29,14 +27,20 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
     public enum PlayerMobilityState
     {
-        Walking, Running, Rolling
+        Walking, Running, Rolling, Flying
     }
 
     public class Player : GameObject
     {
+        private const float AltitudeOutOfReachTreshold = 15f;
+
         private const float WalkAcceleration = 0.25f;
         private const float SprintAcceleration = 0.40f;
         private const float RollAcceleration = 1.20f;
+        private const float FlyAcceleration = 0.015f;
+        private const float BaseDeacceleration = 0.2f;
+        private const float FlyDeacceleration = 0.005f;
+
         private const float BaseSlownessFactor = 20f;
         private const int DodgeRollStaminaCost = 50;
         private const float LastHitTimeoutSeconds = 3.0f;
@@ -55,19 +59,23 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private GameSystem _gameSystem;
 
         private float _accelerationPlayerFactor;
-        private float _deaccelerationPlayerFactor = 0.2f;
+        private float _deaccelerationPlayerFactor = BaseDeacceleration;
         private bool _isRegeneratingStamina = false;
 
         private List<Entity> _entitiesInProximity;
         private List<Entity> _pitsBelowPlayer;
 
-        private bool _isRollingRight;
         private int _numSprintPressed = 0;
+        private bool _isRollingRight;
         private bool _isWithinDodgeRollGracePeriod;
         private float _gracePeriod;
         private Vector2 _initialRollingDirection;
+
         private Player _lastHitPlayerSource;
         private float _lastHitTime;
+
+        public float Altitude { get; set; }
+        public float AltitudeVelocity { get; set; }
 
         public int PlayerIndex { get; set; }
         public PlayerMobilityState PlayerMobilityState { get; set; }
@@ -188,7 +196,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupRenderer(Parameters.PlayerSprite);
 
             // Assign camera tracker component
-            _cameraTracker = addComponent(new CameraTracker(() => PlayerState != PlayerState.Dead && PlayerState != PlayerState.Idle));
+            _cameraTracker = addComponent(new CameraTracker(
+                () => PlayerState != PlayerState.Dead && PlayerState != PlayerState.Idle,
+                () => position + (_renderer.Head?.localOffset ?? Vector2.Zero)));
 
             // Blood
             _blood = addComponent(new BloodEngine(Parameters.BloodColor));
@@ -229,6 +239,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void SetupParameters(PlayerMetadata metadata)
         {
+            _accelerationPlayerFactor = WalkAcceleration;
+            _deaccelerationPlayerFactor = BaseDeacceleration;
+
             TeamIndex = metadata.TeamIndex;
             Health = Parameters.MaxHealth;
             MaxHealth = Parameters.MaxHealth;
@@ -251,10 +264,29 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             Move();
             SetFacing();
 
+            if (AltitudeVelocity < 0 && PlayerMobilityState != PlayerMobilityState.Flying)
+            {
+                PlayerMobilityState = PlayerMobilityState.Flying;
+            }
+
             // State specific updates
             switch (PlayerMobilityState)
             {
                 case PlayerMobilityState.Rolling:
+                    break;
+                case PlayerMobilityState.Flying:
+                    Altitude += AltitudeVelocity * Time.deltaTime;
+                    Console.WriteLine($"FLYING WOOO (Altitude: {Altitude}, AltVel: {AltitudeVelocity})");
+                    AltitudeVelocity = Lerps.lerpTowards(AltitudeVelocity, 200f, 0.5f, Time.deltaTime * 5f);
+                    _accelerationPlayerFactor = FlyAcceleration;
+                    _deaccelerationPlayerFactor = FlyDeacceleration;
+                    if (Altitude > -0.01f)
+                    {
+                        Altitude = 0;
+                        _accelerationPlayerFactor = WalkAcceleration;
+                        _deaccelerationPlayerFactor = BaseDeacceleration;
+                        PlayerMobilityState = PlayerMobilityState.Walking;
+                    }
                     break;
                 default:
                 case PlayerMobilityState.Running:
@@ -266,7 +298,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                     break;
             }
 
-            if(_lastHitTime > 0 && Time.time > _lastHitTime + LastHitTimeoutSeconds)
+            if (_lastHitTime > 0 && Time.time > _lastHitTime + LastHitTimeoutSeconds)
             {
                 _lastHitTime = -1;
                 _lastHitPlayerSource = null;
@@ -331,7 +363,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleDodgeRoll()
         {
-            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
+            if (PlayerMobilityState == PlayerMobilityState.Rolling || PlayerMobilityState == PlayerMobilityState.Flying) return;
             if (_numSprintPressed == 0)
             {
                 _numSprintPressed++;
@@ -404,7 +436,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         private void ToggleSprint()
         {
-            if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
+            if (PlayerMobilityState == PlayerMobilityState.Rolling || PlayerMobilityState == PlayerMobilityState.Flying) return;
 
             if (_controller.SprintDown && (Acceleration.X != 0 || Acceleration.Y != 0))
             {
@@ -607,7 +639,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 Damage = (melee.Parameters as MeleeParameters).Damage,
                 Knockback = (melee.Parameters as MeleeParameters).Knockback,
                 Direction = melee.Player.FacingAngle,
-                SourceOfDamage = melee.Player
+                SourceOfDamage = melee.Player,
+                AerialKnockback = (melee.Parameters as MeleeParameters).AerialKnockback
             };
             Damage(directionalDamage);
         }
@@ -619,8 +652,15 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var scaledDamage = dd.Damage * _gameSystem.Settings.DamageMultiplier;
             var scaledKnockback = dd.Knockback * _gameSystem.Settings.KnockbackMultiplier;
 
+            dd.Direction.Normalize();
             Health -= scaledDamage;
             Velocity += dd.Direction * scaledKnockback * Time.deltaTime;
+
+            if (dd.AerialKnockback > 0)
+            {
+                var scaledAerialKnockback = dd.AerialKnockback * _gameSystem.Settings.AerialKnockbackMultiplier;
+                AltitudeVelocity += -scaledAerialKnockback;
+            }
 
             _blood.Sprinkle(scaledDamage, dd.Direction);
 
@@ -651,11 +691,14 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool CanBeDamagedBy(DirectionalDamage damage)
         {
             var isFriendlyFire = damage.SourceOfDamage.TeamIndex > 0
+                && damage.SourceOfDamage != this
                 && TeamIndex > 0
                 && damage.SourceOfDamage.TeamIndex == TeamIndex;
             var isFriendlyFireEnabled = _gameSystem.Settings.FriendlyFire;
             var isSelfShot = damage.SourceOfDamage == this;
+            var isTooHigh = Altitude <= -AltitudeOutOfReachTreshold;
 
+            if (isTooHigh) return false;
             if (isFriendlyFire) return isFriendlyFireEnabled;
             if (isSelfShot) return damage.CanHitSelf;
 
@@ -758,7 +801,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters(meta);
             EnableHitbox();
             EnableProximityHitbox();
-            
+
             var weapon = meta.Weapon?.Name ?? Constants.Strings.DefaultStartWeapon;
             EquipWeapon(weapon);
 

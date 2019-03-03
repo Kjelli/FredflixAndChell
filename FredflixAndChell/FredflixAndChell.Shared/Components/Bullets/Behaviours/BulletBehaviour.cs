@@ -121,7 +121,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         private void HitPlayer(Entity playerEntity)
         {
             var player = playerEntity as Player;
-            if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
+            if (player.PlayerMobilityState == PlayerMobilityState.Rolling || player.PlayerMobilityState == PlayerMobilityState.Flying) return;
 
             OnImpact(player);
         }

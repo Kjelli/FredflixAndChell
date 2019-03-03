@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
 using System;
+using System.Collections.Generic;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
@@ -27,6 +28,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private MeleeMetadata _metadata;
         private MeleeAttackState _attackState;
 
+        private List<Player> _playersHitOnSwing;
+
         public override WeaponParameters Parameters => _parameters;
         public override CollectibleMetadata Metadata => _metadata;
 
@@ -41,6 +44,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             Player = player;
             _parameters = meleeParameters;
+            _playersHitOnSwing = new List<Player>();
             _metadata = metadata ?? new MeleeMetadata();
             SetupParameters();
         }
@@ -112,6 +116,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     if (Math.Abs(_swingFacing * SwingRotation) <= _epsilon)
                     {
                         _attackState = MeleeAttackState.None;
+                        _playersHitOnSwing.Clear();
                     }
                     break;
             }
@@ -134,7 +139,9 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             var player = playerEntity as Player;
             if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
+            if (_playersHitOnSwing.Contains(player)) return;
 
+            _playersHitOnSwing.Add(player);
             OnImpact(player);
         }
 

@@ -18,7 +18,7 @@ namespace FredflixAndChell.Shared.Components.Cameras
 
         private TiledMapComponent _map;
         private List<CameraTracker> _trackers;
-        private Vector2 _reflectiveOffset = new Vector2(8, 8);
+        private Vector2 _reflectiveOffset = new Vector2(8, 4);
 
         public float BaseZoom { get => _baseZoom; set => _baseZoom = value; }
         public float Zoom
@@ -107,11 +107,11 @@ namespace FredflixAndChell.Shared.Components.Cameras
                 if (tracker.Priority < lastTrackerPriority) break;
 
                 lastTrackerPriority = tracker.Priority;
-
-                left = Math.Min(tracker.Position.X - paddingX / 2, left);
-                right = Math.Max(tracker.Position.X + paddingX / 2, right);
-                top = Math.Min(tracker.Position.Y - paddingY / 2, top);
-                bottom = Math.Max(tracker.Position.Y + paddingY / 2, bottom);
+                var pos = tracker.PositionFunction();
+                left = Math.Min(pos.X - paddingX / 2, left);
+                right = Math.Max(pos.X + paddingX / 2, right);
+                top = Math.Min(pos.Y - paddingY / 2, top);
+                bottom = Math.Max(pos.Y + paddingY / 2, bottom);
                 anyToTrack = true;
             }
             if (!anyToTrack)

@@ -12,6 +12,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
         public MeleeType MeleeType { get; set; } = MeleeType.Swing;
         public MeleeSprite Sprite { get; set; }
         public float Damage { get; set; } = 10f;
+        public float AerialKnockback { get; set; } = 0f;
         public float Knockback { get; set; } = 1.25f;
         public bool Flip { get; set; } = true;
         public Vector2 HitboxOffset { get; set; } = new Vector2(10, 0);

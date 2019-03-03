@@ -10,5 +10,6 @@ namespace FredflixAndChell.Shared.Utilities
         public Vector2 Direction { get; set; }
         public Player SourceOfDamage { get; set; }
         public bool CanHitSelf { get; set; }
+        public float AerialKnockback { get; set; }
     }
 }
