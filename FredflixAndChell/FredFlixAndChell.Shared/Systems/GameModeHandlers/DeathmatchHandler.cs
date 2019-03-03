@@ -54,13 +54,13 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             if (_weHaveAWinner) return;
 
             var players = GameSystem.Players;
-            var spawnLocations = GameSystem.Map.PlayerSpawner.SpawnLocations;
+            var spawnLocations = GameSystem.Map.SpawnLocations;
 
             var furthestDistance = 0.0f;
             var furthestSpawnPosition = new Vector2();
             foreach (var spawnLocation in spawnLocations)
             {
-                var spawnPosition = new Vector2(spawnLocation.X, spawnLocation.Y);
+                var spawnPosition = spawnLocation.Position;
                 var distanceToSpawnLocation = 0.0f;
                 foreach (var otherPlayer in players)
                 {

@@ -49,14 +49,14 @@ namespace FredflixAndChell.Shared.Scenes
             _lightRenderer.renderTargetClearColor = map.AmbientLightingColor;
 
             addSceneComponent(new SmoothCamera(_reflectionRenderer.camera));
+            addSceneComponent(new GameSystem(_gameSettings, map));
             addSceneComponent(new HUD());
-            var connector = addSceneComponent(new PlayerConnector(spawnLocations: map.PlayerSpawner));
+            var connector = addSceneComponent(new PlayerConnector());
+            addSceneComponent(new ControllerSystem());
 #if DEBUG
             //connector.SpawnDebugPlayer();
             connector.SpawnDebugPlayer();
 #endif
-            addSceneComponent(new GameSystem(_gameSettings, map));
-            addSceneComponent(new ControllerSystem());
 
             // TODO turn back on for sweet details. Sweetails.
             addEntity(new DebugHud());

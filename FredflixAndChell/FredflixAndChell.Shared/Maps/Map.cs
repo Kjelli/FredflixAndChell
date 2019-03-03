@@ -1,10 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
-using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Effects.Weather;
-using FredflixAndChell.Shared.Components.Players;
-using FredflixAndChell.Shared.GameObjects;
 using FredflixAndChell.Shared.GameObjects.Collectibles;
-using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Maps.MapBuilders;
 using FredflixAndChell.Shared.Systems;
@@ -12,7 +8,6 @@ using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Nez.Tiled;
 using System;
 using System.Collections.Generic;
@@ -23,19 +18,22 @@ namespace FredflixAndChell.Shared.Maps
 {
     public class Map : Entity
     {
-        private PlayerSpawner _playerSpawner;
         private TiledMap _tiledMap;
         private GameSystem _gameSystem;
+        private List<SpawnLocation> _usedSpawnLocations;
 
-        public PlayerSpawner PlayerSpawner => _playerSpawner;
         public List<MapEventListener> MapEventListeners { get; set; }
 
         // Map properties
         public Color AmbientLightingColor { get; set; }
+        public List<SpawnLocation> SpawnLocations { get; set; }
+
 
         public Map() : base(TiledObjects.TiledMapEntity)
         {
             MapEventListeners = new List<MapEventListener>();
+            SpawnLocations = new List<SpawnLocation>();
+            _usedSpawnLocations = new List<SpawnLocation>();
         }
 
         public override void onAddedToScene()
@@ -82,12 +80,12 @@ namespace FredflixAndChell.Shared.Maps
             ApplyWeather(tiledMap);
             ApplyAmbientLighting(tiledMap);
 
-            if(tiledMap.properties.ContainsKey(TiledProperties.MapStartWeapon)
+            if (tiledMap.properties.ContainsKey(TiledProperties.MapStartWeapon)
                 && !string.IsNullOrWhiteSpace(tiledMap.properties[TiledProperties.MapStartWeapon]))
             {
                 var weaponName = tiledMap.properties[TiledProperties.MapStartWeapon];
                 var collectible = Collectibles.Get(weaponName);
-                foreach(var meta in ContextHelper.PlayerMetadata)
+                foreach (var meta in ContextHelper.PlayerMetadata)
                 {
                     meta.Weapon = collectible.Weapon;
                 }
@@ -107,18 +105,47 @@ namespace FredflixAndChell.Shared.Maps
             this.BuildLightSources(mapObjects);
             this.BuildCameraTrackers(mapObjects);
             this.BuildZones(mapObjects);
-
-            SetupPlayerSpawns(mapObjects);
+            this.BuildPlayerSpawns(mapObjects);
 
         }
 
-        private void SetupPlayerSpawns(TiledObjectGroup mapObjects)
+        public List<SpawnLocation> GetSpawnLocations(int teamIndex = -1)
         {
-            _playerSpawner = new PlayerSpawner();
-            foreach (var spawnObject in mapObjects.objectsWithName(TiledObjects.PlayerSpawn))
+            var filteredLocations = SpawnLocations.AsEnumerable();
+
+            if (teamIndex > 0)
             {
-                _playerSpawner.AddLocation("player_spawner" + spawnObject.id, spawnObject.x + spawnObject.height / 2, spawnObject.y + spawnObject.height / 2);
+                filteredLocations = filteredLocations.Where(loc => loc.TeamIndex == teamIndex);
             }
+
+            var spawnLocations = filteredLocations.ToList();
+
+            return spawnLocations;
+        }
+
+        public SpawnLocation GetUniqueSpawnLocation(int teamIndex = -1)
+        {
+            if (_usedSpawnLocations.Count == SpawnLocations.Count)
+            {
+                throw new InvalidProgramException("All spawn locations occupied!");
+            }
+
+            var filteredLocations = SpawnLocations
+                .Where(loc => !_usedSpawnLocations.Contains(loc));
+
+            if (teamIndex > 0)
+            {
+                filteredLocations = filteredLocations
+                    .Where(loc => loc.TeamIndex == teamIndex);
+            }
+
+            var spawnLocation = filteredLocations
+                .ToList()
+                .randomItem();
+
+            _usedSpawnLocations.Add(spawnLocation);
+            Core.schedule(2f, _ => _usedSpawnLocations.Remove(spawnLocation));
+            return spawnLocation;
         }
 
         /* Unused tile-based lightsources
@@ -191,9 +218,10 @@ namespace FredflixAndChell.Shared.Maps
             {
                 var ambientLightingColor = tiledMap.properties["ambient_lighting"];
                 AmbientLightingColor = ColorExt.hexToColor(ambientLightingColor.Substring(3));
-                
+
             }
-            catch (KeyNotFoundException) {
+            catch (KeyNotFoundException)
+            {
                 AmbientLightingColor = Color.DarkGray;
             }
         }

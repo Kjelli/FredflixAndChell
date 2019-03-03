@@ -12,7 +12,7 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         public override void OnImpact(Player player)
         {
             base.OnImpact(player);
-            if (player == _bullet.Owner) return;
+            if (!player.CanBeDamagedBy(_bullet)) return;
 
             var existingSlowEffect = player.getComponent<SlowEffect>();
             if (existingSlowEffect != null)

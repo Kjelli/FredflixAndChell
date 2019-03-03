@@ -10,6 +10,7 @@ using System.Reflection;
 using static FredflixAndChell.Shared.Utilities.Activator.ObjectActivatorHelper;
 using System.Collections.Generic;
 using FredflixAndChell.Shared.Components.Effects;
+using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {
@@ -96,6 +97,18 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         public static void Create(Player owner, float x, float y, float direction, BulletParameters parameters)
         {
             var bulletEntity = Core.scene.addEntity(new Bullet(owner, x, y, direction, parameters));
+        }
+
+        public DirectionalDamage ToDirectionalDamage()
+        {
+            var directionalDamage = new DirectionalDamage
+            {
+                Damage = Parameters.Damage,
+                Knockback = Parameters.Knockback,
+                Direction = Velocity,
+                SourceOfDamage = Owner
+            };
+            return directionalDamage;
         }
     }
 }

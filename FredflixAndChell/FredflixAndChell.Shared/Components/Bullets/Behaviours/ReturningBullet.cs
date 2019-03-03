@@ -31,9 +31,11 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
             }
             else
             {
-                _bullet.Parameters.Damage /= 4;
-                DamagePlayer(player);
-                _bullet.Parameters.Damage *= 4;
+                var damage = _bullet.ToDirectionalDamage();
+                damage.CanHitSelf = true;
+                damage.Damage /= 4;
+                player.Damage(damage);
+                _bullet.destroy();
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.Components.Cameras;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.Components.StatusEffects;
 using FredflixAndChell.Shared.GameObjects.Bullets;
@@ -288,9 +289,9 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             if (_controller.ReloadPressed)
                 Reload();
             if (_controller.DropWeaponPressed)
-                _inventory.DropWeapon();
+                _inventory?.DropWeapon();
             if (_controller.SwitchWeaponPressed)
-                _inventory.SwitchWeapon();
+                _inventory?.SwitchWeapon();
             if (_controller.InteractPressed)
                 Interact();
             if (_controller.SprintPressed)
@@ -571,6 +572,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Reload()
         {
+            if (Disarmed || PlayerState == PlayerState.Idle) return;
+
             _inventory.Reload();
         }
 
@@ -594,20 +597,11 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Damage(Bullet bullet)
         {
-            if (!CanBeDamagedBy(bullet)) return;
-            var directionalDamage = new DirectionalDamage
-            {
-                Damage = bullet.Parameters.Damage,
-                Knockback = bullet.Parameters.Knockback,
-                Direction = bullet.Velocity,
-                SourceOfDamage = bullet.Owner
-            };
-            Damage(directionalDamage);
+            Damage(bullet.ToDirectionalDamage());
         }
 
         public void Damage(Melee melee)
         {
-            //if (!CanBeDamagedBy(bullet)) return;
             var directionalDamage = new DirectionalDamage
             {
                 Damage = (melee.Parameters as MeleeParameters).Damage,
@@ -620,6 +614,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public void Damage(DirectionalDamage dd)
         {
+            if (!CanBeDamagedBy(dd)) return;
+
             var scaledDamage = dd.Damage * _gameSystem.Settings.DamageMultiplier;
             var scaledKnockback = dd.Knockback * _gameSystem.Settings.KnockbackMultiplier;
 
@@ -648,14 +644,21 @@ namespace FredflixAndChell.Shared.GameObjects.Players
 
         public bool CanBeDamagedBy(Bullet bullet)
         {
-            var isFriendlyFire = bullet.Owner.TeamIndex > 0
-                && bullet.Owner != this
-                && TeamIndex > 0
-                && bullet.Owner.TeamIndex == TeamIndex;
-            var isFriendlyFireEnabled = _gameSystem.Settings.FriendlyFire;
+            return CanBeDamagedBy(bullet.ToDirectionalDamage());
+        }
 
-            return isFriendlyFire && isFriendlyFireEnabled
-                || !isFriendlyFire;
+        public bool CanBeDamagedBy(DirectionalDamage damage)
+        {
+            var isFriendlyFire = damage.SourceOfDamage.TeamIndex > 0
+                && TeamIndex > 0
+                && damage.SourceOfDamage.TeamIndex == TeamIndex;
+            var isFriendlyFireEnabled = _gameSystem.Settings.FriendlyFire;
+            var isSelfShot = damage.SourceOfDamage == this;
+
+            if (isFriendlyFire) return isFriendlyFireEnabled;
+            if (isSelfShot) return damage.CanHitSelf;
+
+            return true;
         }
 
         public void SetParameters(CharacterParameters characterParams)
@@ -754,9 +757,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             SetupParameters(meta);
             EnableHitbox();
             EnableProximityHitbox();
-
             
-            var weapon = meta.Weapon.Name;
+            var weapon = meta.Weapon?.Name ?? Constants.Strings.DefaultStartWeapon;
             EquipWeapon(weapon);
 
             // Hack to prevent newly respawned players from being invincible

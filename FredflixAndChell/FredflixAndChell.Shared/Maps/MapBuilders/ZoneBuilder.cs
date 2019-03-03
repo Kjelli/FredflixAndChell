@@ -90,7 +90,7 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                 }),
                 OnDestroyEvent = _ => SpawnCTFFlagForTeam(map, zoneObject, team)
             };
-            metadata.CanCollectRules.Add(p => p.TeamIndex != team);
+            metadata.CanCollectRules.Add(p => p.TeamIndex > 0 && p.TeamIndex != team);
             metadata.Color = team == Values.TeamIndexBlue ? Color.Blue 
                            : team == Values.TeamIndexRed ? Color.Red
                            : Color.White;

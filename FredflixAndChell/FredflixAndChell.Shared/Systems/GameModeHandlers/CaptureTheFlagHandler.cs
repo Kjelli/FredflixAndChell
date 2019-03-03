@@ -4,6 +4,9 @@ using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
+using Microsoft.Xna.Framework;
+using Nez;
+using System;
 using System.Linq;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
@@ -20,6 +23,50 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         {
             base.Setup(settings);
             GameSystem.Subscribe(GameEvents.GlobalMapEvent, HandleCTFMapEvent);
+            GameSystem.Subscribe(GameEvents.PlayerKilled, QueueOnPlayerKilled);
+        }
+        private void QueueOnPlayerKilled(GameEventParameters parameters)
+        {
+            Core.schedule(2.5f, false, _ => OnPlayerKilled(parameters));
+        }
+
+        private void OnPlayerKilled(GameEventParameters parameters)
+        {
+            var pkParams = parameters as PlayerKilledEventParameters;
+            RespawnPlayer(pkParams.Killed);
+        }
+
+        private void RespawnPlayer(Player player)
+        {
+            var players = GameSystem.Players;
+            var spawnLocations = GameSystem.Map.GetSpawnLocations(player.TeamIndex);
+
+            var furthestDistance = 0.0f;
+            var furthestSpawnPosition = new Vector2();
+            foreach (var spawnLocation in spawnLocations)
+            {
+                var spawnPosition = spawnLocation.Position;
+                var distanceToSpawnLocation = 0.0f;
+                foreach (var otherPlayer in players)
+                {
+                    if (otherPlayer == player) continue;
+                    var distance = Math.Abs((otherPlayer.position - spawnPosition).Length());
+                    distanceToSpawnLocation += distance;
+                }
+                if (distanceToSpawnLocation >= furthestDistance)
+                {
+                    furthestDistance = distanceToSpawnLocation;
+                    furthestSpawnPosition = spawnPosition;
+                }
+            }
+            var meta = ContextHelper.PlayerMetadataByIndex(player.PlayerIndex);
+            var previousWeapon = meta.Weapon;
+            if(previousWeapon?.Name == "Flag")
+            {
+                meta.Weapon = null;
+            }
+            player.Respawn(furthestSpawnPosition);
+            
         }
 
         private void HandleCTFMapEvent(GameEventParameters ev)

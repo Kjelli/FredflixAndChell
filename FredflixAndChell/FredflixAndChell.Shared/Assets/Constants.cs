@@ -74,11 +74,12 @@ namespace FredflixAndChell.Shared.Assets
             public const string SpawnerMaxIntervalSeconds = "max_interval_seconds";
             public const string SpawnerMaxSpawns = "max_spawns";
             public const string SpawnerCameraTracking = "camera_tracking";
-            public const string MapStartWeapon = "start_weapon";
             public const string CaptureTheFlagBlueCollisionZone = "ctf_blue";
             public const string CaptureTheFlagRedCollisionZone = "ctf_red";
             public const string CaptureTheFlagBlueZone = "team_blue_zone";
             public const string CaptureTheFlagRedZone = "team_red_zone";
+            public const string MapStartWeapon = "start_weapon";
+            public const string PlayerSpawnTeamIndex = "team_index";
         }
 
         public class Tags

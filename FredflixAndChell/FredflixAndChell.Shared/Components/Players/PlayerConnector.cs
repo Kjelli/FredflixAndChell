@@ -6,7 +6,6 @@ using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Nez;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FredflixAndChell.Components.Players
 {
@@ -17,12 +16,10 @@ namespace FredflixAndChell.Components.Players
         private HUD _hud;
         private bool _playerSpawnedThisFrame;
 
-        public PlayerSpawner _spawnLocations { get; set; }
 
-        public PlayerConnector(PlayerSpawner spawnLocations = null)
+        public PlayerConnector()
         {
             _connectedPlayers = new List<Player>();
-            _spawnLocations = spawnLocations;
         }
 
         public override void onEnabled()
@@ -44,11 +41,9 @@ namespace FredflixAndChell.Components.Players
             SpawnPlayer(null, -(_connectedPlayers.Count + 1));
         }
 
-        private void SpawnPlayer(GamePadData gamepad, int index)
+        private Player SpawnPlayer(GamePadData gamepad, int index)
         {
-            Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
-            var spawnX = (int)spawnLocation.X;
-            var spawnY = (int)spawnLocation.Y;
+
             var playerMeta = ContextHelper.PlayerMetadataByIndex(index);
             if (playerMeta == null)
             {
@@ -57,33 +52,23 @@ namespace FredflixAndChell.Components.Players
                     PlayerIndex = index
                 };
             }
-            var player = scene.addEntity(new Player(playerMeta.Character, spawnX, spawnY, index));
+
+            SpawnLocation spawnLocation = _gameSystem.Map.GetUniqueSpawnLocation(playerMeta?.TeamIndex ?? -1);
+
+            var player = scene.addEntity(new Player(playerMeta.Character, (int)spawnLocation.Position.X, (int)spawnLocation.Position.Y, index));
             player.addComponent(new PlayerController(gamepad));
 
             _connectedPlayers.Add(player);
 
             _playerSpawnedThisFrame = true;
+
+            return player;
         }
 
         private void SpawnIdlePlayer(GamePadData gamepad, int index)
         {
-            Vector2 spawnLocation = _spawnLocations.DistributeSpawn();
-            var spawnX = (int)spawnLocation.X;
-            var spawnY = (int)spawnLocation.Y;
-            var playerMeta = ContextHelper.PlayerMetadataByIndex(index);
-            if (playerMeta == null)
-            {
-                playerMeta = new PlayerMetadata
-                {
-                    PlayerIndex = index
-                };
-            }
-            var player = scene.addEntity(new Player(playerMeta.Character, spawnX, spawnY, index) { PlayerState = PlayerState.Idle });
-            player.addComponent(new PlayerController(gamepad));
-
-            _connectedPlayers.Add(player);
-
-            _playerSpawnedThisFrame = true;
+            var player = SpawnPlayer(gamepad, index);
+            player.PlayerState = PlayerState.Idle;
         }
 
         public override void update()

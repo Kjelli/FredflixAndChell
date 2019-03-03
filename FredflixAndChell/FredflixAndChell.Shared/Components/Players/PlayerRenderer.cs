@@ -173,6 +173,7 @@ namespace FredflixAndChell.Shared.Components.Players
                 .start();
             _legs.tweenColorTo(c, durationSeconds)
                 .setEaseType(easeType)
+                .setCompletionHandler(_ => UpdateTeamIndex(_player.TeamIndex))
                 .start();
         }
 

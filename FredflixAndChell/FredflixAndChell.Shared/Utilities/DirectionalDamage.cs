@@ -9,5 +9,6 @@ namespace FredflixAndChell.Shared.Utilities
         public float Knockback { get; set; }
         public Vector2 Direction { get; set; }
         public Player SourceOfDamage { get; set; }
+        public bool CanHitSelf { get; set; }
     }
 }

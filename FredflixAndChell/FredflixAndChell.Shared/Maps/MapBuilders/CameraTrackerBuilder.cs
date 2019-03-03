@@ -3,10 +3,6 @@ using FredflixAndChell.Shared.Maps.Events;
 using Nez;
 using Nez.Tiled;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 
 namespace FredflixAndChell.Shared.Maps.MapBuilders
