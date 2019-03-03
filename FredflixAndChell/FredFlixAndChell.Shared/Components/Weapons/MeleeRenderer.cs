@@ -15,6 +15,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
 {
     public class MeleeRenderer : WeaponRenderer
     {
+        private MeleeParameters _params;
         private Melee _melee;
         private float _renderOffset;
         Sprite<MeleeAnimations> _animation;
@@ -22,6 +23,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
         public MeleeRenderer(Melee melee, Player player) : base(player)
         {
             _melee = melee;
+            _params = melee.Parameters as MeleeParameters;
             _renderOffset = _melee.Parameters.RenderOffset;
         }
 
@@ -89,7 +91,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
                 Player.position.Y + (float)Math.Sin(entity.localRotation) * _renderOffset / 2);
             if (_melee.Parameters.RotatesWithPlayer)
             {
-                entity.localRotation = (float)Math.Atan2(Player.FacingAngle.Y, Player.FacingAngle.X) + (float)(Math.PI) + _melee.SwingRotation;
+                entity.localRotation = (float)Math.Atan2(Player.FacingAngle.Y, Player.FacingAngle.X) + (float)(_params.Flip ? Math.PI : 0) + _melee.SwingRotation;
             }
 
             if (IsPlayerRunning)

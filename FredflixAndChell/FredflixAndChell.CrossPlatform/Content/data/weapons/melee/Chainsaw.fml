@@ -1,0 +1,52 @@
+Type: Melee
+MeleeType: Hold
+DropChance: 0.6
+FireRate: 0.15
+Flip: false
+Damage: 3.0
+Knockback: 2.0
+Name: Chainsaw
+HitboxOffset:
+  X: 30.0
+  Y: 0.0
+HitboxSize:
+  X: 30.0
+  Y: 8.0
+RenderOffset: 7.0
+FlipXWithPlayer: false
+FlipYWithPlayer: true
+Rarity: Rare
+Sprite:
+  Fire:
+    FPS: 32.0
+    Frames:
+      - 3
+      - 1
+    Loop: false
+    Origin:
+      X: 15.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Icon:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0  
+    TileWidth: 64
+    TileHeight: 32
+  Idle:
+    FPS: 8.0
+    Frames:
+      - 1
+      - 3
+    Loop: true
+    Origin:
+      X: 15.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Source: guns/chainsaw

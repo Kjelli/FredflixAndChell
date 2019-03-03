@@ -75,6 +75,9 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
             var mapEvent = globalMapEvent.MapEvent;
             var key = mapEvent.EventKey;
+
+            if (mapEvent.Parameters.Count() < 2) return;
+
             var player = mapEvent.Parameters[1] as Player;
             var playerInventory = player.getComponent<PlayerInventory>();
 
@@ -107,6 +110,12 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             foreach (var player in losingPlayers)
             {
                 player.getComponent<CameraTracker>().setEnabled(false);
+                var meta = ContextHelper.PlayerMetadataByIndex(player.PlayerIndex);
+                var previousWeapon = meta.Weapon;
+                if (previousWeapon?.Name == "Flag")
+                {
+                    meta.Weapon = null;
+                }
             }
 
             foreach (var player in winningPlayers)

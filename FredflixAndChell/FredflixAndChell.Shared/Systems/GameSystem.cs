@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Cameras;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Weapons;
@@ -199,8 +200,7 @@ namespace FredflixAndChell.Shared.Systems
         {
             Score = 0;
             Character = Characters.Get(Constants.Strings.DefaultStartCharacter);
-            // TODO Make a constant of default start weapon
-            Weapon = Guns.Get("M4");
+            Weapon = Melees.Get("Stick");
         }
 
         public int CompareTo(PlayerMetadata other)

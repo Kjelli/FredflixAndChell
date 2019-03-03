@@ -50,6 +50,9 @@
 #begin data/weapons/guns/PewPew.fml
 /copy:data/weapons/guns/PewPew.fml
 
+#begin data/weapons/melee/Chainsaw.fml
+/copy:data/weapons/melee/Chainsaw.fml
+
 #begin data/weapons/melee/Flag.fml
 /copy:data/weapons/melee/Flag.fml
 
@@ -450,6 +453,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/bazooka.png
+
+#begin textures/guns/chainsaw.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/chainsaw.png
 
 #begin textures/guns/fidgetspinner.png
 /importer:TextureImporter

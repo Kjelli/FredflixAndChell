@@ -606,7 +606,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 Damage = (melee.Parameters as MeleeParameters).Damage,
                 Knockback = (melee.Parameters as MeleeParameters).Knockback,
-                Direction = melee.Velocity,
+                Direction = melee.Player.FacingAngle,
                 SourceOfDamage = melee.Player
             };
             Damage(directionalDamage);
