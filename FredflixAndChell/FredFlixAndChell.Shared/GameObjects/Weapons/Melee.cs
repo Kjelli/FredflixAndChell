@@ -139,9 +139,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         {
             var player = playerEntity as Player;
             if (player.PlayerMobilityState == PlayerMobilityState.Rolling) return;
-            if (_playersHitOnSwing.Contains(player)) return;
-
-            _playersHitOnSwing.Add(player);
+            if (_parameters.MeleeType == MeleeType.Swing)
+            {
+                if (_playersHitOnSwing.Contains(player)) return;
+                _playersHitOnSwing.Add(player);
+            }
             OnImpact(player);
         }
 
