@@ -12,7 +12,7 @@ BulletParameters:
   LifeSpanSeconds: 0.85
   RotateWithGun: true
   Scale: 0.25
-  Speed: 70.0
+  Speed: 90.0
   Sprite:
     Bullet:
       FPS: 1.0
