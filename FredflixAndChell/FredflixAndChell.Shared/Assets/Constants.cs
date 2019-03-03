@@ -17,6 +17,9 @@ namespace FredflixAndChell.Shared.Assets
             public const float ExplosionDamage = 80f;
             public const float ExplosionRadius = 80f;
             public const float ExplosionKnockback = 30f;
+
+            public const int TeamIndexBlue = 1;
+            public const int TeamIndexRed = 2;
         }
 
         public class Strings
@@ -37,6 +40,7 @@ namespace FredflixAndChell.Shared.Assets
             public const string EventReady = "ready";
 
             public const string DefaultStartCharacter = "Trump";
+            public const string DefaultStartWeapon = "M4";
         }
 
         public class Assets
@@ -71,6 +75,10 @@ namespace FredflixAndChell.Shared.Assets
             public const string SpawnerMaxSpawns = "max_spawns";
             public const string SpawnerCameraTracking = "camera_tracking";
             public const string MapStartWeapon = "start_weapon";
+            public const string CaptureTheFlagBlueCollisionZone = "ctf_blue";
+            public const string CaptureTheFlagRedCollisionZone = "ctf_red";
+            public const string CaptureTheFlagBlueZone = "team_blue_zone";
+            public const string CaptureTheFlagRedZone = "team_red_zone";
         }
 
         public class Tags

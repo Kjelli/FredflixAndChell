@@ -86,17 +86,13 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public float Stamina { get; private set; }
         public int VerticalFacing { get; set; }
         public int HorizontalFacing { get; set; }
-
-
         public int TeamIndex { get; set; }
         public bool FlipGun { get; set; }
         public bool Disarmed { get; set; }
-        public WeaponParameters WeaponParameters { get; set; }
 
-        public Player(CharacterParameters characterParameters, WeaponParameters weaponParameters, int x, int y, int playerIndex) : base(x, y)
+        public Player(CharacterParameters characterParameters, int x, int y, int playerIndex) : base(x, y)
         {
             Parameters = characterParameters;
-            WeaponParameters = weaponParameters;
             PlayerIndex = playerIndex;
             name = $"Player {PlayerIndex}";
 
@@ -169,7 +165,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             _controller = getComponent<PlayerController>();
 
             // Assign inventory component
-            _inventory = addComponent(new PlayerInventory(WeaponParameters));
+            _inventory = addComponent(new PlayerInventory());
 
             // Assign collider component
             _playerHitbox = addComponent(new CircleCollider(4f));
@@ -614,8 +610,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             //if (!CanBeDamagedBy(bullet)) return;
             var directionalDamage = new DirectionalDamage
             {
-                Damage = melee.Parameters.Damage,
-                Knockback = melee.Parameters.Knockback,
+                Damage = (melee.Parameters as MeleeParameters).Damage,
+                Knockback = (melee.Parameters as MeleeParameters).Knockback,
                 Direction = melee.Velocity,
                 SourceOfDamage = melee.Player
             };
@@ -653,6 +649,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         public bool CanBeDamagedBy(Bullet bullet)
         {
             var isFriendlyFire = bullet.Owner.TeamIndex > 0
+                && bullet.Owner != this
                 && TeamIndex > 0
                 && bullet.Owner.TeamIndex == TeamIndex;
             var isFriendlyFireEnabled = _gameSystem.Settings.FriendlyFire;

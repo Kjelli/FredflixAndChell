@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+﻿using FredflixAndChell.Shared.Assets;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Props;
 using FredflixAndChell.Shared.Maps.Events;
@@ -30,8 +31,8 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                     {
                         continue;
                     }
-                    var team = zoneObject.name == "team_blue_zone" ? 1 :
-                               zoneObject.name == "team_red_zone" ? 2 : -1;
+                    var team = zoneObject.name == TiledProperties.CaptureTheFlagBlueZone ? Values.TeamIndexBlue :
+                               zoneObject.name == TiledProperties.CaptureTheFlagRedZone ? Values.TeamIndexRed : -1;
                     SpawnCTFFlagForTeam(map, zoneObject, team);
                 }
 
@@ -90,8 +91,8 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                 OnDestroyEvent = _ => SpawnCTFFlagForTeam(map, zoneObject, team)
             };
             metadata.CanCollectRules.Add(p => p.TeamIndex != team);
-            metadata.Color = team == 1 ? Color.Blue 
-                           : team == 2 ? Color.Red
+            metadata.Color = team == Values.TeamIndexBlue ? Color.Blue 
+                           : team == Values.TeamIndexRed ? Color.Red
                            : Color.White;
             var collectible = new Collectible(position.X + zoneObject.width / 2, position.Y + zoneObject.height / 2, "Flag", false, metadata);
             map.scene.addEntity(collectible);

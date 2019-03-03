@@ -125,7 +125,6 @@
     <property name="color" type="color" value="#ff5500ff"/>
     <property name="ctf_only" type="bool" value="true"/>
     <property name="glow" type="bool" value="true"/>
-    <property name="key" value="ready_zone"/>
    </properties>
   </object>
   <object id="570" name="team_red_zone" type="zone" x="464" y="568" width="32.25" height="31.5">
@@ -133,7 +132,6 @@
     <property name="color" type="color" value="#ffff0000"/>
     <property name="ctf_only" type="bool" value="true"/>
     <property name="glow" type="bool" value="true"/>
-    <property name="key" value="red_zone"/>
    </properties>
   </object>
   <object id="571" name="item_spawn" x="280" y="360" width="16" height="16"/>

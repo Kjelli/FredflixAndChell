@@ -76,7 +76,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
         private void SetTeam(Player player, int teamIndex)
         {
-            player.SetTeamIndex(teamIndex);
+            player.SetTeamIndex(player.TeamIndex != teamIndex ? teamIndex : -1);
         }
 
         private void SelectCharacter(Player player)

@@ -14,7 +14,11 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private GunRenderer _renderer;
         private Player _player;
 
-        public GunMetadata Metadata { get; }
+        private GunMetadata _metadata { get; set; }
+        private GunParameters _parameters { get; set; }
+
+        public override CollectibleMetadata Metadata => _metadata;
+        public override WeaponParameters Parameters => _parameters;
 
         private int _ammo;
         private int _magazineAmmo;
@@ -27,14 +31,13 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private Vector2 _barrelOffset;
 
         public Cooldown Reload { get; set; }
-        public GunParameters Parameters { get; }
         public int Ammo
         {
             get => _ammo;
             set
             {
                 _ammo = value;
-                Metadata.SetAmmo(value);
+                _metadata.SetAmmo(value);
             }
         }
         public int MagazineAmmo
@@ -43,15 +46,15 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
             set
             {
                 _magazineAmmo = value;
-                Metadata.SetMagazineAmmo(value);
+                _metadata.SetMagazineAmmo(value);
             }
         }
 
         public Gun(Player player, GunParameters gunParameters, GunMetadata metadata = null) : base(player)
         {
             _player = player;
-            Parameters = gunParameters;
-            Metadata = metadata ?? new GunMetadata(gunParameters.Ammo, gunParameters.MagazineAmmo);
+            _parameters = gunParameters;
+            _metadata = metadata ?? new GunMetadata(gunParameters.Ammo, gunParameters.MagazineAmmo);
             SetupParameters();
         }
 
@@ -63,17 +66,17 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void SetupParameters()
         {
-            _accuracy = Parameters.Accuracy;
-            Ammo = Metadata.GetAmmo().Value;
-            MagazineAmmo = Metadata.GetMagazineAmmo().Value;
-            _maxAmmo = Parameters.MaxAmmo;
-            _magazineSize = Parameters.MagazineSize;
-            _barrelOffset = Parameters.BarrelOffset;
-            Cooldown = new Cooldown(Parameters.FireRate);
-            Reload = new Cooldown(Parameters.ReloadTime);
+            _accuracy = _parameters.Accuracy;
+            Ammo = _metadata.GetAmmo().Value;
+            MagazineAmmo = _metadata.GetMagazineAmmo().Value;
+            _maxAmmo = _parameters.MaxAmmo;
+            _magazineSize = _parameters.MagazineSize;
+            _barrelOffset = _parameters.BarrelOffset;
+            Cooldown = new Cooldown(_parameters.FireRate);
+            Reload = new Cooldown(_parameters.ReloadTime);
 
-            _bulletCount = Parameters.BulletCount;
-            _bulletSpread = Parameters.BulletSpread;
+            _bulletCount = _parameters.BulletCount;
+            _bulletSpread = _parameters.BulletSpread;
         }
 
         public override void Fire()
@@ -96,7 +99,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
                     + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount);
 
-                    Bullet.Create(_player, x, y, direction, Parameters.BulletParameters);
+                    Bullet.Create(_player, x, y, direction, _parameters.BulletParameters);
                 }
                 MagazineAmmo--;
 

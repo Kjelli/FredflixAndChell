@@ -25,19 +25,23 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
         private const float _swingTargetRadians = (float)Math.PI;
 
         private MeleeRenderer _renderer;
+        private MeleeParameters _parameters;
+        private MeleeMetadata _metadata;
+
+        public override WeaponParameters Parameters => _parameters;
+        public override CollectibleMetadata Metadata => _metadata;
+
         protected Collider _collider;
 
         public float SwingRotation { get; set; }
 
-        public MeleeParameters Parameters { get; }
         public Player Player { get; set; }
-        public MeleeMetadata Metadata { get; set; }
 
         public Melee(Player player, MeleeParameters meleeParameters, MeleeMetadata metadata = null) : base(player)
         {
             Player = player;
-            Parameters = meleeParameters;
-            Metadata = metadata ?? new MeleeMetadata();
+            _parameters = meleeParameters;
+            _metadata = metadata ?? new MeleeMetadata();
             SetupParameters();
         }
 
@@ -56,7 +60,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         private void SetupParameters()
         {
-            Cooldown = new Cooldown(Parameters.FireRate);
+            Cooldown = new Cooldown(_parameters.FireRate);
         }
 
         public override void Fire()

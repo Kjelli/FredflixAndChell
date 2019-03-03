@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,7 +45,7 @@ namespace FredflixAndChell.Shared.Components.Weapons
             handColorizer.Parameters["hand_border_color"].SetValue(PlayerSkinColor.subtract(new Color(0.1f, 0.1f, 0.1f, 0.0f)).ToVector4());
             handColorizer.Parameters["replace_color"].SetValue(_melee.Metadata.Color.ToVector4());
 
-            _animation = entity.addComponent(SetupAnimations(_melee.Parameters.Sprite));
+            _animation = entity.addComponent(SetupAnimations((_melee.Parameters as MeleeParameters).Sprite));
             _animation.renderLayer = Layers.Player;
             _animation.material = new Material(BlendState.NonPremultiplied, handColorizer);
 

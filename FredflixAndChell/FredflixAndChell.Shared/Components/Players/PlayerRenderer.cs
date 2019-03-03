@@ -329,15 +329,15 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             if(teamIndex == 1)
             {
-                _torso.color = Color.Blue;
+                _legs.color = Color.Blue;
             }
             else if(teamIndex == 2)
             {
-                _torso.color = Color.Red;
+                _legs.color = Color.Red;
             }
             else
             {
-                _torso.color = Color.White;
+                _legs.color = Color.White;
             }
         }
     }

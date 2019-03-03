@@ -57,7 +57,7 @@ namespace FredflixAndChell.Components.Players
                     PlayerIndex = index
                 };
             }
-            var player = scene.addEntity(new Player(playerMeta.Character, playerMeta.Weapon, spawnX, spawnY, index));
+            var player = scene.addEntity(new Player(playerMeta.Character, spawnX, spawnY, index));
             player.addComponent(new PlayerController(gamepad));
 
             _connectedPlayers.Add(player);
@@ -78,7 +78,7 @@ namespace FredflixAndChell.Components.Players
                     PlayerIndex = index
                 };
             }
-            var player = scene.addEntity(new Player(playerMeta.Character, playerMeta.Weapon, spawnX, spawnY, index) { PlayerState = PlayerState.Idle });
+            var player = scene.addEntity(new Player(playerMeta.Character, spawnX, spawnY, index) { PlayerState = PlayerState.Idle });
             player.addComponent(new PlayerController(gamepad));
 
             _connectedPlayers.Add(player);
