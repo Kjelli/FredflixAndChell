@@ -32,6 +32,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
         private void OnPlayerKilled(GameEventParameters parameters)
         {
+            if (_winningTeamIndex > 0) return;
             var pkParams = parameters as PlayerKilledEventParameters;
             RespawnPlayer(pkParams.Killed);
         }

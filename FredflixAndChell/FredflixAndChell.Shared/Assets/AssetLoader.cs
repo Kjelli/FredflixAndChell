@@ -68,6 +68,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/grayscale_shader");
             LoadEffect("effects/weapon_hand_color");
 
+            LoadMap("maps/ctf_x");
             LoadMap("maps/winter_hub");
             LoadMap("maps/winter_debug");
             LoadMap("maps/winter_1");
