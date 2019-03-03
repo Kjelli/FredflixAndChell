@@ -94,6 +94,11 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             Weapon.destroy();
             Weapon = null;
+            var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
+            if (meta != null)
+            {
+                meta.Weapon = null;
+            }
         }
 
         public void Reload()

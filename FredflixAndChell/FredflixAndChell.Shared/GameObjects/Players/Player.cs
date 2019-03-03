@@ -632,6 +632,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             {
                 PlayerState = PlayerState.Dying;
                 DropDead();
+                _inventory.DropWeapon();
                 DisablePlayer(resetVelocity: false);
 
                 _gameSystem.Publish(GameEvents.PlayerKilled, new PlayerKilledEventParameters
