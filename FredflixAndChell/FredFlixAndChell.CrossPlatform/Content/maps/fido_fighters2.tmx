@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="462">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="470">
  <properties>
   <property name="ambient_lighting" type="color" value="#ff530001"/>
   <property name="name" value="Fido_Rekt"/>
@@ -33,10 +33,6 @@
   </data>
  </layer>
  <objectgroup id="6" name="Objects" offsetx="-0.25" offsety="-0.25">
-  <object id="59" name="player_spawn" x="104" y="168" width="16" height="16"/>
-  <object id="148" name="player_spawn" x="104" y="56" width="16" height="16"/>
-  <object id="149" name="player_spawn" x="280" y="56" width="16" height="16"/>
-  <object id="150" name="player_spawn" x="280" y="168" width="16" height="16"/>
   <object id="163" name="pit" x="336" y="48" width="16.25" height="16"/>
   <object id="164" name="pit" x="352" y="48" width="16.25" height="16"/>
   <object id="165" name="pit" x="336" y="64" width="16.25" height="16"/>
@@ -259,5 +255,45 @@
   <object id="459" name="pit" x="192" y="64" width="16.25" height="16"/>
   <object id="460" name="pit" x="144" y="112" width="16.25" height="16"/>
   <object id="461" name="pit" x="192" y="160" width="16.25" height="16"/>
+  <object id="462" name="player_spawn" x="96" y="160" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="463" name="player_spawn" x="120" y="176" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="464" name="player_spawn" x="96" y="56" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="465" name="player_spawn" x="120" y="48" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="466" name="player_spawn" x="264" y="48" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="467" name="player_spawn" x="288" y="56" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="468" name="player_spawn" x="264" y="176" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="2"/>
+   </properties>
+  </object>
+  <object id="469" name="player_spawn" x="288" y="160" width="16" height="16">
+   <properties>
+    <property name="team_index" type="int" value="2"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
