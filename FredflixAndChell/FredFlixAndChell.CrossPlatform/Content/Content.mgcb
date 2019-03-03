@@ -47,6 +47,9 @@
 #begin data/weapons/guns/M4.fml
 /copy:data/weapons/guns/M4.fml
 
+#begin data/weapons/guns/PassertGun.fml
+/copy:data/weapons/guns/PassertGun.fml
+
 #begin data/weapons/guns/PewPew.fml
 /copy:data/weapons/guns/PewPew.fml
 
@@ -113,6 +116,11 @@
 /importer:
 /processor:
 /build:maps/ctf_snow.tmx
+
+#begin maps/ctf_snow2.tmx
+/importer:
+/processor:
+/build:maps/ctf_snow2.tmx
 
 #begin maps/ctf_x.tmx
 /importer:
@@ -525,6 +533,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/m4.png
+
+#begin textures/guns/passertGun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/passertGun.png
 
 #begin textures/guns/pewpew.png
 /importer:TextureImporter
