@@ -195,6 +195,11 @@
 /processorParam:TextureFormat=Color
 /build:maps/spawner_tile.png
 
+#begin maps/stickfight.tmx
+/importer:
+/processor:
+/build:maps/stickfight.tmx
+
 #begin maps/winter_1.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor

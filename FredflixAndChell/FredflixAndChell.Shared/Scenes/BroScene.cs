@@ -55,8 +55,8 @@ namespace FredflixAndChell.Shared.Scenes
             addSceneComponent(new ControllerSystem());
 #if DEBUG
             //connector.SpawnDebugPlayer();
-            connector.SpawnDebugPlayer();
 #endif
+            connector.SpawnDebugPlayer();
 
             // TODO turn back on for sweet details. Sweetails.
             addEntity(new DebugHud());

@@ -80,6 +80,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/fido_fighters2");
             LoadMap("maps/ctf_snow");
             LoadMap("maps/ctf_snow2");
+            LoadMap("maps/stickfight");
+
 
         }
 
