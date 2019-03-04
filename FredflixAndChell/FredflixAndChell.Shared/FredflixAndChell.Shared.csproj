@@ -141,6 +141,7 @@
     <Compile Include="Maps\Events\TimedEventEmitter.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Scenes\LobbyScene.cs" />
+    <Compile Include="Systems\GameModeHandlers\KingOfTheHillHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\CaptureTheFlagHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\GameModeHandler.cs" />
     <Compile Include="Systems\GameModeHandlers\GameModes.cs" />
