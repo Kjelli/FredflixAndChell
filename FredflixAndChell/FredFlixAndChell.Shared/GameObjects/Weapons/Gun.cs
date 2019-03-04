@@ -99,7 +99,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
                     + (1 - _accuracy) * _player.Velocity.Length() * Nez.Random.minusOneToOne()
                     + ((i * 2 - _bulletCount) * _bulletSpread / _bulletCount);
 
-                    Bullet.Create(_player, x, y, direction, Bullets.Get(_parameters.Bullet));
+                    Bullet.Create(_player, x, y, direction, BulletDict.Get(_parameters.Bullet));
                 }
                 MagazineAmmo--;
 

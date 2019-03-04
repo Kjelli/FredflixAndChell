@@ -1,13 +1,13 @@
 Ammo: 300
-Accuracy: 0.97
+Accuracy: 0.9
 BarrelOffset:
   X: 5.0
   Y: 0.0
 BulletCount: 1
-Bullet: Standard
+Bullet: PassertBulletStandard
 BulletSpread: 0.0
 DropChance: 0.6
-FireRate: 0.23
+FireRate: 0.13
 MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300

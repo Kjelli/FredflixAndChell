@@ -1,10 +1,11 @@
-BulletBehaviour: StandardBullet
-Damage: 13.0
+Name: PassertBulletStandard
+BulletBehaviour: PassertBehaviour
+Damage: 11.0
 Knockback: 0.25
 LifeSpanSeconds: -1.0
 RotateWithGun: false
 Scale: 0.17
-Speed: 280.0
+Speed: 210.0
 Sprite:
   Bullet:
     FPS: 1.0
