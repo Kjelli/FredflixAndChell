@@ -110,11 +110,11 @@ namespace FredflixAndChell.Shared.Components.Weapons
 
             if (IsPlayerRunning)
             {
-                _animation.setLocalOffset(new Vector2(_animation.localOffset.X, (float)Math.Sin(Time.time * 25f) * 0.5f));
+                _animation.setLocalOffset(new Vector2(_animation.localOffset.X, (float)Math.Sin(Time.time * 25f) * 0.5f + Player.Altitude));
             }
             else
             {
-                _animation.setLocalOffset(new Vector2(0, 0));
+                _animation.setLocalOffset(new Vector2(0, Player.Altitude));
             }
 
             if (!_animation.isPlaying)
