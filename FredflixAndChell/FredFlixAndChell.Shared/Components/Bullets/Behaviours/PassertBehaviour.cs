@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players;
 using Nez;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 
 namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
 {
@@ -19,8 +20,10 @@ namespace FredflixAndChell.Shared.Components.Bullets.Behaviours
         public override void OnFired()
         {
             //Change to proc
-            if(Nez.Random.nextFloat() < 0.2f)
+            if(Nez.Random.nextFloat() < 0.07f)
             {
+                Bullet.Create(_bullet.Owner, _bullet.position.X, _bullet.position.Y, _bullet.Direction, BulletDict.Get("PassertBulletProc"));
+
                 _bullet.destroy();
             }
         }

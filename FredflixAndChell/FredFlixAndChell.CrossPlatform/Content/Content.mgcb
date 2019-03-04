@@ -29,6 +29,12 @@
 #begin data/bullets/Laser.fml
 /copy:data/bullets/Laser.fml
 
+#begin data/bullets/PassertBulletProc.fml
+/copy:data/bullets/PassertBulletProc.fml
+
+#begin data/bullets/PassertBulletStandard.fml
+/copy:data/bullets/PassertBulletStandard.fml
+
 #begin data/bullets/Rocket.fml
 /copy:data/bullets/Rocket.fml
 
@@ -283,6 +289,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/laser.png
+
+#begin textures/bullets/passertBullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/passertBullet.png
 
 #begin textures/bullets/rocket.png
 /importer:TextureImporter

@@ -59,6 +59,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/shockwave");
             LoadTexture("textures/bullets/shockwave_sm");
             LoadTexture("textures/bullets/fidgetspinner");
+            LoadTexture("textures/bullets/passertBullet");
             LoadTexture("textures/bullets/laser");
             LoadTexture("textures/bullets/rocket");
             LoadTexture("textures/bullets/fireball");
@@ -91,7 +92,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/stickfight");
 
 
-            Bullets.LoadFromData();
+            BulletDict.LoadFromData();
             Guns.LoadFromData();
             Melees.LoadFromData();
         }

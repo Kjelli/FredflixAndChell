@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons
 {
-    public static class Bullets
+    public static class BulletDict
     {
         private static Dictionary<string, BulletParameters> _bullets = new Dictionary<string, BulletParameters>();
 

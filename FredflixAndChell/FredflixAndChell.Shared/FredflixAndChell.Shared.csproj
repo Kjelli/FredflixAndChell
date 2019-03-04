@@ -96,7 +96,7 @@
     <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="Components\Weapons\WeaponRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
-    <Compile Include="GameObjects\Weapons\Bullets.cs" />
+    <Compile Include="GameObjects\Weapons\BulletDict.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\MeleeParameters.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\MeleeSprite.cs" />
