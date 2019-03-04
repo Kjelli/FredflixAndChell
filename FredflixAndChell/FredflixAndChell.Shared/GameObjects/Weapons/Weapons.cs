@@ -20,6 +20,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static GunParameters Get(string name)
         {
+            if (!_guns.ContainsKey(name)) return null;
+
             return _guns[name];
         }
 
@@ -53,6 +55,8 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static MeleeParameters Get(string name)
         {
+            if (!_melees.ContainsKey(name)) return null;
+
             return _melees[name];
         }
 
