@@ -1,0 +1,21 @@
+Name: Laser
+BulletBehaviour: LaserBehaviour
+BulletType: Line
+Damage: 1
+Knockback: 2.0
+LifeSpanSeconds: 0.01
+RotateWithGun: true
+Scale: 1
+Speed: 150.0
+Sprite:
+  Bullet:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0
+    TileWidth: 16
+    TileHeight: 3
+  Source: bullets/laser

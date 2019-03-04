@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using FredflixAndChell.Shared.GameObjects.Weapons;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
 using System.Collections.Generic;
@@ -80,6 +81,10 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/fido_fighters2");
             LoadMap("maps/ctf_snow");
             LoadMap("maps/ctf_snow2");
+
+            Bullets.LoadFromData();
+            Guns.LoadFromData();
+            Melees.LoadFromData();
 
         }
 

@@ -1,5 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Bullets;
-using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
+﻿using FredflixAndChell.Shared.GameObjects.Weapons.Sprites;
+using FredflixAndChell.Shared.Weapons.Parameters;
 using Microsoft.Xna.Framework;
 
 namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
@@ -7,8 +7,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
     public class GunParameters : WeaponParameters
     {
         public GunSprite Sprite { get; set; }
-        public BulletParameters BulletParameters { get; set; }
-
+        public string Bullet { get; set; }
         public float ReloadTime { get; set; } = 1f;
 
         public Vector2 BarrelOffset { get; set; }

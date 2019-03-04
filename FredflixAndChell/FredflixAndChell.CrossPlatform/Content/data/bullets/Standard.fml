@@ -1,0 +1,19 @@
+Name: Standard
+Damage: 15.0
+Knockback: 0.25
+LifeSpanSeconds: -1.0
+RotateWithGun: false
+Scale: 0.150000006
+Speed: 260.0
+Sprite:
+  Bullet:
+    FPS: 1.0
+    Frames:
+      - 0
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0
+    TileWidth: 16
+    TileHeight: 16
+  Source: bullets/standard

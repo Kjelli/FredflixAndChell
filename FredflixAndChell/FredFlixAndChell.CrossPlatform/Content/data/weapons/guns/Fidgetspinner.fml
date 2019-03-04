@@ -5,26 +5,7 @@ BarrelOffset:
   X: 10.0
   Y: 0.0
 BulletCount: 1
-BulletParameters:
-  BulletBehaviour: RotatingReturningBullet
-  Damage: 18.5
-  Knockback: 0.25
-  LifeSpanSeconds: -1.0
-  RotateWithGun: false
-  Scale: 0.50
-  Speed: 400.0
-  Sprite:
-    Bullet:
-      FPS: 1.0
-      Frames:
-        - 0
-      Loop: false
-      Origin:
-        X: 0.0
-        Y: 0.0
-      TileWidth: 16
-      TileHeight: 16
-    Source: bullets/fidgetspinner
+Bullet: Fidget
 BulletSpread: 0.0
 DropChance: 0.6
 FireRate: 0.1500000007

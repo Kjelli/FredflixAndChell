@@ -5,26 +5,7 @@ BarrelOffset:
   X: 7.0
   Y: 0.0
 BulletCount: 5
-BulletParameters:
-  BulletBehaviour: SlowingBullet
-  Damage: 0.0
-  Knockback: 1.75
-  LifeSpanSeconds: 0.85
-  RotateWithGun: true
-  Scale: 0.25
-  Speed: 90.0
-  Sprite:
-    Bullet:
-      FPS: 1.0
-      Frames:
-        - 0
-      Loop: false
-      Origin:
-        X: 0.0
-        Y: 0.0
-      TileWidth: 16
-      TileHeight: 16
-    Source: bullets/shockwave_sm
+Bullet: Fido
 BulletSpread: 0.392699093
 DropChance: 0.4
 FireRate: 0.6

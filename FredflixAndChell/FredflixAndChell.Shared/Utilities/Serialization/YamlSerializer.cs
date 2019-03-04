@@ -1,8 +1,8 @@
 ﻿using FredflixAndChell.Shared.Components.Bullets.Behaviours;
-using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
+using FredflixAndChell.Shared.Weapons.Parameters;
 using SharpYaml.Serialization;
 using System.IO;
 
@@ -17,6 +17,14 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
         public static void SerializeAll()
         {
             SerializeCharacter(PlayerSpritePresets.Trump);
+        }
+
+        public static BulletParameters DeserializeBulletParameters(string filename)
+        {
+            var deserializer = new Serializer();
+
+            var bulletParam = deserializer.Deserialize<BulletParameters>(File.ReadAllText(filename));
+            return bulletParam;
         }
 
         public static GunParameters DeserializeGunParameters(string filename)
@@ -55,25 +63,5 @@ namespace FredflixAndChell.Shared.Utilities.Serialization
             }
             File.WriteAllText(filename, yaml);
         }
-
-        public static void Foo()
-        {
-            var serializer = new Serializer();
-            var yaml = serializer.Serialize(new GunParameters
-            {
-                BulletParameters = new BulletParameters
-                {
-                    BulletBehaviour = nameof(StandardBullet)
-                }
-            }, typeof(GunParameters));
-            var filename = $"{BasePath}/test.fml";
-
-            if (!Directory.Exists(BasePath))
-            {
-                Directory.CreateDirectory(BasePath);
-            }
-            File.WriteAllText(filename, yaml);
-        }
-
     }
 }

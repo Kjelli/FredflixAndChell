@@ -1,16 +1,15 @@
-﻿using System;
+﻿using FredflixAndChell.Shared.Components.Bullets;
+using FredflixAndChell.Shared.Components.Bullets.Behaviours;
+using FredflixAndChell.Shared.Components.Effects;
+using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Utilities;
+using FredflixAndChell.Shared.Weapons.Parameters;
 using Microsoft.Xna.Framework;
 using Nez;
-using static FredflixAndChell.Shared.Assets.Constants;
-using FredflixAndChell.Shared.Components.Bullets;
-using FredflixAndChell.Shared.GameObjects.Players;
-using FredflixAndChell.Shared.Components.Bullets.Behaviours;
-using FredflixAndChell.Shared.Utilities.Activator;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using static FredflixAndChell.Shared.Utilities.Activator.ObjectActivatorHelper;
-using System.Collections.Generic;
-using FredflixAndChell.Shared.Components.Effects;
-using FredflixAndChell.Shared.Utilities;
 
 namespace FredflixAndChell.Shared.GameObjects.Bullets
 {

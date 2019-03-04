@@ -4,12 +4,13 @@ using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace FredflixAndChell.Shared.GameObjects.Bullets
+namespace FredflixAndChell.Shared.Weapons.Parameters
 {
     public enum BulletType { Entity, Line }
 
     public class BulletParameters
     {
+        public string Name { get; set; }
         public BulletType BulletType { get; set; } = BulletType.Entity;
         public BulletSprite Sprite { get; set; }
         public string BulletBehaviour { get; set; } = nameof(StandardBullet);

@@ -1,5 +1,6 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Weapons.Parameters;
 using Microsoft.Xna.Framework;
 using Nez;
 using static FredflixAndChell.Shared.Assets.Constants;

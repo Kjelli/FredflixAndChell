@@ -92,6 +92,7 @@
     <Compile Include="GameObjects\Props\Flag.cs" />
     <Compile Include="Components\Weapons\WeaponRenderer.cs" />
     <Compile Include="GameObjects\Props\Zone.cs" />
+    <Compile Include="GameObjects\Weapons\Bullets.cs" />
     <Compile Include="GameObjects\Weapons\Melee.cs" />
     <Compile Include="GameObjects\Weapons\Parameters\MeleeParameters.cs" />
     <Compile Include="GameObjects\Weapons\Sprites\MeleeSprite.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="Systems\ControllerSystem.cs" />
     <Compile Include="Components\Players\PlayerRenderer.cs" />
     <Compile Include="Components\Players\PlayerConnector.cs" />
-    <Compile Include="GameObjects\Bullets\BulletParameters.cs" />
+    <Compile Include="GameObjects\Weapons\Parameters\BulletParameters.cs" />
     <Compile Include="GameObjects\Bullets\Sprites\BulletSprite.cs" />
     <Compile Include="GameObjects\Collectibles\Collectible.cs" />
     <Compile Include="GameObjects\Collectibles\CollectibleParameters.cs" />

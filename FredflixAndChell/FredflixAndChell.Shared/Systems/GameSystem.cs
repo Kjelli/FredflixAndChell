@@ -200,7 +200,7 @@ namespace FredflixAndChell.Shared.Systems
         {
             Score = 0;
             Character = Characters.Get(Constants.Strings.DefaultStartCharacter);
-            Weapon = Melees.Get("Stick");
+            Weapon = Guns.Get("M4");
         }
 
         public int CompareTo(PlayerMetadata other)

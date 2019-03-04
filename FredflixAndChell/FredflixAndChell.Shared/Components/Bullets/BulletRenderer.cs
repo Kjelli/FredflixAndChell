@@ -3,14 +3,10 @@ using FredflixAndChell.Shared.GameObjects.Bullets;
 using FredflixAndChell.Shared.GameObjects.Bullets.Sprites;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.Utilities.Graphics;
+using FredflixAndChell.Shared.Weapons.Parameters;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FredflixAndChell.Shared.Assets.Constants;
 using static FredflixAndChell.Shared.GameObjects.Bullets.Sprites.BulletSprite;
 
@@ -34,7 +30,7 @@ namespace FredflixAndChell.Shared.Components.Bullets
         public override void onAddedToEntity()
         {
             entity.updateOrder = 2;
-            
+
             if (_bullet.Parameters.BulletType == BulletType.Entity)
             {
                 SetupEntityBullet();
@@ -70,9 +66,9 @@ namespace FredflixAndChell.Shared.Components.Bullets
             }
             else
             {
-                _sprite.layerDepth = 1 - (_bullet.Owner.position.Y 
-                    + _bullet.Owner.VerticalFacing == (int)FacingCode.UP ? -200 
-                    : _bullet.Owner.VerticalFacing == (int) FacingCode.DOWN ? 200 : 0) * Constants.RenderLayerDepthFactor;
+                _sprite.layerDepth = 1 - (_bullet.Owner.position.Y
+                    + _bullet.Owner.VerticalFacing == (int)FacingCode.UP ? -200
+                    : _bullet.Owner.VerticalFacing == (int)FacingCode.DOWN ? 200 : 0) * Constants.RenderLayerDepthFactor;
             }
         }
     }

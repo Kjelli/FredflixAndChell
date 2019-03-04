@@ -17,6 +17,21 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin data/bullets/Fidget.fml
+/copy:data/bullets/Fidget.fml
+
+#begin data/bullets/Fido.fml
+/copy:data/bullets/Fido.fml
+
+#begin data/bullets/Laser.fml
+/copy:data/bullets/Laser.fml
+
+#begin data/bullets/Rocket.fml
+/copy:data/bullets/Rocket.fml
+
+#begin data/bullets/Standard.fml
+/copy:data/bullets/Standard.fml
+
 #begin data/characters/Doge.fml
 /copy:data/characters/Doge.fml
 
