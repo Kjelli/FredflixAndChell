@@ -487,9 +487,8 @@ namespace FredflixAndChell.Shared.GameObjects.Players
         private void Move()
         {
             if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
-            var deltaTime = Time.deltaTime;
 
-            Acceleration *= Speed * deltaTime;
+            Acceleration *= Speed * Time.deltaTime;
             Velocity = Velocity + CalculateAcceleration();
 
 

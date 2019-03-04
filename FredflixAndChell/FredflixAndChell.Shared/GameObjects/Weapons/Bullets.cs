@@ -1,6 +1,7 @@
 ﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Utilities.Serialization;
 using FredflixAndChell.Shared.Weapons.Parameters;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons
 
         public static void LoadFromData()
         {
+            Console.WriteLine("Loading .fml files for bullets...");
             var bulletFilenames = Directory.EnumerateFiles($"{Constants.Assets.DataDirectory}/bullets", "*.fml");
             foreach (var bulletFilename in bulletFilenames)
             {

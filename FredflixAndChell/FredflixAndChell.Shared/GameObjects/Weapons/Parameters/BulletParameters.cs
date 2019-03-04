@@ -21,5 +21,6 @@ namespace FredflixAndChell.Shared.Weapons.Parameters
         public float LifeSpanSeconds { get; set; } = -1f;
         public bool RotateWithGun { get; set; } = true;
         public Color BulletColor { get; set; } = Color.White;
+        public bool IgnoreTeamColor { get; set; } = false;
     }
 }

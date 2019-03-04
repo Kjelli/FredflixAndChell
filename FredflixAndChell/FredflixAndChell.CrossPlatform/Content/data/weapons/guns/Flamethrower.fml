@@ -1,0 +1,78 @@
+Ammo: 80
+Accuracy: 0.25
+BarrelOffset:
+  X: 12.0
+  Y: 0.0
+BulletCount: 5
+Bullet: Fire
+BulletSpread: 0.80
+DropChance: 0.8
+FireRate: 0.1
+InheritsPlayerSpeed: true
+MagazineAmmo: 20
+MagazineSize: 20
+MaxAmmo: 80
+Name: Flamethrower
+ReloadTime: 1.5
+RenderOffset: 7.0
+Rarity: Epic
+Sprite:
+  Fire:
+    FPS: 16.0
+    Frames:
+      - 1
+      - 5
+    Loop: true
+    Origin:
+      X: 32.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Icon:
+    FPS: 16.0
+    Frames:
+      - 0
+      - 4
+    Loop: true
+    Origin:
+      X: 0.0
+      Y: 0.0
+    TileWidth: 64
+    TileHeight: 32
+  Idle:
+    FPS: 16.0
+    Frames:
+      - 1
+      - 5
+    Loop: true
+    Origin:
+      X: 32.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Empty:
+    FPS: 16.0
+    Frames:
+      - 2
+      - 6
+    Loop: true
+    Origin:
+      X: 32.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Reload:
+    FPS: 2.0
+    Frames:
+      - 2
+      - 6
+      - 2
+      - 6
+      - 2
+    Loop: false
+    Origin:
+      X: 32.0
+      Y: 16.0  
+    TileWidth: 64
+    TileHeight: 32
+  Source: guns/flamethrower

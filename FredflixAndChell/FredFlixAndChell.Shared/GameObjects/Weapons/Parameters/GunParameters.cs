@@ -21,5 +21,6 @@ namespace FredflixAndChell.Shared.GameObjects.Weapons.Parameters
         public float BulletSpread { get; set; } = 0;
 
         public float Accuracy { get; set; } = 0.8f;
+        public bool InheritsPlayerSpeed { get; set; } = false;
     }
 }

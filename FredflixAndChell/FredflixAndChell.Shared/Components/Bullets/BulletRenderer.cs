@@ -23,9 +23,12 @@ namespace FredflixAndChell.Shared.Components.Bullets
         {
             _bullet = bullet;
             _sprite = bullet.addComponent(SetupAnimations(_bullet.Parameters.Sprite));
-            _sprite.color = _bullet.Owner.TeamIndex == Constants.Values.TeamIndexBlue ? Color.Blue
-                : _bullet.Owner.TeamIndex == Constants.Values.TeamIndexRed ? Color.Red
-                : Color.White;
+            if (!_bullet.Parameters.IgnoreTeamColor)
+            {
+                _sprite.color = _bullet.Owner.TeamIndex == Constants.Values.TeamIndexBlue ? Color.Blue
+                    : _bullet.Owner.TeamIndex == Constants.Values.TeamIndexRed ? Color.Red
+                    : Color.White;
+            }
         }
         public override void onAddedToEntity()
         {

@@ -41,6 +41,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/explosion");
             LoadTexture("textures/effects/fireball");
             LoadTexture("textures/effects/spawn_ring");
+
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
@@ -51,6 +52,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/flag");
             LoadTexture("textures/guns/chainsaw");
             LoadTexture("textures/guns/passertGun");
+            LoadTexture("textures/guns/flamethrower");
+
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
@@ -58,10 +61,14 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/fidgetspinner");
             LoadTexture("textures/bullets/laser");
             LoadTexture("textures/bullets/rocket");
+            LoadTexture("textures/bullets/fireball");
+
             LoadTexture("textures/UI/HUD");
             LoadTexture("textures/UI/screen_bg");
+
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
+
             LoadTexture("textures/statuseffects/slow");
 
             LoadTexture("maps/spawner_tile");
@@ -87,7 +94,6 @@ namespace FredflixAndChell.Shared.Assets
             Bullets.LoadFromData();
             Guns.LoadFromData();
             Melees.LoadFromData();
-
         }
 
         public static List<string> GetMaps()
