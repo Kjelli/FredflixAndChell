@@ -41,7 +41,7 @@ namespace FredflixAndChell.Shared.Assets
             public const string EventReady = "ready";
 
             public const string DefaultStartCharacter = "Trump";
-            public const string DefaultStartWeapon = "Chainsaw";
+            public const string DefaultStartWeapon = "M4";
         }
 
         public class Assets

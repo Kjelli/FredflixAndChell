@@ -11,7 +11,7 @@ FireRate: 0.23
 MagazineAmmo: 30
 MagazineSize: 30
 MaxAmmo: 300
-Name: PassertGun
+Name: PassertGun 
 RenderOffset: 3.0
 Rarity: Rare
 Sprite:
