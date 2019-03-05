@@ -12,8 +12,8 @@ namespace FredflixAndChell.Shared.Systems
     {
         public static GameSettings Default = new GameSettings
         {
-            GameMode = GameMode.CTF,
-            Map = "ctf_snow",
+            GameMode = GameMode.KOTH,
+            Map = "ctf_snow2",
             ScoreLimit = 3,
             FriendlyFire = false
         };

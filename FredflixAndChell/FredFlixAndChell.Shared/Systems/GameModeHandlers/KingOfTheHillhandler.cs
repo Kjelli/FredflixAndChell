@@ -55,6 +55,14 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         {
             var pkParams = parameters as PlayerKilledEventParameters;
             RemoveFromZoneList(pkParams.Killed);
+            Core.schedule(3f, false, _ => OnPlayerKilled(parameters));
+        }
+
+        private void OnPlayerKilled(GameEventParameters parameters)
+        {
+            if (_winningTeamIndex > 0) return;
+            var pkParams = parameters as PlayerKilledEventParameters;
+            RespawnPlayer(pkParams.Killed);
         }
 
         private void RemoveFromZoneList(Player player)
@@ -64,7 +72,6 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
                 _playersInZone.Remove(player);
             }
         }
-
         private void RespawnPlayer(Player player)
         {
             if (_weHaveAWinner) return;
@@ -91,8 +98,8 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
                 }
             }
             player.Respawn(furthestSpawnPosition);
-
         }
+
 
         private void HandleKOTHMapEvent(GameEventParameters ev)
         {

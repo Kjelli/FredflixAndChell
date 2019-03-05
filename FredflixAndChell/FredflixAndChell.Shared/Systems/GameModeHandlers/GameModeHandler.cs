@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Utilities;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +17,8 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         public GameSystem GameSystem => _gameSystem;
         public GameSettings Settings => _settings;
 
+        private bool _weHaveAWinner;
+
         public GameModeHandler(GameSystem gameSystem)
         {
             _gameSystem = gameSystem;
@@ -25,5 +30,7 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
             _gameSystem.StartRound();
         }
         public abstract bool WeHaveAWinner();
+
+      
     }
 }
