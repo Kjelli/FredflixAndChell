@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="27" nextobjectid="611">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="120" height="50" tilewidth="8" tileheight="8" infinite="0" nextlayerid="27" nextobjectid="613">
  <properties>
   <property name="ambient_lighting" type="color" value="#ff296f9a"/>
   <property name="mode_ctf" type="bool" value="true"/>
+  <property name="mode_koth" type="bool" value="true"/>
   <property name="name" value="Flootebula"/>
   <property name="weather" value="snowstorm"/>
  </properties>
@@ -35,7 +36,7 @@
  <objectgroup id="6" name="Objects" offsetx="-0.25" offsety="-0.25">
   <object id="467" name="collision" x="0" y="0" width="960" height="120"/>
   <object id="469" name="collision" x="840" y="0.25" width="120" height="400"/>
-  <object id="470" name="collision" x="0" y="0.25" width="120" height="400"/>
+  <object id="470" name="collision" x="9" y="1" width="120" height="400"/>
   <object id="471" name="collision" x="152" y="120" width="32.25" height="8.25"/>
   <object id="472" name="collision" x="216" y="120" width="32.25" height="8.25"/>
   <object id="473" name="collision" x="280" y="120" width="32.25" height="8.25"/>
@@ -178,5 +179,25 @@
   <object id="608" name="pit" x="528" y="224" width="16" height="40"/>
   <object id="609" name="pit" x="416" y="136" width="16" height="40"/>
   <object id="610" name="pit" x="423" y="221.25" width="16" height="40"/>
+  <object id="611" name="koth_platform" type="zone" x="456.25" y="176.25" width="48" height="48">
+   <properties>
+    <property name="blue_hold" type="color" value="#ff0055ff"/>
+    <property name="color" type="color" value="#ff3a3a3a"/>
+    <property name="ffa_hold" type="color" value="#ffffd700"/>
+    <property name="glow" type="bool" value="true"/>
+    <property name="idle" type="color" value="#ff3a3a3a"/>
+    <property name="key" value="koth_platform"/>
+    <property name="koth_only" type="bool" value="true"/>
+    <property name="red_hold" type="color" value="#ffff0000"/>
+   </properties>
+  </object>
+  <object id="612" name="event_emitter" x="456.25" y="176.25" width="48" height="48">
+   <properties>
+    <property name="global" type="bool" value="true"/>
+    <property name="key" value="koth_zone"/>
+    <property name="physics_layer" type="int" value="9"/>
+    <property name="type" value="collision"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

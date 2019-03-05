@@ -23,9 +23,9 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
             {
                 var props = zoneObject.properties;
 
-                if (props.ContainsKey("ctf_only") && props["ctf_only"] != null)
+                if (props.ContainsKey(Constants.TiledProperties.CTF_Only) && props[Constants.TiledProperties.CTF_Only] != null)
                 {
-                    var ctfOnly = bool.Parse(props["ctf_only"]);
+                    var ctfOnly = bool.Parse(props[Constants.TiledProperties.CTF_Only]);
                     var currentGameMode = ContextHelper.GameSettings.GameMode;
                     if (ctfOnly && currentGameMode != GameMode.CTF)
                     {
@@ -34,9 +34,18 @@ namespace FredflixAndChell.Shared.Maps.MapBuilders
                     var team = zoneObject.name == TiledProperties.CaptureTheFlagBlueZone ? Values.TeamIndexBlue :
                                zoneObject.name == TiledProperties.CaptureTheFlagRedZone ? Values.TeamIndexRed : -1;
                     SpawnCTFFlagForTeam(map, zoneObject, team);
+                }else if (props.ContainsKey(Constants.TiledProperties.KOTH_Only) && props[Constants.TiledProperties.KOTH_Only] != null)
+                {
+                    var kothOnly = bool.Parse(props[Constants.TiledProperties.KOTH_Only]);
+                    var currentGameMode = ContextHelper.GameSettings.GameMode;
+                    if (kothOnly && currentGameMode != GameMode.KOTH)
+                    {
+                        continue;
+                    }
+                    
                 }
 
-                var color = new Color();
+                    var color = new Color();
                 var glow = false;
                 var size = new Vector2(zoneObject.width, zoneObject.height);
 

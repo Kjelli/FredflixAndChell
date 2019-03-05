@@ -42,6 +42,7 @@ namespace FredflixAndChell.Shared.Assets
 
             public const string DefaultStartCharacter = "Trump";
             public const string DefaultStartWeapon = "M4";
+
         }
 
         public class Assets
@@ -77,6 +78,9 @@ namespace FredflixAndChell.Shared.Assets
             public const string SpawnerCameraTracking = "camera_tracking";
             public const string CaptureTheFlagBlueCollisionZone = "ctf_blue";
             public const string CaptureTheFlagRedCollisionZone = "ctf_red";
+            public const string CTF_Only = "ctf_only";
+            public const string KOTH_Only = "koth_only";
+            public const string KingOfTheHillZone = "koth_zone";
             public const string CaptureTheFlagBlueZone = "team_blue_zone";
             public const string CaptureTheFlagRedZone = "team_red_zone";
             public const string MapStartWeapon = "start_weapon";

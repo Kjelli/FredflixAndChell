@@ -7,5 +7,6 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
         FRAGS, // Score by being last player alive
         DM, // Score by killing another player
         CTF, // Score by retrieving opposite team's flag
+        KOTH //Score by standing in designated zone
     }
 }

@@ -87,6 +87,9 @@ namespace FredflixAndChell.Shared.Systems
                 case GameMode.CTF:
                     _gameHandler = new CaptureTheFlagHandler(this);
                     break;
+                case GameMode.KOTH:
+                    _gameHandler = new KingOfTheHillHandler(this);
+                    break;
             }
             (scene as BroScene)?.OnGameHandlerAdded(_gameHandler);
             _gameHandler.Setup(_gameSettings);

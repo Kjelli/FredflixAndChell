@@ -2,11 +2,13 @@
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Players;
+using FredflixAndChell.Shared.Maps.Events;
 using FredflixAndChell.Shared.Utilities;
 using FredflixAndChell.Shared.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Nez;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FredflixAndChell.Shared.Systems.GameModeHandlers
@@ -15,27 +17,52 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
     {
         private int _winningTeamIndex;
         private bool _weHaveAWinner;
+        private List<Player> _playersInZone;
 
         public KingOfTheHillHandler(GameSystem gameSystem) : base(gameSystem)
         {
+            _playersInZone = new List<Player>();
         }
 
         public override void Setup(GameSettings settings)
         {
             base.Setup(settings);
             GameSystem.Subscribe(GameEvents.GlobalMapEvent, HandleKOTHMapEvent);
-            GameSystem.Subscribe(GameEvents.PlayerKilled, QueueOnPlayerKilled);
+            GameSystem.Subscribe(GameEvents.PlayerKilled, PlayerKilled);
+            Core.schedule(0.2f, true, _ => CheckYourselfBeforeYouWreckYourself());
         }
-        private void QueueOnPlayerKilled(GameEventParameters parameters)
+        private void CheckYourselfBeforeYouWreckYourself()
         {
-            Core.schedule(2.5f, false, _ => OnPlayerKilled(parameters));
+            if(_playersInZone.Count > 0)
+            {
+                foreach (Player p in _playersInZone)
+                {
+                    var playerScore = ContextHelper.PlayerMetadataByIndex(p.PlayerIndex);
+                    //playerScore.Score++;
+                    UpdateZoneColor("ffa_hold");
+                    CheckForWinner();
+
+                }
+            }
+            else
+            {
+                UpdateZoneColor("idle");
+            }
+            
         }
 
-        private void OnPlayerKilled(GameEventParameters parameters)
+        private void PlayerKilled(GameEventParameters parameters)
         {
-            if (_winningTeamIndex > 0) return;
             var pkParams = parameters as PlayerKilledEventParameters;
-            RespawnPlayer(pkParams.Killed);
+            RemoveFromZoneList(pkParams.Killed);
+        }
+
+        private void RemoveFromZoneList(Player player)
+        {
+            if (_playersInZone.Contains(player))
+            {
+                _playersInZone.Remove(player);
+            }
         }
 
         private void RespawnPlayer(Player player)
@@ -76,50 +103,52 @@ namespace FredflixAndChell.Shared.Systems.GameModeHandlers
 
             if (mapEvent.Parameters.Count() < 2) return;
 
-            var player = mapEvent.Parameters[1] as Player;
-            var playerInventory = player.getComponent<PlayerInventory>();
-
-            if ((string)mapEvent.Parameters[0] != Constants.Strings.CollisionMapEventEnter) return;
-            if (playerInventory.Weapon?.Name != "Flag") return;
-
-            if (key == Constants.TiledProperties.CaptureTheFlagRedCollisionZone
-                && player.TeamIndex == Constants.Values.TeamIndexRed)
+            if(key == Constants.TiledProperties.KingOfTheHillZone)
             {
-                _winningTeamIndex = player.TeamIndex;
-            }
-            else if (key == Constants.TiledProperties.CaptureTheFlagBlueCollisionZone
-                && player.TeamIndex == Constants.Values.TeamIndexBlue)
-            {
-                _winningTeamIndex = player.TeamIndex;
-            }
-
-            if (_winningTeamIndex > 0)
-            {
-                playerInventory.DestroyWeapon();
-                FocusCameraOnWinners();
-                GameSystem.EndRound();
+                var player = mapEvent.Parameters[1] as Player;
+                if ((string)mapEvent.Parameters[0] == "enter")
+                {
+                    _playersInZone.Add(player);
+                }
+                else
+                {
+                    RemoveFromZoneList(player);
+                }
             }
         }
 
+        private void UpdateZoneColor(string color)
+        {
+            GameSystem.Map.EmitMapEvent(new MapEvent
+            {
+                EventKey = "koth_platform",
+                Parameters = new object[] { color }
+            });
+        }
+
+        private void CheckForWinner()
+        {
+            if (_weHaveAWinner) return;
+
+            var maxScoreHolder = ContextHelper.PlayerMetadata.Max();
+            if (maxScoreHolder.Score < Settings.ScoreLimit) return;
+
+            _weHaveAWinner = true;
+            var winningPlayer = GameSystem.Players.First(p => p.PlayerIndex == maxScoreHolder.PlayerIndex);
+            winningPlayer.getComponent<CameraTracker>().setEnabled(true);
+            var otherPlayers = GameSystem.Players.Where(p => p.PlayerIndex != maxScoreHolder.PlayerIndex);
+            foreach (var otherPlayer in otherPlayers)
+            {
+                otherPlayer.getComponent<CameraTracker>().setEnabled(false);
+            }
+            GameSystem.EndRound();
+        }
+
+
+
         private void FocusCameraOnWinners()
         {
-            var losingPlayers = GameSystem.Players.Where(p => p.TeamIndex != _winningTeamIndex);
-            var winningPlayers  = GameSystem.Players.Where(p => p.TeamIndex == _winningTeamIndex);
-            foreach (var player in losingPlayers)
-            {
-                player.getComponent<CameraTracker>().setEnabled(false);
-                var meta = ContextHelper.PlayerMetadataByIndex(player.PlayerIndex);
-                var previousWeapon = meta.Weapon;
-                if (previousWeapon?.Name == "Flag")
-                {
-                    meta.Weapon = null;
-                }
-            }
-
-            foreach (var player in winningPlayers)
-            {
-                ContextHelper.PlayerMetadataByIndex(player.PlayerIndex).Score++;
-            }
+           
         }
 
         public override bool WeHaveAWinner()
