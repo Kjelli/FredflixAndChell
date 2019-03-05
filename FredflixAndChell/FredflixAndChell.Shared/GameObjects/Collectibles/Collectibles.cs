@@ -1,10 +1,11 @@
 ﻿using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FredflixAndChell.Shared.GameObjects.Collectibles
 {
-    public static class Collectibles
+    public static class CollectibleDict
     {
         private static bool _isInitialized = false;
         private static Dictionary<string, CollectibleParameters> _collectibles =
@@ -36,6 +37,9 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public static void LoadFromData()
         {
+            if (_isInitialized) return;
+
+            Guns.LoadFromData();
             foreach (var gun in Guns.All())
             {
                 _collectibles.Add(gun.Name, new CollectibleParameters
@@ -48,6 +52,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
                 });
             }
 
+            Melees.LoadFromData();
             foreach (var melee in Melees.All())
             {
                 _collectibles.Add(melee.Name, new CollectibleParameters
@@ -61,6 +66,20 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             }
 
             _isInitialized = true;
+        }
+
+        public static WeaponParameters GetNextWeaponAfter(string name)
+        {
+            if (!_isInitialized)
+            {
+                LoadFromData();
+            }
+
+            var list = _collectibles.Values
+                .Where(c => c.Type == CollectibleType.Weapon)
+                .ToList();
+            var next = list[(list.IndexOf(_collectibles[name]) + 1) % _collectibles.Count];
+            return next.Weapon;
         }
     }
 }

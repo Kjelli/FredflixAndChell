@@ -113,6 +113,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/shader_wavy.fx
 
+#begin effects/single_color.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/single_color.fx
+
 #begin effects/weapon_hand_color.fx
 /importer:EffectImporter
 /processor:EffectProcessor

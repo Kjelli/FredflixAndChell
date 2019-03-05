@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Weapons;
+﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
@@ -78,6 +79,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/zone_shader");
             LoadEffect("effects/grayscale_shader");
             LoadEffect("effects/weapon_hand_color");
+            LoadEffect("effects/single_color");
 
             LoadMap("maps/ctf_x");
             LoadMap("maps/winter_hub");
@@ -91,10 +93,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/ctf_snow2");
             LoadMap("maps/stickfight");
 
-
             BulletDict.LoadFromData();
-            Guns.LoadFromData();
-            Melees.LoadFromData();
+            CollectibleDict.LoadFromData();
         }
 
         public static List<string> GetMaps()

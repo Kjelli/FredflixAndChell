@@ -84,7 +84,7 @@ namespace FredflixAndChell.Shared.Maps
                 && !string.IsNullOrWhiteSpace(tiledMap.properties[TiledProperties.MapStartWeapon]))
             {
                 var weaponName = tiledMap.properties[TiledProperties.MapStartWeapon];
-                var collectible = Collectibles.Get(weaponName);
+                var collectible = CollectibleDict.Get(weaponName);
                 foreach (var meta in ContextHelper.PlayerMetadata)
                 {
                     meta.Weapon = collectible.Weapon;

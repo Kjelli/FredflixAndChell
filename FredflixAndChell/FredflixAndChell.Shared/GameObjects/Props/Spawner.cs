@@ -59,7 +59,7 @@ namespace FredflixAndChell.Shared.GameObjects.Props
 
         private List<CollectibleParameters> FilterAllowedCollectibles()
         {
-            var items = Collectibles.Collectibles.All().AsEnumerable();
+            var items = Collectibles.CollectibleDict.All().AsEnumerable();
 
             // If set, include whitelisted weapons by rarity
             if (_parameters.RarityWhitelist?.Count() > 0)

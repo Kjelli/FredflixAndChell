@@ -161,6 +161,7 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Graphics\Materials.cs" />
+    <Compile Include="Utilities\Graphics\ScalableSpriteMime.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
     <Compile Include="BroGame.cs" />
