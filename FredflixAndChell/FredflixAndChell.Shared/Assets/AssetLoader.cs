@@ -1,4 +1,5 @@
-﻿using FredflixAndChell.Shared.GameObjects.Weapons;
+﻿using FredflixAndChell.Shared.GameObjects.Collectibles;
+using FredflixAndChell.Shared.GameObjects.Weapons;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Nez.Tiled;
@@ -41,6 +42,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/effects/explosion");
             LoadTexture("textures/effects/fireball");
             LoadTexture("textures/effects/spawn_ring");
+
             LoadTexture("textures/guns/m4");
             LoadTexture("textures/guns/fido");
             LoadTexture("textures/guns/pewpew");
@@ -51,6 +53,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/guns/flag");
             LoadTexture("textures/guns/chainsaw");
             LoadTexture("textures/guns/passertGun");
+            LoadTexture("textures/guns/flamethrower");
+
             LoadTexture("textures/bullets/fido");
             LoadTexture("textures/bullets/standard");
             LoadTexture("textures/bullets/shockwave");
@@ -59,10 +63,14 @@ namespace FredflixAndChell.Shared.Assets
             LoadTexture("textures/bullets/passertBullet");
             LoadTexture("textures/bullets/laser");
             LoadTexture("textures/bullets/rocket");
+            LoadTexture("textures/bullets/fireball");
+
             LoadTexture("textures/UI/HUD");
             LoadTexture("textures/UI/screen_bg");
+
             LoadTexture("textures/particles/blood");
             LoadTexture("textures/particles/crystal");
+
             LoadTexture("textures/statuseffects/slow");
 
             LoadTexture("maps/spawner_tile");
@@ -71,6 +79,7 @@ namespace FredflixAndChell.Shared.Assets
             LoadEffect("effects/zone_shader");
             LoadEffect("effects/grayscale_shader");
             LoadEffect("effects/weapon_hand_color");
+            LoadEffect("effects/single_color");
 
             LoadMap("maps/ctf_x");
             LoadMap("maps/winter_hub");
@@ -84,11 +93,8 @@ namespace FredflixAndChell.Shared.Assets
             LoadMap("maps/ctf_snow2");
             LoadMap("maps/stickfight");
 
-
             BulletDict.LoadFromData();
-            Guns.LoadFromData();
-            Melees.LoadFromData();
-
+            CollectibleDict.LoadFromData();
         }
 
         public static List<string> GetMaps()

@@ -45,7 +45,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
 
         public Collectible(float x, float y, string name, bool dropped, CollectibleMetadata Metadata = null) : base(x, y)
         {
-            Preset = Collectibles.Get(name);
+            Preset = CollectibleDict.Get(name);
             _dropped = dropped;
             _acceleration = new Vector2();
             this.Metadata = Metadata;
@@ -251,7 +251,7 @@ namespace FredflixAndChell.Shared.GameObjects.Collectibles
             if (_collectibleState != CollectibleState.Available) return;
             if (!CanBeCollectedByPlayer(player)) return;
 
-            player.EquipWeapon(Preset.Weapon.Name, Metadata);
+            player.EquipWeapon(Preset.Weapon, Metadata);
 
             _collectibleState = CollectibleState.Unavailable;
             _pickupHitbox.setEnabled(false);

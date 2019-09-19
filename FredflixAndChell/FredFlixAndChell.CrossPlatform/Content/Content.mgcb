@@ -23,6 +23,9 @@
 #begin data/bullets/Fido.fml
 /copy:data/bullets/Fido.fml
 
+#begin data/bullets/Fire.fml
+/copy:data/bullets/Fire.fml
+
 #begin data/bullets/Laser.fml
 /copy:data/bullets/Laser.fml
 
@@ -61,6 +64,9 @@
 
 #begin data/weapons/guns/Fido.fml
 /copy:data/weapons/guns/Fido.fml
+
+#begin data/weapons/guns/Flamethrower.fml
+/copy:data/weapons/guns/Flamethrower.fml
 
 #begin data/weapons/guns/Goggles.fml
 /copy:data/weapons/guns/Goggles.fml
@@ -106,6 +112,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:effects/shader_wavy.fx
+
+#begin effects/single_color.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/single_color.fx
 
 #begin effects/weapon_hand_color.fx
 /importer:EffectImporter
@@ -259,6 +271,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/bullets/fido.png
+
+#begin textures/bullets/fireball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/bullets/fireball.png
 
 #begin textures/bullets/laser.png
 /importer:TextureImporter
@@ -547,6 +571,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:textures/guns/flag.png
+
+#begin textures/guns/flamethrower.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:textures/guns/flamethrower.png
 
 #begin textures/guns/goggles.png
 /importer:TextureImporter

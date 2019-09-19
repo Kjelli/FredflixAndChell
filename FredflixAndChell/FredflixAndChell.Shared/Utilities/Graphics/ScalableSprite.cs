@@ -64,10 +64,5 @@ namespace FredflixAndChell.Shared.Utilities.Graphics
         {
             _scale = scale;
         }
-
-        public Sprite tweenColorTo(int v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

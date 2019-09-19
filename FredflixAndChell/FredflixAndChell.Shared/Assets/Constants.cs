@@ -124,6 +124,7 @@ namespace FredflixAndChell.Shared.Assets
         {
             public const int EntityShadowStencil = 1;
             public const int HiddenEntityStencil = 2;
+            public const int PlayerTeamColorStencil = 3;
         }
     }
 }

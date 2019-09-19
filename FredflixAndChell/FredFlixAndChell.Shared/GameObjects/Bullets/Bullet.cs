@@ -45,6 +45,8 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
 
             _behaviour = addComponent(ConstructBehaviour(_params.BulletBehaviour));
             _renderer = addComponent(new BulletRenderer(this));
+
+            Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
         }
 
         private BulletBehaviour ConstructBehaviour(string bulletBehaviour)
@@ -64,7 +66,6 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
         {
             if (Parameters.BulletType == BulletType.Entity)
             {
-                Velocity = new Vector2(_params.Speed * (float)Math.Cos(_direction), _params.Speed * (float)Math.Sin(_direction));
                 _lightSource = addComponent(new LightSource(_params.BulletColor, this));
             }
             if (_params.LifeSpanSeconds >= 0)
@@ -93,9 +94,9 @@ namespace FredflixAndChell.Shared.GameObjects.Bullets
             _renderer.UpdateRenderLayerDepth();
         }
 
-        public static void Create(Player owner, float x, float y, float direction, BulletParameters parameters)
+        public static Bullet Create(Player owner, float x, float y, float direction, BulletParameters parameters)
         {
-            var bulletEntity = Core.scene.addEntity(new Bullet(owner, x, y, direction, parameters));
+            return Core.scene.addEntity(new Bullet(owner, x, y, direction, parameters));
         }
 
         public DirectionalDamage ToDirectionalDamage()

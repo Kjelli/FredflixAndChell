@@ -1,10 +1,11 @@
-﻿using System;
-using FredflixAndChell.Shared.Assets;
+﻿using FredflixAndChell.Shared.Assets;
 using FredflixAndChell.Shared.Components.Effects;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.Utilities.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Sprites;
 using Nez.Tweens;
@@ -31,6 +32,10 @@ namespace FredflixAndChell.Shared.Components.Players
         private SpriteMime _headSilhouette;
         private SpriteMime _torsoSilhouette;
         private SpriteMime _legsSilhouette;
+        private ScalableSpriteMime _headTeamColoredSprite;
+        private ScalableSpriteMime _torsoTeamColoredSprite;
+        private ScalableSpriteMime _legsTeamColoredSprite;
+        private Material _teamColorMaterial;
 
         public Sprite<HeadAnimation> Head { get; set; }
 
@@ -80,6 +85,28 @@ namespace FredflixAndChell.Shared.Components.Players
             _legsSilhouette.localOffset = new Vector2(0, 0);
         }
 
+        private void SetupTeamColoredSprite(Color teamColor)
+        {
+            var scaleVector = new Vector2(1.1f, 1.1f);
+            _teamColorMaterial = new Material(AssetLoader.GetEffect("single_color"));
+            _teamColorMaterial.blendState = BlendState.NonPremultiplied;
+
+            _headTeamColoredSprite = entity.addComponent(new ScalableSpriteMime(Head));
+            _headTeamColoredSprite.material = _teamColorMaterial;
+            _headTeamColoredSprite.renderLayer = Layers.PlayerBehind;
+            _headTeamColoredSprite.SetScale(scaleVector);
+
+            _torsoTeamColoredSprite = entity.addComponent(new ScalableSpriteMime(_torso));
+            _torsoTeamColoredSprite.material = _teamColorMaterial;
+            _torsoTeamColoredSprite.renderLayer = Layers.PlayerBehind;
+            _torsoTeamColoredSprite.SetScale(scaleVector);
+
+            _legsTeamColoredSprite = entity.addComponent(new ScalableSpriteMime(_legs));
+            _legsTeamColoredSprite.material = _teamColorMaterial;
+            _legsTeamColoredSprite.renderLayer = Layers.PlayerBehind;
+            _legsTeamColoredSprite.SetScale(scaleVector);
+        }
+
         private void SetupShadow()
         {
             // Assign renderable shadow component
@@ -120,6 +147,8 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.play(HeadAnimation.FrontFacing);
             _torso.play(TorsoAnimation.Front);
             _legs.play(LegsAnimation.Idle);
+
+            SetupTeamColoredSprite(ResolveTeamColor(_player.TeamIndex));
 
             UpdateTeamIndex(_player.TeamIndex);
         }
@@ -183,6 +212,10 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.localOffset = new Vector2(0, _player.Altitude);
             _torso.localOffset = new Vector2(0, _player.Altitude);
             _legs.localOffset = new Vector2(0, _player.Altitude);
+
+            _headTeamColoredSprite.localOffset = new Vector2(0, _player.Altitude);
+            _torsoTeamColoredSprite.localOffset = new Vector2(0, _player.Altitude);
+            _legsTeamColoredSprite.localOffset = new Vector2(0, _player.Altitude);
 
             UpdateAnimation();
             if (float.IsNaN(_player.position.X) || float.IsNaN(_player.position.Y)
@@ -279,14 +312,17 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.setEnabled(true);
             _headShadow.setEnabled(true);
             _headSilhouette.setEnabled(true);
+            _headTeamColoredSprite.setEnabled(true);
 
             _torso.setEnabled(true);
             _torsoShadow.setEnabled(true);
             _torsoSilhouette.setEnabled(true);
+            _torsoTeamColoredSprite.setEnabled(true);
 
             _legs.setEnabled(true);
             _legsShadow.setEnabled(true);
             _legsSilhouette.setEnabled(true);
+            _legsTeamColoredSprite.setEnabled(true);
         }
 
         public override void onDisabled()
@@ -296,14 +332,17 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.setEnabled(false);
             _headShadow.setEnabled(false);
             _headSilhouette.setEnabled(false);
+            _headSilhouette.setEnabled(false);
 
             _torso.setEnabled(false);
             _torsoShadow.setEnabled(false);
             _torsoSilhouette.setEnabled(false);
+            _torsoTeamColoredSprite.setEnabled(false);
 
             _legs.setEnabled(false);
             _legsShadow.setEnabled(false);
             _legsSilhouette.setEnabled(false);
+            _legsTeamColoredSprite.setEnabled(false);
         }
 
         public override void onRemovedFromEntity()
@@ -311,14 +350,20 @@ namespace FredflixAndChell.Shared.Components.Players
             Head.removeComponent();
             _headShadow.removeComponent();
             _headSilhouette.removeComponent();
+            _headTeamColoredSprite.setEnabled(false);
+            _headTeamColoredSprite.removeComponent();
 
             _torso.removeComponent();
             _torsoShadow.removeComponent();
             _torsoSilhouette.removeComponent();
+            _torsoTeamColoredSprite.setEnabled(false);
+            _torsoTeamColoredSprite.removeComponent();
 
             _legs.removeComponent();
             _legsShadow.removeComponent();
             _legsSilhouette.removeComponent();
+            _legsTeamColoredSprite.setEnabled(false);
+            _legsTeamColoredSprite.removeComponent();
 
             _light.removeComponent();
         }
@@ -332,17 +377,30 @@ namespace FredflixAndChell.Shared.Components.Players
 
         public void UpdateTeamIndex(int teamIndex)
         {
-            if(teamIndex == 1)
+            var teamColor = ResolveTeamColor(teamIndex);
+            if (teamIndex > 0)
             {
-                _legs.color = Color.Blue;
-            }
-            else if(teamIndex == 2)
-            {
-                _legs.color = Color.Red;
+                _teamColorMaterial.effect.Parameters["draw"].SetValue(1);
+                teamColor = new Color(teamColor, 0.75f);
+                _teamColorMaterial.effect.Parameters["single_color"].SetValue(teamColor.ToVector4());
             }
             else
             {
-                _legs.color = Color.White;
+                _teamColorMaterial.effect.Parameters["draw"].SetValue(0);
+            }
+
+        }
+
+        public Color ResolveTeamColor(int teamIndex)
+        {
+            switch (teamIndex)
+            {
+                case 1:
+                    return Color.Blue;
+                case 2:
+                    return Color.Red;
+                default:
+                    return Color.Transparent;
             }
         }
     }

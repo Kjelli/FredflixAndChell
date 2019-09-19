@@ -1,5 +1,5 @@
 CharacterName: Masschin
-MaxHealth: 20.0
+MaxHealth: 40.0
 MaxStamina: 200.0
 PlayerSprite:
   Head:

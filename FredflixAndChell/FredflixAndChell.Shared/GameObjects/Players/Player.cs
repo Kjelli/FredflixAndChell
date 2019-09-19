@@ -2,6 +2,7 @@
 using FredflixAndChell.Shared.Components.Cameras;
 using FredflixAndChell.Shared.Components.Players;
 using FredflixAndChell.Shared.GameObjects.Bullets;
+using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players.Characters;
 using FredflixAndChell.Shared.GameObjects.Players.Sprites;
@@ -234,6 +235,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
                 _renderer.setEnabled(false);
                 removeComponent(_renderer);
             }
+
             SetupRenderer(playerSprite);
         }
 
@@ -479,17 +481,16 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             PlayerMobilityState = PlayerMobilityState.Running;
         }
 
-        public void EquipWeapon(string name, CollectibleMetadata metadata = null)
+        public void EquipWeapon(WeaponParameters weapon, CollectibleMetadata metadata = null)
         {
-            _inventory.EquipWeapon(name, metadata);
+            _inventory.EquipWeapon(weapon, metadata);
         }
 
         private void Move()
         {
             if (PlayerMobilityState == PlayerMobilityState.Rolling) return;
-            var deltaTime = Time.deltaTime;
 
-            Acceleration *= Speed * deltaTime;
+            Acceleration *= Speed * Time.deltaTime;
             Velocity = Velocity + CalculateAcceleration();
 
 
@@ -731,7 +732,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             var easeType = EaseType.BounceOut;
             var durationSeconds = 1.5f;
             var targetRotationDegrees = 90;
-            var targetColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+            var targetColor = new Color(0.25f, 0.25f, 0.25f, 1.0f);
 
             this.tweenRotationDegreesTo(targetRotationDegrees, durationSeconds)
                 .setEaseType(easeType)
@@ -802,7 +803,7 @@ namespace FredflixAndChell.Shared.GameObjects.Players
             EnableHitbox();
             EnableProximityHitbox();
 
-            var weapon = meta.Weapon?.Name ?? Constants.Strings.DefaultStartWeapon;
+            var weapon = meta.Weapon ?? CollectibleDict.Get(Constants.Strings.DefaultStartWeapon).Weapon;
             EquipWeapon(weapon);
 
             // Hack to prevent newly respawned players from being invincible

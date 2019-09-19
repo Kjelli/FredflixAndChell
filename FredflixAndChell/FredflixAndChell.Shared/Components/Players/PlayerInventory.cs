@@ -3,6 +3,7 @@ using FredflixAndChell.Shared.GameObjects.Collectibles;
 using FredflixAndChell.Shared.GameObjects.Collectibles.Metadata;
 using FredflixAndChell.Shared.GameObjects.Players;
 using FredflixAndChell.Shared.GameObjects.Weapons;
+using FredflixAndChell.Shared.GameObjects.Weapons.Parameters;
 using FredflixAndChell.Shared.Utilities;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -20,42 +21,32 @@ namespace FredflixAndChell.Shared.Components.Players
         {
             _player = entity as Player;
             var metadata = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
-            EquipWeapon(metadata.Weapon?.Name ?? Constants.Strings.DefaultStartWeapon);
+            EquipWeapon(metadata.Weapon ?? CollectibleDict.Get(Constants.Strings.DefaultStartWeapon).Weapon);
         }
 
-        public void EquipWeapon(string name, CollectibleMetadata metadata = null)
+        public void EquipWeapon(WeaponParameters weapon, CollectibleMetadata metadata = null)
         {
             if (Weapon != null)
             {
                 DropWeapon();
             }
 
-            var gunParams = Guns.Get(name);
-            if (gunParams != null)
+            Weapon newWeapon = null;
+            if (weapon.Type == WeaponType.Gun)
             {
-                var gunMetadata = metadata != null ? (GunMetadata)metadata : null;
-                Weapon = entity.scene.addEntity(new Gun(_player, gunParams, gunMetadata));
-
-                var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
-                if (meta != null)
-                {
-                    meta.Weapon = gunParams;
-                }
+                newWeapon = new Gun(_player, weapon as GunParameters, metadata as GunMetadata);
             }
-            else
+            else if (weapon.Type == WeaponType.Melee)
             {
-                var meleeParams = Melees.Get(name);
-                if (meleeParams != null)
-                {
-                    var meleeMetadata = metadata != null ? (MeleeMetadata)metadata : null;
-                    Weapon = entity.scene.addEntity(new Melee(_player, meleeParams, meleeMetadata));
+                newWeapon = new Melee(_player, weapon as MeleeParameters, metadata as MeleeMetadata);
+            }
 
-                    var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
-                    if (meta != null)
-                    {
-                        meta.Weapon = meleeParams;
-                    }
-                }
+            Weapon = entity.scene.addEntity(newWeapon);
+
+            var meta = ContextHelper.PlayerMetadataByIndex(_player.PlayerIndex);
+            if (meta != null)
+            {
+                meta.Weapon = weapon;
             }
         }
 
@@ -75,16 +66,8 @@ namespace FredflixAndChell.Shared.Components.Players
 #if DEBUG
             if (!IsArmed) return;
 
-            if (Weapon is Melee melee)
-            {
-                var nextMelee = Melees.GetNextAfter(melee.Parameters.Name ?? "Stick").Name;
-                EquipWeapon(nextMelee);
-            }
-            else if (Weapon is Gun gun)
-            {
-                var nextGun = Guns.GetNextAfter(gun.Parameters.Name ?? "M4").Name;
-                EquipWeapon(nextGun);
-            }
+            var next = CollectibleDict.GetNextWeaponAfter(Weapon.Name);
+            EquipWeapon(next);
 #else
             DropWeapon();
 #endif

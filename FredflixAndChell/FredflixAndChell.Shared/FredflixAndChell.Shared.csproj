@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Constants.cs" />
+    <Compile Include="Components\Bullets\Behaviours\FireBehaviour.cs" />
     <Compile Include="Components\Bullets\Behaviours\LaserBehaviour.cs" />
     <Compile Include="Components\Bullets\Behaviours\MultiplyingBullet.cs" />
     <Compile Include="Components\Bullets\Behaviours\AcceleratingBullet.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Components\Effects\Weather\IAtmosphere.cs" />
     <Compile Include="Components\Effects\Weather\Snowstorm.cs" />
     <Compile Include="Components\Players\PlayerInventory.cs" />
+    <Compile Include="Components\StatusEffects\BurnEffect.cs" />
     <Compile Include="GameObjects\Collectibles\Metadata\CollectibleMetadata.cs" />
     <Compile Include="Components\Weapons\GunRenderer.cs" />
     <Compile Include="Components\HUD\DebugHud.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Components\Weapons\MeleeRenderer.cs" />
     <Compile Include="GameObjects\Collectibles\Metadata\MeleeMetadata.cs" />
     <Compile Include="GameObjects\Collectibles\Metadata\GunMetadata.cs" />
+    <Compile Include="GameObjects\Effects\BurnEffectParticle.cs" />
     <Compile Include="GameObjects\Effects\Fireball.cs" />
     <Compile Include="GameObjects\Effects\Explosion.cs" />
     <Compile Include="GameObjects\Effects\Smoke.cs" />
@@ -159,6 +162,7 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Graphics\Animations\SpriteAnimationDescriptor.cs" />
     <Compile Include="Utilities\Graphics\Materials.cs" />
+    <Compile Include="Utilities\Graphics\ScalableSpriteMime.cs" />
     <Compile Include="Utilities\Input\VirtualMouseJoystick.cs" />
     <Compile Include="Utilities\Graphics\ScalableSprite.cs" />
     <Compile Include="BroGame.cs" />

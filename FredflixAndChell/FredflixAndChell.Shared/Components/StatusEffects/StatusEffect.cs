@@ -5,16 +5,21 @@ namespace FredflixAndChell.Shared.Components.StatusEffects
 {
     public abstract class StatusEffect : Component, IUpdatable
     {
-        private Player _affectedPlayer;
+        protected Player _affectedPlayer;
         private float _durationSeconds;
         private float _tickIntervalSeconds;
         private bool _shouldBeRemoved;
+
+        protected Player _sourceOfStatus;
+
         private ITimer _timer;
 
-        public StatusEffect(float durationSeconds = -1, float tickIntervalSeconds = 0)
+
+        public StatusEffect(float durationSeconds = -1, float tickIntervalSeconds = 0, Player sourceOfStatus = null)
         {
             _durationSeconds = durationSeconds;
             _tickIntervalSeconds = tickIntervalSeconds;
+            _sourceOfStatus = sourceOfStatus;
         }
 
         public override void onAddedToEntity()
@@ -32,7 +37,7 @@ namespace FredflixAndChell.Shared.Components.StatusEffects
         protected abstract void OnEffectAdded(Player player);
         protected abstract void OnEffectRemoved(Player player);
         protected abstract void Effect(Player player);
-        public void update()
+        public virtual void update()
         {
             if (_shouldBeRemoved)
             {

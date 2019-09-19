@@ -1,0 +1,31 @@
+Name: Fire
+BulletBehaviour: FireBehaviour
+Damage: 4.0
+Knockback: 0.25
+LifeSpanSeconds: 1.0
+RotateWithGun: false
+IgnoreTeamColor: true
+BulletColor:
+  R: 255
+  G: 0
+  B: 0
+  A: 255
+Scale: 0.25
+Speed: 50.0
+Sprite:
+  Bullet:
+    FPS: 6.0
+    Frames:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    Loop: false
+    Origin:
+      X: 0.0
+      Y: 0.0
+    TileWidth: 16
+    TileHeight: 16
+  Source: bullets/fireball

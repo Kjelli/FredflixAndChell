@@ -17,7 +17,7 @@ Sprite:
   Fire:
     FPS: 30.0
     Frames:
-      - 0
+      - 1
     Loop: false
     Origin:
       X: 10.0
@@ -33,7 +33,7 @@ Sprite:
   Idle:
     FPS: 1.0
     Frames:
-      - 0
+      - 1
     Loop: false
     Origin:
       X: 10.0
